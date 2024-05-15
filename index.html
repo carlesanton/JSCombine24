@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Flower Paint Brush</title> <link rel="stylesheet" href="style.css" />
+    <script src="lib/hl-gen.js"></script>
+    <script src="lib/hl-utils.js"></script>
+    <script src="lib/p5.min.js"></script>
+    <script src="lib/pixel_sort.js"></script>
+    <script src="lib/collor_palette.js"></script>
+    <script src="lib/utils.js"></script>
+    <script src="sketch.js"></script>
+
+    <!-- For Recording Video -->
+    <script src="lib/utils/ccapture/CCapture.js"></script>
+    <script src="lib/utils/ccapture/webm-writer-0.2.0.js"></script>
+    <script src="lib/utils/ccapture/download.js"></script>
+
+    <script>
+      var capturer = new CCapture({
+        format: 'webm',
+        framerate: 60,
+        verbose: true
+
+      })
+
+    </script>
+
+    <style>
+        html,
+        body {
+          height: 100%;
+          min-height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        canvas {
+          display: block;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 0;
+          margin: auto;
+        }
+        .loadingClass {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          width: 100vw;
+          font-size: calc(100vw / 24);
+        }
+      </style>
+</head>
+<body>
+    <!-- <canvas id="canvas1"><canvas>
+    <script src="script.js"></script> -->
+</body> </html>
