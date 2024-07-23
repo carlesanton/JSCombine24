@@ -79,7 +79,6 @@ function setup() {
   // noLoop();
   frameRate(60);
   // frameRate(1);
-  // pixelDensity(displayDensity());
   pixelDensity(4);
   noSmooth();
   
