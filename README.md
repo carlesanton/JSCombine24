@@ -2,6 +2,7 @@
 
 - Go To index.html
 - Commands > Live Preview (choose internal or external browser)
+  - **Needed Live Preview VSCode extension**
 
 ## Images
 
