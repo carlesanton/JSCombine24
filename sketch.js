@@ -38,6 +38,7 @@ const imgFiles = [
   'img/3526787.jpg'
 ]
 
+const preview_frame = 30;
 
 function preload() {
   prepareP5Js(); // Order is important! First setup randomness then prepare the token
@@ -101,7 +102,10 @@ function draw() {
   image(img, 0, 0, img.width * scaleFactor, img.height * scaleFactor);
   // image(img, 0,0)
 
-  hl.token.capturePreview();
+  if (frameCount == preview_frame) {
+    console.log('Saving Preview')
+    hl.token.capturePreview();
+  }
   // if (frameCount < 360){
   //   capturer.capture(canvas)
   // } else if (frameCount === 360){
