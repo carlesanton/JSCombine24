@@ -72,10 +72,6 @@ function setup() {
 
 function draw() {
 
-  // if (frameCount === 1){
-  //   capturer.start()
-  // }
-
   img.resize(workingImageWidth, workingImageHeight);
   
   // const numberOfColumns = Math.ceil(Math.sqrt(collor_pallete.length));
@@ -106,12 +102,6 @@ function draw() {
     console.log('Saving Preview')
     hl.token.capturePreview();
   }
-  // if (frameCount < 360){
-  //   capturer.capture(canvas)
-  // } else if (frameCount === 360){
-  //   capturer.save()
-  //   capturer.stop()
-  // }
 }
 
 function windowResized() {
