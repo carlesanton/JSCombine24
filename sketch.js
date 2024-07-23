@@ -78,7 +78,6 @@ function setup() {
   // colorMode(HSB, 360, 100, 100, 1);
   // noLoop();
   frameRate(60);
-  // frameRate(1);
   pixelDensity(4);
   noSmooth();
   
