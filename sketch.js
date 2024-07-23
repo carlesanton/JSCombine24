@@ -22,6 +22,7 @@ const noise_radius = 1.5;
 let angle = -180;
 let noise_coordinates;
 const pixel_sort_max_steps = -1;
+const initial_pixel_sort_max_steps = 50; //50
 const pixel_sort_iters_per_steps = 150000;
 
 // Cellular automata variables
@@ -29,6 +30,7 @@ let cellular_automata_step = 0
 let random_color_change_rate = 3;
 let new_random_color_index=0;
 const cellular_automata_max_steps = -1;
+const initial_cellular_automata_max_steps = 0;
 
 let img;
 let collor_pallete;
@@ -93,6 +95,20 @@ function setup() {
   img = colorQuantize(img, number_of_colors, get_pallete=true)
   palette = extractCollorPaletteFromImage(img)
   palette_map = buildPaletteIndexDict(palette)
+
+  // Pixel Sort
+  angle = noise(frameCount)*sort_noise_scale;
+  noise_coordinates = angleToCoordinates(angle, noise_radius);
+  for (let i=0;i < initial_pixel_sort_max_steps; i++) {
+    // img = sort_step(img)
+    img = sort_step_random(img, pixel_sort_iters_per_steps, noise_coordinates)
+  }
+
+  // Cellular automata
+  for (let j=0;j < initial_cellular_automata_max_steps; j++) {
+    img = cellular_automata(img)
+    // console.log(j)
+  }
 
 }
 
