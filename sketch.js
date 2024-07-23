@@ -130,8 +130,8 @@ function prepareToken() {
   };
 
   hl.token.setTraits(traits);
-  hl.token.setName('');
+  hl.token.setName('Generative Pixel Lanscapes');
   hl.token.setDescription(
-    ''
+    'Generative landscape'
   );
 }
