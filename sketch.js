@@ -9,10 +9,18 @@ const workingImageWidth = 150;
 const workingImageHeight = 150;
 const max_steps = 10000;
 const iters_per_steps = 5000;
+// Pallete display variables
+const palleteWidth = 40
+const palleteHeight = 1000;
+const showPallete = false;
+const number_of_colors = 20;
+
 let img;
 let collor_pallete;
 var sorted_image;
 let step = 0
+let palette;
+let palette_map;
 
 const imgFiles = [
   'img/234155.jpg',
@@ -51,7 +59,6 @@ function preload() {
 function setup() {
   createCanvas(artworkWidth, artworkHeight);
   img.resize(workingImageWidth, workingImageHeight);
-  collor_pallete = extractCollorPaletteFromImage(img)
   // colorMode(HSB, 360, 100, 100, 1);
   // noLoop();
   frameRate(60);
@@ -68,26 +75,16 @@ function setup() {
   // textAlign(CENTER, CENTER);
   // img = sortStep(img)
   scaleCanvasToFit(artworkWidth, artworkHeight);
+
+  img = colorQuantize(img, number_of_colors, get_pallete=true)
+  palette = extractCollorPaletteFromImage(img)
+  palette_map = buildPaletteIndexDict(palette)
+
 }
 
 function draw() {
 
   img.resize(workingImageWidth, workingImageHeight);
-  
-  // const numberOfColumns = Math.ceil(Math.sqrt(collor_pallete.length));
-  // const squareSize = workingImageWidth / numberOfColumns;
-  // const yOffset = (workingImageHeight - (squareSize * numberOfColumns)) / 2;
-  
-  // image(img, 0,0)
-  // for (let row = 0; row < numberOfColumns; row++) {
-  //   for (let col = 0; col < numberOfColumns; col++) {
-  //     let i = row * numberOfColumns + col;
-  //     if (i < collor_pallete.length) {
-  //       fill(collor_pallete[i]);
-  //       square(col * squareSize, yOffset + row * squareSize, squareSize);
-  //     }
-  //   }
-  // }
   if (step < max_steps) {
     // img = sort_step(img)
     img = sort_step_random(img)
@@ -101,6 +98,9 @@ function draw() {
   if (frameCount == preview_frame) {
     console.log('Saving Preview')
     hl.token.capturePreview();
+  }
+  if (showPallete){
+    displayPalette(palette, palleteWidth, palleteHeight)
   }
 }
 
