@@ -82,14 +82,7 @@ function setup() {
   // pixelDensity(displayDensity());
   pixelDensity(4);
   noSmooth();
-  print(img.width);
-  print(img.height);
   
-  //By default, rotations are specified in radians
-  // textFont(plexMonoFont);
-  // textSize(16);
-  // textAlign(CENTER, CENTER);
-  // img = sortStep(img)
   scaleCanvasToFit(artworkWidth, artworkHeight);
 
   img = colorQuantize(img, number_of_colors, get_pallete=true)
