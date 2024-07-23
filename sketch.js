@@ -5,8 +5,8 @@
 // If you target size is bigger you can reduce that value. e.g. "pixelDensity(2)".
 const artworkWidth = 1000;
 const artworkHeight = 1000;
-const workingImageWidth = 150;
-const workingImageHeight = 150;
+const workingImageWidth = 250;
+const workingImageHeight = 250;
 // Pallete display variables
 const palleteWidth = 40
 const palleteHeight = 1000;
