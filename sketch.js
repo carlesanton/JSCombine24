@@ -7,18 +7,32 @@ const artworkWidth = 1000;
 const artworkHeight = 1000;
 const workingImageWidth = 150;
 const workingImageHeight = 150;
-const max_steps = 10000;
-const iters_per_steps = 5000;
 // Pallete display variables
 const palleteWidth = 40
 const palleteHeight = 1000;
 const showPallete = false;
 const number_of_colors = 20;
 
+
+// Pixel sort variables
+let pixel_sort_step = 0
+let sort_noise_scale = 360
+let noise_direction_change_rate = 30;
+const noise_radius = 1.5;
+let angle = -180;
+let noise_coordinates;
+const pixel_sort_max_steps = -1;
+const pixel_sort_iters_per_steps = 150000;
+
+// Cellular automata variables
+let cellular_automata_step = 0
+let random_color_change_rate = 3;
+let new_random_color_index=0;
+const cellular_automata_max_steps = -1;
+
 let img;
 let collor_pallete;
 var sorted_image;
-let step = 0
 let palette;
 let palette_map;
 
@@ -85,10 +99,26 @@ function setup() {
 function draw() {
 
   img.resize(workingImageWidth, workingImageHeight);
-  if (step < max_steps) {
-    // img = sort_step(img)
-    img = sort_step_random(img)
-    step+=1
+
+  // Pixel sorting
+  if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
+    if (frameCount%noise_direction_change_rate==1){
+      angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
+    }
+    // console.log(angle)
+    noise_coordinates = angleToCoordinates(angle, noise_radius);
+    // console.log(noise_coordinates)
+    img = sort_step_random(img, pixel_sort_iters_per_steps, direction=noise_coordinates)
+    pixel_sort_step+=1
+  }
+
+  // Cellular Automata
+  if (cellular_automata_step < cellular_automata_max_steps || cellular_automata_max_steps ==-1) {
+    if (frameCount%random_color_change_rate==1){
+      new_random_color_index = Math.round(random(0,palette.length-1))
+    }
+    img = cellular_automata_multicolor_cicle(img, palette, new_random_color_index)
+    cellular_automata_step+=1
   }
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   const scaleFactor = min(artworkWidth / img.width, artworkHeight / img.height);
