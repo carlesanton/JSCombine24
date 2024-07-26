@@ -132,10 +132,6 @@ function draw() {
   image(img, 0, 0, img.width * scaleFactor, img.height * scaleFactor);
   // image(img, 0,0)
 
-  if (frameCount == preview_frame) {
-    console.log('Saving Preview')
-    hl.token.capturePreview();
-  }
   if (showPallete){
     displayPalette(palette, palleteWidth, palleteHeight)
   }
@@ -143,26 +139,4 @@ function draw() {
 
 function windowResized() {
   scaleCanvasToFit(artworkWidth, artworkHeight);
-}
-
-// We are using p5.js which means we can set the seed and use p5.js random methods instead of
-// hl-gen.js for simplicity.
-function prepareP5Js() {
-  const hlRandomSeed = hl.random(1_000_000_000_000);
-  randomSeed(hlRandomSeed);
-  noiseSeed(hlRandomSeed);
-}
-
-function prepareToken() {
-  // Notice we are using "random()" from p5.js and not "hl.random()" because we set it up in "prepareP5Js()"
-  // You can use which ever is more comfortable for you.
-  
-  const traits = {
-  };
-
-  hl.token.setTraits(traits);
-  hl.token.setName('Generative Pixel Lanscapes');
-  hl.token.setDescription(
-    'Generative landscape'
-  );
 }
