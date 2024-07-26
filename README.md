@@ -4,6 +4,32 @@
 - Commands > Live Preview (choose internal or external browser)
   - **Needed Live Preview VSCode extension**
 
+## SubModules
+
+This project uses a submodule for the `JSGenerativeArtTools` custom libs.
+
+### Initialize:
+
+To intialise it run:
+```
+git submodule init
+```
+
+Alternatively you can automaticaly get the submodule code when cloning the repository with:
+```
+git clone --recurse-submodules
+```
+
+### Updating:
+
+If someone updated a submodule, the other team-members should update the code of their submodules. This is not automatically done by git pull, because with git pull it only retrieves the information that the submodule is pointing to another commit, but doesn't update the submodule's code. To update the code of your submodules, you should run:
+```
+git submodule update
+```
+
+
+**[Reference](https://gist.github.com/gitaarik/8735255)**
+
 ## Images
 
 Images are not uploaded to the github repository, they should be in the project folder and added to the `imgFiles` list. The ones used for the project are:
