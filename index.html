@@ -5,9 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Generative Landscapes</title> <link rel="stylesheet" href="style.css" />
     <script src="lib/p5.min.js"></script>
-    <script src="lib/pixel_sort.js"></script>
-    <script src="lib/collor_palette.js"></script>
-    <script src="lib/utils.js"></script>
+    <script type="module">
+      import * as collorPalette from './lib/JSGenerativeArtTools/collor_palette.js';
+      import * as pixelSort from './lib/JSGenerativeArtTools/pixel_sort.js';
+      import * as cellularAutomata from './lib/JSGenerativeArtTools/cellular_automata.js';
+      import * as utils from './lib/JSGenerativeArtTools/utils.js';
+      Object.assign(globalThis, collorPalette);
+      Object.assign(globalThis, pixelSort);
+      Object.assign(globalThis, cellularAutomata);
+      Object.assign(globalThis, utils);
+    </script>
     <script src="sketch.js"></script>
 
     <style>
