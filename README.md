@@ -92,6 +92,57 @@ const imgFiles = [
 - `cellular_automata_max_steps`: The maximum number of steps allowed for the cellular automata simulation. Setting it to `-1` means unlimited steps.
 - `random_color_change_rate`: The frequency at which random colors are introduced in the cellular automata simulation. Lower values introduce more variation.
 
+# Libs used
+From **[JSGenerativeArtTools repo](https://github.com/carlesanton/JSGenerativeArtTools)**
+- `pixel_sort.js`
+- `collor_palette.js`
+- `utils.js`
+
+[P5Js Library](https://p5js.org/es/download/)
+- `p5.min.js`
+
+[RgbQuant.js](https://github.com/leeoniya/RgbQuant.js/tree/master)
+
+# Experiments
+
+At the moment the best result seems to be with no pixel sorting while the drawing phase and only celular automata.
+
+## Celular automata rules
+
+### Working, good version
+
+This version generates patterns inside each color
+
+if (neighboursWithSameColor==8 || neighboursWithSameColor == 3){
+    new_color = current_color;
+}
+else if ((neighboursWithSameColor < 2  || neighboursWithNextColor == 3)) {
+    new_color = nextMajorityColor
+} else {
+    new_color = current_color;
+}
+
+### Approach 2, no patterns
+
+if (neighboursWithSameColor==8 || neighboursWithSameColor == 3){
+    new_color = current_color;
+}
+else if ((neighboursWithSameColor < 3  || neighboursWithNextColor == 3 || neighboursWithNextColor == 5)) {
+    new_color = nextMajorityColor
+} else {
+    new_color = current_color;
+}
+
+### Approach 3, small patterns at borders
+
+if (neighboursWithSameColor==8 || neighboursWithSameColor == 3){
+    new_color = current_color;
+}
+else if ((neighboursWithSameColor < 3  || neighboursWithNextColor >= 3 || neighboursWithNextColor > 4)) {
+    new_color = nextMajorityColor
+} else {
+    new_color = current_color;
+}
 
 # Links
 (Combine24 Page)[https://combine24.alusta.art/]
