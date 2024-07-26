@@ -1,0 +1,12 @@
+# Ignore Images
+*.jpg
+*.jpeg
+*.png
+
+# Ignore Videos
+*.avi
+*.mp4
+*.webm
+
+# Ignore .DS_Store
+.DS_Store
