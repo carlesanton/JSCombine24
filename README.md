@@ -34,6 +34,39 @@ const imgFiles = [
 ]
 ```
 
+# Arguments:
+
+## Artwork Dimensions Variables
+- `artworkWidth`: The desired width of the final artwork in pixels. This variable determines the size of the canvas where the generative art will be displayed.
+- `artworkHeight`: The desired height of the final artwork in pixels. Similar to `artworkWidth`, this variable sets the canvas height.
+
+## Image Processing Variables
+- `workingImageWidth`: The width of the image used for processing before being displayed on the canvas. It's smaller than `artworkWidth` to allow for more detailed manipulation.
+- `workingImageHeight`: The height of the image used for processing. Like `workingImageWidth`, it's designed for detailed manipulation before resizing to fit the `artworkWidth` and `artworkHeight`.
+
+## Randomness Seed Variable
+- `artwork_seed`: A seed value used for generating random numbers. Setting it to `-1` uses a random seed, while a positive integer specifies a fixed seed for reproducible results.
+
+## Palette Display Variables
+- `showPallete`: A boolean flag indicating whether the color palette should be displayed. Set to `true` to show the palette, `false` otherwise.
+- `number_of_colors`: The number of colors to be included in the color palette extracted from the image.
+- `palleteWidth`: The width of the color palette display area in pixels.
+- `palleteHeight`: The height of the color palette display area in pixels.
+
+## Pixel Sorting Variables
+- `initial_pixel_sort_max_steps`: Number of pixel sorting steps done in the setup before the image is initaly displayed. Serves to modify the image before the piece starts.
+- `pixel_sort_max_steps`: The maximum number of steps allowed for the pixel sorting process. Setting it to `-1` means unlimited steps.
+- `sort_noise_scale`: The scale factor for the noise used in pixel sorting. Higher values result in more pronounced noise effects.
+- `noise_direction_change_rate`: The rate at which the direction of the noise changes during pixel sorting. Lower values lead to slower changes.
+- `noise_radius`: The radius of influence for the noise applied during pixel sorting.
+- `pixel_sort_iters_per_steps`: The number of iterations performed per step (frame) in the pixel sorting process.
+
+## Cellular Automata Variables
+- `initial_cellular_automata_max_steps`: Number of cellular automata steps done in the setup before the image is initaly displayed. Serves to modify the image before the piece starts.
+- `cellular_automata_max_steps`: The maximum number of steps allowed for the cellular automata simulation. Setting it to `-1` means unlimited steps.
+- `random_color_change_rate`: The frequency at which random colors are introduced in the cellular automata simulation. Lower values introduce more variation.
+
+
 # Links
 (Combine24 Page)[https://combine24.alusta.art/]
 (Combine24 Webinar)[https://www.youtube.com/watch?v=FnihRwX32cQ&ab_channel=Kansallisgalleria%E2%8E%B8FinnishNationalGallery]
