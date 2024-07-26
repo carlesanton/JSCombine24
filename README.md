@@ -68,6 +68,7 @@ const imgFiles = [
 
 ## FPS
 - `desired_frame_rate`: desired frame rate.
+- `showFPS`: flag to choose if FPS are computed and displayed on screen.
 
 ## Image Processing Variables
 - `workingImageWidth`: The width of the image used for processing before being displayed on the canvas. It's smaller than `artworkWidth` to allow for more detailed manipulation.

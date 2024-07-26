@@ -11,6 +11,7 @@ const artwork_seed = -1; // -1 used for random seeds, if set to a positive integ
 
 // FPS parametters
 const desired_frame_rate = 60;
+const showFPS = false;
 
 // Pallete display variables
 const palleteWidth = 40
@@ -137,6 +138,11 @@ function draw() {
 
   if (showPallete){
     displayPalette(palette, palleteWidth, palleteHeight)
+  }
+
+  if (showFPS) {
+    fps = calculateFPS(millis());
+    displayFPS(fps);
   }
 }
 
