@@ -7,6 +7,8 @@ const artworkWidth = 1000;
 const artworkHeight = 1000;
 const workingImageWidth = 250;
 const workingImageHeight = 250;
+const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+
 // Pallete display variables
 const palleteWidth = 40
 const palleteHeight = 1000;
@@ -65,8 +67,7 @@ const imgFiles = [
 const preview_frame = 30;
 
 function preload() {
-  prepareP5Js(); // Order is important! First setup randomness then prepare the token
-  prepareToken(); // Do this as soon as possible in your code (before loading any resources)
+  prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
   
   img = loadImage(imgFiles[floor(random(imgFiles.length))])
 
