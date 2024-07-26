@@ -69,8 +69,7 @@ const preview_frame = 30;
 function preload() {
   prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
   
-  img = loadImage(imgFiles[floor(random(imgFiles.length))])
-
+  img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
 }
 
 function setup() {
