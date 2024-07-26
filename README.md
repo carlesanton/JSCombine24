@@ -66,6 +66,10 @@ const imgFiles = [
 - `artworkWidth`: The desired width of the final artwork in pixels. This variable determines the size of the canvas where the generative art will be displayed.
 - `artworkHeight`: The desired height of the final artwork in pixels. Similar to `artworkWidth`, this variable sets the canvas height.
 
+## FPS
+- `desired_frame_rate`: desired frame rate.
+- `showFPS`: flag to choose if FPS are computed and displayed on screen.
+
 ## Image Processing Variables
 - `workingImageWidth`: The width of the image used for processing before being displayed on the canvas. It's smaller than `artworkWidth` to allow for more detailed manipulation.
 - `workingImageHeight`: The height of the image used for processing. Like `workingImageWidth`, it's designed for detailed manipulation before resizing to fit the `artworkWidth` and `artworkHeight`.

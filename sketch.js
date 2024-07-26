@@ -9,6 +9,10 @@ const workingImageWidth = 250;
 const workingImageHeight = 250;
 const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
 
+// FPS parametters
+const desired_frame_rate = 60;
+const showFPS = false;
+
 // Pallete display variables
 const palleteWidth = 40
 const palleteHeight = 1000;
@@ -77,7 +81,7 @@ function setup() {
   img.resize(workingImageWidth, workingImageHeight);
   // colorMode(HSB, 360, 100, 100, 1);
   // noLoop();
-  frameRate(60);
+  frameRate(desired_frame_rate);
   pixelDensity(4);
   noSmooth();
   
@@ -134,6 +138,11 @@ function draw() {
 
   if (showPallete){
     displayPalette(palette, palleteWidth, palleteHeight)
+  }
+
+  if (showFPS) {
+    fps = calculateFPS(millis());
+    displayFPS(fps);
   }
 }
 
