@@ -44,6 +44,8 @@ var sorted_image;
 let palette;
 let palette_map;
 let myFont;
+let color_buffer;
+let prev_buffer;
 
 let ca_src = `
 #ifdef GL_ES
@@ -232,6 +234,19 @@ function setup() {
   img = colorQuantize(img, number_of_colors, get_pallete=true)
   palette = extractCollorPaletteFromImage(img)
   palette_map = buildPaletteIndexDict(palette)
+
+  let color_buffer_otions = {
+    width: workingImageWidth,
+    height: workingImageHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  color_buffer = createFramebuffer(color_buffer_otions)
+  prev_buffer = createFramebuffer(color_buffer_otions)
 
   // Apply the loaded font
   textFont(myFont);
