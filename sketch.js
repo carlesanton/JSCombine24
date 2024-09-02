@@ -284,8 +284,6 @@ function setup() {
 }
 
 function draw() {
-
-  img.resize(workingImageWidth, workingImageHeight);
   [prev_buffer, color_buffer] = [color_buffer, prev_buffer];
 
   color_buffer.begin();
@@ -316,9 +314,7 @@ function draw() {
   color_buffer.end();
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
-  const scaleFactor = min(artworkWidth / img.width, artworkHeight / img.height);
-  image(img, 0, 0, img.width * scaleFactor, img.height * scaleFactor);
-  // image(img, 0,0)
+  image(color_buffer, 0-width/2, 0-height/2, width, height)
 
   if (showPallete){
     displayPalette(palette, palleteWidth, palleteHeight)
