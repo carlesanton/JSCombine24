@@ -289,9 +289,7 @@ function draw() {
     if (frameCount%noise_direction_change_rate==1){
       angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
     }
-    // console.log(angle)
     noise_coordinates = angleToCoordinates(angle, noise_radius);
-    // console.log(noise_coordinates)
     sort_step_random(color_buffer, pixel_sort_iters_per_steps, direction=noise_coordinates)
     pixel_sort_step+=1
   }
