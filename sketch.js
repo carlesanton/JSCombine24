@@ -277,8 +277,13 @@ function setup() {
 function draw() {
 
   img.resize(workingImageWidth, workingImageHeight);
+  [prev_buffer, color_buffer] = [color_buffer, prev_buffer];
 
+  color_buffer.begin();
+  image(prev_buffer, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  color_buffer.end()
   // Pixel sorting
+  color_buffer.loadPixels()
   if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
     if (frameCount%noise_direction_change_rate==1){
       angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
