@@ -43,6 +43,7 @@ let collor_pallete;
 var sorted_image;
 let palette;
 let palette_map;
+let myFont;
 
 let ca_src = `
 #ifdef GL_ES
@@ -213,7 +214,7 @@ const preview_frame = 30;
 
 function preload() {
   prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
-  
+  myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
 }
 
@@ -231,6 +232,9 @@ function setup() {
   img = colorQuantize(img, number_of_colors, get_pallete=true)
   palette = extractCollorPaletteFromImage(img)
   palette_map = buildPaletteIndexDict(palette)
+
+  // Apply the loaded font
+  textFont(myFont);
 
   // Pixel Sort
   angle = noise(frameCount)*sort_noise_scale;
