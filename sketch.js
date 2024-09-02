@@ -11,7 +11,7 @@ const artwork_seed = -1; // -1 used for random seeds, if set to a positive integ
 const pixel_density = 1;
 
 // FPS parametters
-const desired_frame_rate = 60;
+const desired_frame_rate = 10;
 const showFPS = false;
 
 // Pallete display variables
