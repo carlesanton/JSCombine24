@@ -263,7 +263,8 @@ function setup() {
   angle = noise(frameCount)*sort_noise_scale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
   for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    img = sort_step_random(img, pixel_sort_iters_per_steps, noise_coordinates)
+    sort_step_random(color_buffer, pixel_sort_iters_per_steps, noise_coordinates)
+    color_buffer.updatePixels()
   }
 
   // Cellular automata
@@ -291,9 +292,10 @@ function draw() {
     // console.log(angle)
     noise_coordinates = angleToCoordinates(angle, noise_radius);
     // console.log(noise_coordinates)
-    img = sort_step_random(img, pixel_sort_iters_per_steps, direction=noise_coordinates)
+    sort_step_random(color_buffer, pixel_sort_iters_per_steps, direction=noise_coordinates)
     pixel_sort_step+=1
   }
+  color_buffer.updatePixels()
 
   // Cellular Automata
   if (cellular_automata_step < cellular_automata_max_steps || cellular_automata_max_steps ==-1) {
