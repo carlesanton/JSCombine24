@@ -8,6 +8,7 @@ const artworkHeight = 1000;
 const workingImageWidth = 250;
 const workingImageHeight = 250;
 const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+const pixel_density = 1;
 
 // FPS parametters
 const desired_frame_rate = 60;
@@ -221,12 +222,9 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(artworkWidth, artworkHeight);
-  img.resize(workingImageWidth, workingImageHeight);
-  // colorMode(HSB, 360, 100, 100, 1);
-  // noLoop();
+  let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
   frameRate(desired_frame_rate);
-  pixelDensity(4);
+  canvas.pixelDensity(pixel_density);
   noSmooth();
   
   scaleCanvasToFit(artworkWidth, artworkHeight);
