@@ -253,6 +253,12 @@ function setup() {
   // Apply the loaded font
   textFont(myFont);
 
+  color_buffer.begin();
+  tex.setInterpolation(NEAREST, NEAREST);
+  image(img, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  tex.setInterpolation(NEAREST, NEAREST);
+  color_buffer.end()
+  color_buffer.loadPixels()
   // Pixel Sort
   angle = noise(frameCount)*sort_noise_scale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
