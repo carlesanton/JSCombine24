@@ -255,7 +255,6 @@ function setup() {
   angle = noise(frameCount)*sort_noise_scale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
   for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    // img = sort_step(img)
     img = sort_step_random(img, pixel_sort_iters_per_steps, noise_coordinates)
   }
 
