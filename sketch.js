@@ -227,6 +227,10 @@ function setup() {
   canvas.pixelDensity(pixel_density);
   noSmooth();
   
+  let tex = canvas.getTexture(img);
+  tex.setInterpolation(NEAREST, NEAREST);
+  textureWrap(CLAMP)
+  
   scaleCanvasToFit(artworkWidth, artworkHeight);
 
   img = colorQuantize(img, number_of_colors, get_pallete=true)
