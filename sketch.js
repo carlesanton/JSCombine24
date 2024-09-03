@@ -47,7 +47,6 @@ let palette;
 let palette_map;
 let myFont;
 let color_buffer;
-let prev_buffer;
 
 let ca_src = '';
 
@@ -111,7 +110,6 @@ function setup() {
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
-  prev_buffer = createFramebuffer(color_buffer_otions)
 
   CaShader = createFilterShader(ca_src.join('\n'));
 
@@ -146,11 +144,6 @@ function setup() {
 }
 
 function draw() {
-  [prev_buffer, color_buffer] = [color_buffer, prev_buffer];
-
-  color_buffer.begin();
-  image(prev_buffer, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
-  color_buffer.end()
   // Pixel sorting
   color_buffer.loadPixels()
   if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
