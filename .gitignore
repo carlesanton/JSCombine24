@@ -2,6 +2,7 @@
 *.jpg
 *.jpeg
 *.png
+*.psd
 
 # Ignore Videos
 *.avi
@@ -10,3 +11,6 @@
 
 # Ignore .DS_Store
 .DS_Store
+
+# Ignore VSCode settings
+.vscode/*

@@ -8,9 +8,10 @@ const artworkHeight = 1000;
 const workingImageWidth = 250;
 const workingImageHeight = 250;
 const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+const pixel_density = 1;
 
 // FPS parametters
-const desired_frame_rate = 60;
+const desired_frame_rate = 10;
 const showFPS = false;
 
 // Pallete display variables
@@ -37,12 +38,17 @@ let random_color_change_rate = 3;
 let new_random_color_index=0;
 const cellular_automata_max_steps = -1;
 const initial_cellular_automata_max_steps = 0;
+let CaShader; // variable for the shader
 
 let img;
 let collor_pallete;
 var sorted_image;
 let palette;
 let palette_map;
+let myFont;
+let color_buffer;
+
+let ca_src = '';
 
 const imgFiles = [
   'img/234155.jpg',
@@ -72,18 +78,20 @@ const preview_frame = 30;
 
 function preload() {
   prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
-  
+  myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
+  ca_src = loadStrings('./cellular_automata_shader.frag');
 }
 
 function setup() {
-  createCanvas(artworkWidth, artworkHeight);
-  img.resize(workingImageWidth, workingImageHeight);
-  // colorMode(HSB, 360, 100, 100, 1);
-  // noLoop();
+  let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
   frameRate(desired_frame_rate);
-  pixelDensity(4);
+  canvas.pixelDensity(pixel_density);
   noSmooth();
+  
+  let tex = canvas.getTexture(img);
+  tex.setInterpolation(NEAREST, NEAREST);
+  textureWrap(CLAMP)
   
   scaleCanvasToFit(artworkWidth, artworkHeight);
 
@@ -91,15 +99,43 @@ function setup() {
   palette = extractCollorPaletteFromImage(img)
   palette_map = buildPaletteIndexDict(palette)
 
+  let color_buffer_otions = {
+    width: workingImageWidth,
+    height: workingImageHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  color_buffer = createFramebuffer(color_buffer_otions)
+
+  CaShader = createFilterShader(ca_src.join('\n'));
+
+  // Apply the loaded font
+  textFont(myFont);
+
+  color_buffer.begin();
+  tex.setInterpolation(NEAREST, NEAREST);
+  image(img, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  tex.setInterpolation(NEAREST, NEAREST);
+  color_buffer.end()
+  color_buffer.loadPixels()
   // Pixel Sort
   angle = noise(frameCount)*sort_noise_scale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
   for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    // img = sort_step(img)
-    img = sort_step_random(img, pixel_sort_iters_per_steps, noise_coordinates)
+    sort_step_random(color_buffer, pixel_sort_iters_per_steps, noise_coordinates)
+    color_buffer.updatePixels()
   }
 
   // Cellular automata
+  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
+  CaShader.setUniform('new_random_color_index', new_random_color_index);
+  CaShader.setUniform('palette', palette);
+  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
+
   for (let j=0;j < initial_cellular_automata_max_steps; j++) {
     img = cellular_automata(img)
     // console.log(j)
@@ -108,33 +144,32 @@ function setup() {
 }
 
 function draw() {
-
-  img.resize(workingImageWidth, workingImageHeight);
-
   // Pixel sorting
+  color_buffer.loadPixels()
   if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
     if (frameCount%noise_direction_change_rate==1){
       angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
     }
-    // console.log(angle)
     noise_coordinates = angleToCoordinates(angle, noise_radius);
-    // console.log(noise_coordinates)
-    img = sort_step_random(img, pixel_sort_iters_per_steps, direction=noise_coordinates)
+    sort_step_random(color_buffer, pixel_sort_iters_per_steps, direction=noise_coordinates)
     pixel_sort_step+=1
   }
+  color_buffer.updatePixels()
 
   // Cellular Automata
+  color_buffer.begin();
   if (cellular_automata_step < cellular_automata_max_steps || cellular_automata_max_steps ==-1) {
     if (frameCount%random_color_change_rate==1){
       new_random_color_index = Math.round(random(0,palette.length-1))
+      CaShader.setUniform('next_random_color', palette[new_random_color_index]);
     }
-    img = cellular_automata_multicolor_cicle(img, palette, new_random_color_index)
+    filter(CaShader)
     cellular_automata_step+=1
   }
+  color_buffer.end();
+
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
-  const scaleFactor = min(artworkWidth / img.width, artworkHeight / img.height);
-  image(img, 0, 0, img.width * scaleFactor, img.height * scaleFactor);
-  // image(img, 0,0)
+  image(color_buffer, 0-width/2, 0-height/2, width, height)
 
   if (showPallete){
     displayPalette(palette, palleteWidth, palleteHeight)
