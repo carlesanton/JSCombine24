@@ -11,7 +11,7 @@ const artwork_seed = -1; // -1 used for random seeds, if set to a positive integ
 const pixel_density = 1;
 
 // FPS parametters
-const desired_frame_rate = 10;
+const desired_frame_rate = 15;
 const showFPS = false;
 
 // Pallete display variables
@@ -24,7 +24,7 @@ const number_of_colors = 20;
 // Pixel sort variables
 let pixel_sort_step = 0
 let sort_noise_scale = 360
-let noise_direction_change_rate = 30;
+let noise_direction_change_rate = 45;
 const noise_radius = 1.5;
 let angle = -180;
 let noise_coordinates;
