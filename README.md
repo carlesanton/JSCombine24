@@ -105,6 +105,8 @@ From **[JSGenerativeArtTools repo](https://github.com/carlesanton/JSGenerativeAr
 [P5Js Library](https://p5js.org/es/download/)
 - `p5.min.js`
 
+[Lygia](https://lygia.xyz/) is a shader library providing functions as noise in shaders. Using `generative/random.glsl` methods with the `RANDOM_SINLESS` flag.
+
 [RgbQuant.js](https://github.com/leeoniya/RgbQuant.js/tree/master)
 
 # Experiments
