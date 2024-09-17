@@ -24,22 +24,24 @@ void main() {
   // the frame number parity to make it flip every frame, -1 is odd 1 is even
 	float fParity = mod(float(iFrame), 2.) * 2. - 1.;
   // we differentiate every 1/2 pixel on the horizontal axis, will be -1 or 1
-  float verticalParity = mod(floor(uv.x / texelSize.x), 2.0) * 2. - 1.;
-  float diagonalParity = mod(floor(uv.x / texelSize.x)+floor(uv.y / texelSize.y), 2.0) * 2. - 1.;
+  float verticalParity = mod(floor(uv.x / texelSize.x), 2.0) * 2. - 1.; // parity made columnwise
+  float diagonalParity = mod(floor(uv.x / texelSize.x)+floor(uv.y / texelSize.y), 2.0) * 2. - 1.; // partiy made by diagonals
 
-  float direction_multiplier = fParity * diagonalParity; // If sum of direction coordinates is odd then use diagonal parity
-  if (mod(direction.x+direction.y, 2.)==0.){ // If sum of direction coordinates is even then use vertical parity
+  float direction_multiplier = fParity * diagonalParity; // Use diagonal parity for all horizontal or vertical directions. These directions are determined by the sum of direction coordinates being odd
+  if (mod(direction.x+direction.y, 2.)==0.){ // Use vertical parity for all diagonal directons. Diagonal directions determined by the sum of direction coordinates being even
     direction_multiplier = fParity * verticalParity;
   }
 
-	vec2 dir = direction * texelSize.xy;
-  dir*= direction_multiplier;
+	vec2 dir = direction * texelSize.xy; // normalize the direction in relation to the pixel size
+  dir*= direction_multiplier; // switch the direction if we are in the even pixel when doing the odd pixel pass and viceversa
   dir.y*= -1.; // direction has to be corrected
-  vec2 uv_ = uv + dir;
+  vec2 uv_ = uv + dir; // position of the neighbour pixel taking into account the pass we are in
 
+  // Sample colors
   vec4 col = texture2D(tex0, uv);
   vec4 neighbour_color = texture2D(tex0, uv_);
 
+  // Get brightness using HSV space
   float gCurr = hsvbrightness(col.rgb);
   float gComp = hsvbrightness(neighbour_color.rgb);
 
@@ -51,6 +53,8 @@ void main() {
   else {
     noise_val = random(vec3(ceil(uv_.x/texelSize.x), ceil(uv_.y/texelSize.y),ceil(float(iFrame))));
   }
+
+  // Dont sort if the random value is lower than 1-sorting chance
   if(noise_val<=1.-SORTING_CHANCE){
     gl_FragColor = col;
     return;
