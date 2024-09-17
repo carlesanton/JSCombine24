@@ -49,6 +49,7 @@ let myFont;
 let color_buffer;
 
 let ca_src = '';
+let ps_src = '';
 
 const imgFiles = [
   'img/234155.jpg',
@@ -81,6 +82,7 @@ function preload() {
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
   ca_src = loadStrings('./cellular_automata_shader.frag');
+  ps_src = loadStrings('./pixel_sort_shader.frag');
 }
 
 function setup() {
