@@ -30,6 +30,7 @@ let angle = -180;
 let noise_coordinates;
 const pixel_sort_max_steps = -1;
 const initial_pixel_sort_max_steps = 50; //50
+const pixel_sorting_passes = 8;
 const pixel_sort_iters_per_steps = 150000;
 let PSShader; // variable for the shader
 
@@ -126,14 +127,19 @@ function setup() {
   image(img, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
-  color_buffer.loadPixels()
+
   // Pixel Sort
   angle = noise(frameCount)*sort_noise_scale;
   noise_coordinates = angleToCoordinates(angle, noise_radius);
+  color_buffer.begin();
+  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
   for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    sort_step_random(color_buffer, pixel_sort_iters_per_steps, noise_coordinates)
-    color_buffer.updatePixels()
+    for (let j = 0; j < pixel_sorting_passes; j++) {
+      PSShader.setUniform('iFrame', i * pixel_sorting_passes + j)
+      filter(PSShader)
+    }
   }
+  color_buffer.end()
 
   // Cellular automata
   CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
@@ -150,16 +156,20 @@ function setup() {
 
 function draw() {
   // Pixel sorting
-  color_buffer.loadPixels()
+  color_buffer.begin();
   if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
     if (frameCount%noise_direction_change_rate==1){
       angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
+      noise_coordinates = angleToCoordinates(angle, noise_radius);
+      PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
     }
-    noise_coordinates = angleToCoordinates(angle, noise_radius);
-    sort_step_random(color_buffer, pixel_sort_iters_per_steps, direction=noise_coordinates)
+    for (let i = 0; i < pixel_sorting_passes; i++) {
+      PSShader.setUniform('iFrame', (initial_pixel_sort_max_steps + pixel_sort_step) * pixel_sorting_passes + i)
+      filter(PSShader)
+    }
     pixel_sort_step+=1
   }
-  color_buffer.updatePixels()
+  color_buffer.end()
 
   // Cellular Automata
   color_buffer.begin();
