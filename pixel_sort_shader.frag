@@ -45,7 +45,6 @@ void main() {
 
   // Check if we should be sorting this pixel based on the random value of the "original" pixel
   float noise_val = 1.0;
-  vec4 output_color = col;
   if (direction_multiplier >= 0.0){ // we are in the swapping pixel, we should check the noise value at the origin pixel
     noise_val = random(vec3(ceil(uv.x/texelSize.x), ceil(uv.y/texelSize.y),ceil(float(iFrame))));
   }
@@ -64,6 +63,7 @@ void main() {
   }
 
   // We use the direction_multiplier to know if we are in the pixel that needs to be sorted or its neighbour
+  vec4 output_color = col;
   if (direction_multiplier > 0.0) { // if we are in the pixel we should be sorting
     if (gComp > THRESHOLD && gCurr < gComp) {
       output_color = neighbour_color;
