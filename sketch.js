@@ -114,6 +114,7 @@ function setup() {
   color_buffer = createFramebuffer(color_buffer_otions)
 
   CaShader = createFilterShader(ca_src.join('\n'));
+  ps_src = resolveLygia(ps_src.join('\n'));
 
   // Apply the loaded font
   textFont(myFont);
