@@ -60,6 +60,22 @@ const imgFiles = [
 ]
 ```
 
+# Pixel Sorting
+
+Sorting in fragment shader is done by implementing the _Odd-even transposition_ algorithm as described in [this link](https://ciphrd.com/2020/04/08/pixel-sorting-on-shader-using-well-crafted-sorting-filters-glsl/)
+
+In order to don't make the algorithm to _stiff_ looking the odd-even parity used was vertical (one column is considered even in one pass and odd in the next one) for all diagonal directions  and diagonal (each diagonal is considered even in one pass and odd in the next one) for all the vertical and horizontal directions. Implemented in `lin31-33`.
+
+To better imitate the behaviour of the CPU algorithm removed in [PR4](https://github.com/carlesanton/JSCombine24/pull/4) and give a more natural look to the process Lygia `random` function is used to determine if a pixel and its pair need to be sorted or not, determined by the `SORTING_CHANCE` variable.
+
+In the selection of the random value the function must be sampled at the position of the _original_ pixel if we are in the swaping one, in order to do this with more accuracy and avoid any precision or rounding issues the coordinates of the pixel are divided by the texel (pixel) size to get a number between 0-Image Size and then rounded up to the closest integer.
+Despite the efforts to sample the random function of the correct value the variable `RANDOM_SINLESS` was set in order to use a `random` function that does not use a sine function to create the random number. In experiments it was tested that it gave worse results in the sorting process since I was unable to make to consistently sample the right value at the right pixel, resulting in a wrong sort with long stripes of repeated colors due to the fact that the probability of sorting/not sorting was not the same for both pixels of the odd-even pair.
+
+The sorting of the pixels is based on the HSV value to replicate the p5js `brightness` method.
+
+Threshold to not sort pixels based on a brightness threshold with variable `THRESHOLD`.
+
+
 # Arguments:
 
 ## Artwork Dimensions Variables
@@ -104,6 +120,8 @@ From **[JSGenerativeArtTools repo](https://github.com/carlesanton/JSGenerativeAr
 
 [P5Js Library](https://p5js.org/es/download/)
 - `p5.min.js`
+
+[Lygia](https://lygia.xyz/) is a shader library providing functions as noise in shaders. Using `generative/random.glsl` methods with the `RANDOM_SINLESS` flag.
 
 [RgbQuant.js](https://github.com/leeoniya/RgbQuant.js/tree/master)
 
