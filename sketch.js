@@ -31,6 +31,7 @@ let noise_coordinates;
 const pixel_sort_max_steps = -1;
 const initial_pixel_sort_max_steps = 50; //50
 const pixel_sort_iters_per_steps = 150000;
+let PSShader; // variable for the shader
 
 // Cellular automata variables
 let cellular_automata_step = 0
@@ -115,6 +116,7 @@ function setup() {
 
   CaShader = createFilterShader(ca_src.join('\n'));
   ps_src = resolveLygia(ps_src.join('\n'));
+  PSShader = createFilterShader(ps_src);
 
   // Apply the loaded font
   textFont(myFont);
