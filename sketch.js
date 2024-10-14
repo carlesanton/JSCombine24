@@ -53,6 +53,8 @@ let color_buffer;
 let ca_src = '';
 let ps_src = '';
 
+const images_keys_path = ['multimedia', [0], 'jpg', '1000']
+const json_filter = {'keys': ['category', 'categoryId'], 'value': 'artwork'}
 const imgFiles = [
   'img/234155.jpg',
   'img/244273.jpg',
@@ -85,9 +87,11 @@ function preload() {
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
   ca_src = loadStrings('./cellular_automata_shader.frag');
   ps_src = loadStrings('./pixel_sort_shader.frag');
+  combine_24_json = loadJSON('./Combine24objects.json');
 }
 
 function setup() {
+  combine_24_images = parseAndFilterDictArray(combine_24_json['items'], images_keys_path, json_filter);
   let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
   frameRate(desired_frame_rate);
   canvas.pixelDensity(pixel_density);
