@@ -7,7 +7,14 @@ const artworkWidth = 1000;
 const artworkHeight = 1000;
 const workingImageWidth = 250;
 const workingImageHeight = 250;
-const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 3617656; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 2443839; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 9648387; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 7211379; // -1 used for random seeds, if set to a positive integer the number is used
+const artwork_seed = 2479674; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 8449710; // -1 used for random seeds, if set to a positive integer the number is used
+// const artwork_seed = 5667521; // -1 used for random seeds, if set to a positive integer the number is used
 const pixel_density = 1;
 
 // FPS parametters
@@ -53,6 +60,19 @@ let color_buffer;
 let ca_src = '';
 let ps_src = '';
 
+const images_keys_path = ['multimedia', [0], 'jpg', '1000']
+const json_filter = {'keys': ['category', 'categoryId'], 'value': 'artwork'}
+let test_image_url = ''
+var img_from_url;
+// test_image_url = 'https://freedomtoteach.collins.co.uk/wp-content/uploads/sites/87/2023/03/shutterstock_397626016-1-scaled.jpg'
+// test_image_url = 'https://freedomtoteach.collins.co.uk/wp-content/uploads/sites/87/2023/03/shutterstock_397626016-1-scaled.jpg?not-from-cache-please'
+// test_image_url = 'https://assets.editor.p5js.org/5d7f7f6d9e2c56001eb58735/29fa94dc-40c1-4ee7-a2c0-f386bc748b07.png'
+// test_image_url = 'https://d3uvo7vkyyb63c.cloudfront.net/1/jpg/1000/323825.jpg'
+// test_image_url = 'https://d3uvo7vkyyb63c.cloudfront.net/1/jpg/1000/273852.jpg'
+test_image_url = "https://d3uvo7vkyyb63c.cloudfront.net/1/jpg/1000/1653604.jpg"
+// test_image_url = "https://cors-anywhere.herokuapp.com/https://d3uvo7vkyyb63c.cloudfront.net/1/jpg/1000/1653604.jpg"
+// test_image_url = "https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"
+// test_image_url = "https://spoonacular.com/recipeImages/604524-556x370.jpg"
 const imgFiles = [
   'img/234155.jpg',
   'img/244273.jpg',
@@ -74,7 +94,8 @@ const imgFiles = [
   'img/2669108.jpg',
   'img/3307280.jpg',
   'img/3489753.jpg',
-  'img/3526787.jpg'
+  'img/3526787.jpg',
+  'img/test/test.png'
 ]
 
 const preview_frame = 30;
@@ -82,12 +103,25 @@ const preview_frame = 30;
 function preload() {
   prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
-  img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
+  img = loadImage(imgFiles[floor(random(1000000000) % imgFiles.length)])
   ca_src = loadStrings('./cellular_automata_shader.frag');
   ps_src = loadStrings('./pixel_sort_shader.frag');
+  combine_24_json = loadJSON('./Combine24objects.json');
 }
 
 function setup() {
+  // Parse Combine24 JS
+  combine_24_images = parseAndFilterDictArray(combine_24_json['items'], images_keys_path, json_filter);
+  // Download and load random image from the list
+  img_from_url = createImg(test_image_url);
+  // var img_from_url_ = download_image('https://cors-anywhere.herokuapp.com/'+test_image_url);
+  img_from_url.hide()
+  // var img_from_url = loadImage(test_image_url);
+  // var img_from_url = startDownload();
+  // var img_from_url = createImg(test_image_url);
+  let tmp_canvas = document.getElementById('downloadedImage');
+  console.log('tmp_canvas', tmp_canvas)
+
   let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
   frameRate(desired_frame_rate);
   canvas.pixelDensity(pixel_density);
