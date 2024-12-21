@@ -148,66 +148,12 @@ function setup() {
 
   canvas.pixelDensity(pixel_density);
   noSmooth();
-  
-  let tex = canvas.getTexture(img);
-  tex.setInterpolation(NEAREST, NEAREST);
-  textureWrap(CLAMP)
-  
-  scaleCanvasToFit(artworkWidth, artworkHeight);
-
-  img = colorQuantize(img, number_of_colors, get_pallete=true)
-  palette = extractCollorPaletteFromImage(img)
-  palette_map = buildPaletteIndexDict(palette)
-
-  let color_buffer_otions = {
-    width: workingImageWidth,
-    height: workingImageHeight,
-    textureFiltering: NEAREST,
-    antialias: false,
-    desity: 1,
-    format: UNSIGNED_BYTE,
-    depth: false,
-    channels: RGBA,
-  }
-  color_buffer = createFramebuffer(color_buffer_otions)
 
   CaShader = createFilterShader(ca_src.join('\n'));
   ps_src = resolveLygia(ps_src.join('\n'));
   PSShader = createFilterShader(ps_src);
 
-  // Apply the loaded font
-  textFont(myFont);
-
-  color_buffer.begin();
-  tex.setInterpolation(NEAREST, NEAREST);
-  image(img, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
-  tex.setInterpolation(NEAREST, NEAREST);
-  color_buffer.end()
-
-  // Pixel Sort
-  angle = noise(frameCount)*sort_noise_scale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  color_buffer.begin();
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    for (let j = 0; j < pixel_sorting_passes; j++) {
-      PSShader.setUniform('iFrame', i * pixel_sorting_passes + j)
-      filter(PSShader)
-    }
-  }
-  color_buffer.end()
-
-  // Cellular automata
-  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
-  CaShader.setUniform('new_random_color_index', new_random_color_index);
-  CaShader.setUniform('palette', palette);
-  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
-
-  for (let j=0;j < initial_cellular_automata_max_steps; j++) {
-    img = cellular_automata(img)
-    // console.log(j)
-  }
-
+  initializeCanvas(img)
 }
 
 function draw() {
@@ -250,6 +196,65 @@ function draw() {
     fps = calculateFPS(millis());
     displayFPS(fps);
   }
+}
+
+function initializeCanvas(input_image){
+  workingImageHeight = artworkHeight/pixelSize
+  workingImageWidth = artworkWidth/pixelSize
+
+  let color_buffer_otions = {
+    width: workingImageWidth,
+    height: workingImageHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  color_buffer = createFramebuffer(color_buffer_otions)
+
+  // Apply the loaded font
+  textFont(myFont);
+
+  let tex = canvas.getTexture(input_image);
+  tex.setInterpolation(NEAREST, NEAREST);
+  textureWrap(CLAMP)
+  
+  input_image = colorQuantize(input_image, number_of_colors, get_pallete=true)
+  palette = extractCollorPaletteFromImage(input_image)
+  palette_map = buildPaletteIndexDict(palette)
+
+  color_buffer.begin();
+  tex.setInterpolation(NEAREST, NEAREST);
+  image(input_image, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  tex.setInterpolation(NEAREST, NEAREST);
+  color_buffer.end()
+
+  // Pixel Sort
+  angle = noise(frameCount)*sortNoiseScale;
+  noise_coordinates = angleToCoordinates(angle, noise_radius);
+  color_buffer.begin();
+  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  for (let i=0;i < PixelSortInitialSteps; i++) {
+    for (let j = 0; j < pixelSortingPassesPerFrame; j++) {
+      PSShader.setUniform('iFrame', i * pixelSortingPassesPerFrame + j)
+      filter(PSShader)
+    }
+  }
+  color_buffer.end()
+
+  // Cellular automata
+  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
+  CaShader.setUniform('new_random_color_index', new_random_color_index);
+  CaShader.setUniform('palette', palette);
+  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
+
+  for (let j=0;j < CellularAutomataInitialSteps; j++) {
+    input_image = cellular_automata(input_image)
+    // console.log(j)
+  }
+
 }
 
 function windowResized() {
