@@ -3,15 +3,68 @@
 // Note that if the size is too small it will look blurry on bigger screens, that is why
 // we set "pixelDensity(4)" in this example (400x400 is pretty small).
 // If you target size is bigger you can reduce that value. e.g. "pixelDensity(2)".
-const artworkWidth = 1000;
-const artworkHeight = 1000;
-const workingImageWidth = 250;
-const workingImageHeight = 250;
-const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+// Inputs
+// Main
+let artworkWidthInput;
+let artworkHeightInput;
+let artworkSeedInput;
+let currentSeedText;
+let pixelSizeInput;
+let FPSInput;
+// Pixel Sorting
+let sortNoiseScaleInput;
+let noiseDirectionChangeRateInput;
+let pixelSortMaxStepsInput;
+let initialPixelSortMaxStepsInput;
+let pixelSortingPassesInput;
+// Cellular Automata
+let CARandomColorChangeRateInput;
+let CAMaxStepsInput;
+let initialCellularAutomataMaxStepsInput;
+
+// Defaults
+// Main
+const defaultArtworkWidth = 1280;
+const defaultArtworkHeight = 720;
+const defaultArtworkSeed = -1;
+const defaultPixelSize = 4;
+const defaultFPS = 15;
+// Pixel Sorting
+const defaultSortNoiseScale = 360
+const defaultNoiseDirectionChangeRate = 45;
+const defaultPixelSortMaxSteps = -1;
+const defaultPixelSortInitialSteps = 50; //50
+const defaultPixelSortingPasses = 8;
+// Cellular Automata
+const defaultRandomColorChangeRate = 3;
+const defaultCAMaxSteps = -1;
+const defaultCellularAutomataInitialSteps = 0;
+
+// Variables
+// Main
+let artworkWidth;
+let artworkHeight;
+let workingImageWidth;
+let workingImageHeight;
+let pixelSize;
+let fps;
+let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
+// Pixel Sorting
+let sortNoiseScale;
+let noiseDirectionChangeRate;
+let pixelSortMaxSteps;
+let PixelSortInitialSteps;
+let pixelSortingPassesPerFrame;
+// Cellular Automata
+let CARandomColorChangeRate;
+let CAMaxSteps;
+let initialCellularAutomataMaxSteps;
+
+
 const pixel_density = 1;
+let canvas;
 
 // FPS parametters
-const desired_frame_rate = 15;
 const showFPS = false;
 
 // Pallete display variables
@@ -23,23 +76,14 @@ const number_of_colors = 20;
 
 // Pixel sort variables
 let pixel_sort_step = 0
-let sort_noise_scale = 360
-let noise_direction_change_rate = 45;
 const noise_radius = 1.5;
 let angle = -180;
 let noise_coordinates;
-const pixel_sort_max_steps = -1;
-const initial_pixel_sort_max_steps = 50; //50
-const pixel_sorting_passes = 8;
-const pixel_sort_iters_per_steps = 150000;
 let PSShader; // variable for the shader
 
 // Cellular automata variables
 let cellular_automata_step = 0
-let random_color_change_rate = 3;
 let new_random_color_index=0;
-const cellular_automata_max_steps = -1;
-const initial_cellular_automata_max_steps = 0;
 let CaShader; // variable for the shader
 
 let img;
@@ -80,7 +124,7 @@ const imgFiles = [
 const preview_frame = 30;
 
 function preload() {
-  prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
+  artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
   ca_src = loadStrings('./cellular_automata_shader.frag');
@@ -88,8 +132,20 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
-  frameRate(desired_frame_rate);
+  // Set Defaults
+  artworkWidth = defaultArtworkWidth
+  artworkHeight = defaultArtworkHeight
+  pixelSize = defaultPixelSize
+  fps = defaultFPS
+  sortNoiseScale = defaultSortNoiseScale
+  noiseDirectionChangeRate = defaultNoiseDirectionChangeRate
+  pixelSortMaxSteps = defaultPixelSortMaxSteps
+  PixelSortInitialSteps = defaultPixelSortInitialSteps
+  pixelSortingPassesPerFrame = defaultPixelSortingPasses
+  CARandomColorChangeRate = defaultRandomColorChangeRate
+  CAMaxSteps = defaultCAMaxSteps
+  CellularAutomataInitialSteps = defaultCellularAutomataInitialSteps
+
   canvas.pixelDensity(pixel_density);
   noSmooth();
   
