@@ -258,5 +258,5 @@ function initializeCanvas(input_image){
 }
 
 function windowResized() {
-  scaleCanvasToFit(artworkWidth, artworkHeight);
+  scaleCanvasToFit(artworkHeight, artworkWidth);
 }
