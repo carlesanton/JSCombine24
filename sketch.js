@@ -159,14 +159,14 @@ function setup() {
 function draw() {
   // Pixel sorting
   color_buffer.begin();
-  if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
-    if (frameCount%noise_direction_change_rate==1){
-      angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
+  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
+    if (frameCount%noiseDirectionChangeRate==1){
+      angle = noise(frameCount/noiseDirectionChangeRate)*sortNoiseScale;
       noise_coordinates = angleToCoordinates(angle, noise_radius);
       PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
     }
-    for (let i = 0; i < pixel_sorting_passes; i++) {
-      PSShader.setUniform('iFrame', (initial_pixel_sort_max_steps + pixel_sort_step) * pixel_sorting_passes + i)
+    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
+      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
       filter(PSShader)
     }
     pixel_sort_step+=1
@@ -175,8 +175,8 @@ function draw() {
 
   // Cellular Automata
   color_buffer.begin();
-  if (cellular_automata_step < cellular_automata_max_steps || cellular_automata_max_steps ==-1) {
-    if (frameCount%random_color_change_rate==1){
+  if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
+    if (frameCount%CARandomColorChangeRate==1){
       new_random_color_index = Math.round(random(0,palette.length-1))
       CaShader.setUniform('next_random_color', palette[new_random_color_index]);
     }
