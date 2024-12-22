@@ -1,5 +1,5 @@
 import {create_number_input_text, create_expandable_card, create_button, create_card} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed} from './sketch.js'
+import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
@@ -17,7 +17,7 @@ function createArtworkSettingsCard() {
     const seed = create_number_input_text('artworkSeed', 'Artwork Seed', defaultArtworkSeed, '-1', '99999999');
     elements_dict['artworkSeed'] = seed.getElementsByTagName('input')[0];
 
-    const seedButton = create_button('Set Seed', 'setSeed()','Current Seed:')
+    const seedButton = create_button('Set Seed', () => { setSeed(); },'Current Seed:')
     elements_dict['currentSeed'] = seedButton.getElementsByTagName('text')[0];
 
     const width = create_number_input_text('artworkWidth', 'Artwork Width', defaultArtworkWidth,'100', '4000');
@@ -52,8 +52,8 @@ function createArtworkControlsCard() {
     const cardBody = card.getElementsByClassName('card-body')[0]
 
     // Add Buttons
-    const applyChangesButton = create_button('Apply Changes', 'applyUIChanges()');
-    const saveFrameButton = create_button('Save Current Frame', 'saveImage()');
+    const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
+    const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
 
     cardBody.appendChild(applyChangesButton);
     cardBody.appendChild(document.createElement('br'));
