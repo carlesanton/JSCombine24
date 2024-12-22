@@ -152,7 +152,6 @@ function setup() {
   CAInputs = toolbar_elements.caInputs;
   
   canvas.pixelDensity(pixel_density);
-  noSmooth();
 
   CaShader = createFilterShader(ca_src.join('\n'));
   ps_src = resolveLygia(ps_src.join('\n'));
