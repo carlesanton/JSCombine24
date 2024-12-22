@@ -302,3 +302,16 @@ function updateArtworkSettings() {
   CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
 }
 
+function updateArtworkSeed(){
+  artwork_seed = parseInt(MainInputs['artworkSeed'].value);
+  artwork_seed = prepareP5Js(artwork_seed)
+
+  // Set Current Seed text to current seed
+  MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
+
+  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+  console.log('image_path',image_path)
+  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+}
+
+
