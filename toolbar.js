@@ -1,4 +1,7 @@
 import {create_number_input_text, create_expandable_card, create_button, create_card} from './lib/JSGenerativeArtTools/ui.js'
+import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed} from './sketch.js'
+import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
+import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
 function createArtworkSettingsCard() {
     var elements_dict = {};
