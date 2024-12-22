@@ -146,6 +146,11 @@ function setup() {
   CAMaxSteps = defaultCAMaxSteps
   CellularAutomataInitialSteps = defaultCellularAutomataInitialSteps
 
+  var toolbar_elements = intialize_toolbar();
+  MainInputs = toolbar_elements.mainInputs;
+  PSInputs = toolbar_elements.psInputs;
+  CAInputs = toolbar_elements.caInputs;
+  
   canvas.pixelDensity(pixel_density);
   noSmooth();
 
