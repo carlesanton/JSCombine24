@@ -8,22 +8,22 @@ function createArtworkSettingsCard() {
     const cardBody = card.getElementsByClassName('card-body')[0]
 
     // Add Inputs
-    const fps = create_number_input_text('FPS', 'FPS');
+    const fps = create_number_input_text('FPS', 'FPS', defaultFPS, '0', '300');
     elements_dict['FPS'] = fps.getElementsByTagName('input')[0];
 
-    const seed = create_number_input_text('artworkSeed', 'Artwork Seed', '-1', '99999999');
+    const seed = create_number_input_text('artworkSeed', 'Artwork Seed', defaultArtworkSeed, '-1', '99999999');
     elements_dict['artworkSeed'] = seed.getElementsByTagName('input')[0];
 
     const seedButton = create_button('Set Seed', 'setSeed()','Current Seed:')
     elements_dict['currentSeed'] = seedButton.getElementsByTagName('text')[0];
 
-    const width = create_number_input_text('artworkWidth', 'Artwork Width', '100', '4000');
+    const width = create_number_input_text('artworkWidth', 'Artwork Width', defaultArtworkWidth,'100', '4000');
     elements_dict['artworkWidth'] = width.getElementsByTagName('input')[0];
 
-    const height = create_number_input_text('artworkHeight', 'Artwork Height', '100', '4000');
+    const height = create_number_input_text('artworkHeight', 'Artwork Height', defaultArtworkHeight,'100', '4000');
     elements_dict['artworkHeight'] = height.getElementsByTagName('input')[0];
 
-    const pixelSize = create_number_input_text('pixelSize', 'Pixel Size', '1', '4000');
+    const pixelSize = create_number_input_text('pixelSize', 'Pixel Size', defaultPixelSize,'1', '4000');
     elements_dict['pixelSize'] = pixelSize.getElementsByTagName('input')[0];
 
     cardBody.appendChild(fps);
