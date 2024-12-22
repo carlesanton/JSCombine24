@@ -268,7 +268,6 @@ export function applyUIChanges(){
 
 function updateArtworkSettings() {
   fps = parseInt(MainInputs['FPS'].value);
-  artwork_seed = parseInt(MainInputs['artworkSeed'].value);
   artworkWidth = parseInt(MainInputs['artworkWidth'].value);
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
