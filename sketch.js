@@ -132,25 +132,12 @@ function preload() {
 }
 
 function setup() {
-  // Set Defaults
-  artworkWidth = defaultArtworkWidth
-  artworkHeight = defaultArtworkHeight
-  pixelSize = defaultPixelSize
-  fps = defaultFPS
-  sortNoiseScale = defaultSortNoiseScale
-  noiseDirectionChangeRate = defaultNoiseDirectionChangeRate
-  pixelSortMaxSteps = defaultPixelSortMaxSteps
-  PixelSortInitialSteps = defaultPixelSortInitialSteps
-  pixelSortingPassesPerFrame = defaultPixelSortingPasses
-  CARandomColorChangeRate = defaultRandomColorChangeRate
-  CAMaxSteps = defaultCAMaxSteps
-  CellularAutomataInitialSteps = defaultCellularAutomataInitialSteps
-
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
   PSInputs = toolbar_elements.psInputs;
   CAInputs = toolbar_elements.caInputs;
   
+  updateArtworkSettings()
 
   // Create Canvas
   canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
