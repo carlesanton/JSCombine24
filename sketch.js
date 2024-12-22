@@ -265,3 +265,23 @@ function initializeCanvas(input_image){
 function windowResized() {
   scaleCanvasToFit(artworkHeight, artworkWidth);
 }
+
+function updateArtworkSettings() {
+  fps = parseInt(MainInputs['FPS'].value);
+  artwork_seed = parseInt(MainInputs['artworkSeed'].value);
+  artworkWidth = parseInt(MainInputs['artworkWidth'].value);
+  artworkHeight = parseInt(MainInputs['artworkHeight'].value);
+  pixelSize = parseInt(MainInputs['pixelSize'].value);
+
+  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
+  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
+  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
+  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
+  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
+  
+  
+  CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
+  CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+  CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
+}
+
