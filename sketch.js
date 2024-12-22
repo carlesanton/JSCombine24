@@ -1,3 +1,9 @@
+import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
+import {angleToCoordinates} from './lib/JSGenerativeArtTools/pixel_sort.js';
+import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
+import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
+import {intialize_toolbar} from './toolbar.js';
+
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
 // Note that if the size is too small it will look blurry on bigger screens, that is why
@@ -27,7 +33,7 @@ let workingImageWidth;
 let workingImageHeight;
 let pixelSize;
 let fps;
-let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
+export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
 // Pixel Sorting
 let sortNoiseScale;
 let noiseDirectionChangeRate;
@@ -200,7 +206,7 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   textureWrap(CLAMP)
   
-  input_image = colorQuantize(input_image, number_of_colors, get_pallete=true)
+  input_image = colorQuantize(input_image, number_of_colors)
   palette = extractCollorPaletteFromImage(input_image)
   palette_map = buildPaletteIndexDict(palette)
 
@@ -233,7 +239,7 @@ function initializeCanvas(input_image){
     input_image = cellular_automata(input_image)
     // console.log(j)
   }
-  scaleCanvasToFit(artworkHeight, artworkWidth);
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
 }
 
@@ -324,3 +330,6 @@ function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
+window.preload = preload
+window.setup = setup
+window.draw = draw
