@@ -1,3 +1,9 @@
+import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
+import {angleToCoordinates} from './lib/JSGenerativeArtTools/pixel_sort.js';
+import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
+import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
+import {intialize_toolbar} from './toolbar.js';
+
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
 // Note that if the size is too small it will look blurry on bigger screens, that is why
