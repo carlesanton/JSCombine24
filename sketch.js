@@ -263,6 +263,8 @@ function initializeCanvas(input_image){
 }
 
 function windowResized() {
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+}
 
 function applyUIChanges(){
   updateArtworkSettings();
