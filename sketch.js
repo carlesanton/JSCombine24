@@ -152,6 +152,12 @@ function setup() {
   CAInputs = toolbar_elements.caInputs;
   
 
+  // Create Canvas
+  canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
+
+  // Move Canvas to canvas-wrapper div
+  canvas.parent("canvas-wrapper")
+
   // Set FrameRate and pixelDensity
   frameRate(fps);
   canvas.pixelDensity(pixel_density);
