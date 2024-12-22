@@ -247,7 +247,7 @@ function windowResized() {
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 }
 
-function applyUIChanges(){
+export function applyUIChanges(){
   updateArtworkSettings();
 
   frameRate(fps);
@@ -297,7 +297,7 @@ function updateArtworkSeed(){
   loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
-function setSeed(){
+export function setSeed(){
   // Set input seed to current seed
   MainInputs['artworkSeed'].value = artwork_seed;
   // Set Current Seed text to current seed
@@ -309,7 +309,7 @@ function setSeed(){
   loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
-function saveImage() {
+export function saveImage() {
   let color_buffer_otions = {
     width: artworkWidth,
     height: artworkHeight,
