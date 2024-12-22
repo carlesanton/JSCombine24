@@ -58,7 +58,7 @@ let pixelSortingPassesPerFrame;
 // Cellular Automata
 let CARandomColorChangeRate;
 let CAMaxSteps;
-let initialCellularAutomataMaxSteps;
+let CellularAutomataInitialSteps;
 
 
 const pixel_density = 1;
