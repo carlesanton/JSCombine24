@@ -151,6 +151,9 @@ function setup() {
   PSInputs = toolbar_elements.psInputs;
   CAInputs = toolbar_elements.caInputs;
   
+
+  // Set FrameRate and pixelDensity
+  frameRate(fps);
   canvas.pixelDensity(pixel_density);
 
   CaShader = createFilterShader(ca_src.join('\n'));
