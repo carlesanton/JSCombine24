@@ -1,17 +1,55 @@
+import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
+import {angleToCoordinates} from './lib/JSGenerativeArtTools/pixel_sort.js';
+import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
+import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
+import {intialize_toolbar} from './toolbar.js';
+
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
 // Note that if the size is too small it will look blurry on bigger screens, that is why
 // we set "pixelDensity(4)" in this example (400x400 is pretty small).
 // If you target size is bigger you can reduce that value. e.g. "pixelDensity(2)".
-const artworkWidth = 1000;
-const artworkHeight = 1000;
-const workingImageWidth = 250;
-const workingImageHeight = 250;
-const artwork_seed = -1; // -1 used for random seeds, if set to a positive integer the number is used
+// Inputs
+// Main
+let MainInputs
+// Pixel Sorting
+let PSInputs;
+// Cellular Automata
+let CAInputs;
+
+// Defaults
+// Main
+export const defaultArtworkWidth = 1280;
+export const defaultArtworkHeight = 720;
+export const defaultArtworkSeed = -1;
+export const defaultPixelSize = 4;
+export const defaultFPS = 15;
+
+// Variables
+// Main
+let artworkWidth;
+let artworkHeight;
+let workingImageWidth;
+let workingImageHeight;
+let pixelSize;
+let fps;
+export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
+// Pixel Sorting
+let sortNoiseScale;
+let noiseDirectionChangeRate;
+let pixelSortMaxSteps;
+let PixelSortInitialSteps;
+let pixelSortingPassesPerFrame;
+// Cellular Automata
+let CARandomColorChangeRate;
+let CAMaxSteps;
+let CellularAutomataInitialSteps;
+
+
 const pixel_density = 1;
+let canvas;
 
 // FPS parametters
-const desired_frame_rate = 15;
 const showFPS = false;
 
 // Pallete display variables
@@ -23,23 +61,14 @@ const number_of_colors = 20;
 
 // Pixel sort variables
 let pixel_sort_step = 0
-let sort_noise_scale = 360
-let noise_direction_change_rate = 45;
 const noise_radius = 1.5;
 let angle = -180;
 let noise_coordinates;
-const pixel_sort_max_steps = -1;
-const initial_pixel_sort_max_steps = 50; //50
-const pixel_sorting_passes = 8;
-const pixel_sort_iters_per_steps = 150000;
 let PSShader; // variable for the shader
 
 // Cellular automata variables
 let cellular_automata_step = 0
-let random_color_change_rate = 3;
 let new_random_color_index=0;
-const cellular_automata_max_steps = -1;
-const initial_cellular_automata_max_steps = 0;
 let CaShader; // variable for the shader
 
 let img;
@@ -80,7 +109,7 @@ const imgFiles = [
 const preview_frame = 30;
 
 function preload() {
-  prepareP5Js(artwork_seed); // Order is important! First setup randomness then prepare the token
+  artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
   img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
   ca_src = loadStrings('./cellular_automata_shader.frag');
@@ -88,83 +117,41 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
-  frameRate(desired_frame_rate);
+  var toolbar_elements = intialize_toolbar();
+  MainInputs = toolbar_elements.mainInputs;
+  PSInputs = toolbar_elements.psInputs;
+  CAInputs = toolbar_elements.caInputs;
+  
+  updateArtworkSettings()
+
+  // Create Canvas
+  canvas = createCanvas(artworkWidth, artworkHeight, WEBGL);
+
+  // Move Canvas to canvas-wrapper div
+  canvas.parent("canvas-wrapper")
+
+  // Set FrameRate and pixelDensity
+  frameRate(fps);
   canvas.pixelDensity(pixel_density);
-  noSmooth();
-  
-  let tex = canvas.getTexture(img);
-  tex.setInterpolation(NEAREST, NEAREST);
-  textureWrap(CLAMP)
-  
-  scaleCanvasToFit(artworkWidth, artworkHeight);
-
-  img = colorQuantize(img, number_of_colors, get_pallete=true)
-  palette = extractCollorPaletteFromImage(img)
-  palette_map = buildPaletteIndexDict(palette)
-
-  let color_buffer_otions = {
-    width: workingImageWidth,
-    height: workingImageHeight,
-    textureFiltering: NEAREST,
-    antialias: false,
-    desity: 1,
-    format: UNSIGNED_BYTE,
-    depth: false,
-    channels: RGBA,
-  }
-  color_buffer = createFramebuffer(color_buffer_otions)
 
   CaShader = createFilterShader(ca_src.join('\n'));
   ps_src = resolveLygia(ps_src.join('\n'));
   PSShader = createFilterShader(ps_src);
 
-  // Apply the loaded font
-  textFont(myFont);
-
-  color_buffer.begin();
-  tex.setInterpolation(NEAREST, NEAREST);
-  image(img, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
-  tex.setInterpolation(NEAREST, NEAREST);
-  color_buffer.end()
-
-  // Pixel Sort
-  angle = noise(frameCount)*sort_noise_scale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  color_buffer.begin();
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  for (let i=0;i < initial_pixel_sort_max_steps; i++) {
-    for (let j = 0; j < pixel_sorting_passes; j++) {
-      PSShader.setUniform('iFrame', i * pixel_sorting_passes + j)
-      filter(PSShader)
-    }
-  }
-  color_buffer.end()
-
-  // Cellular automata
-  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
-  CaShader.setUniform('new_random_color_index', new_random_color_index);
-  CaShader.setUniform('palette', palette);
-  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
-
-  for (let j=0;j < initial_cellular_automata_max_steps; j++) {
-    img = cellular_automata(img)
-    // console.log(j)
-  }
-
+  initializeCanvas(img)
 }
 
 function draw() {
   // Pixel sorting
   color_buffer.begin();
-  if (pixel_sort_step < pixel_sort_max_steps || pixel_sort_max_steps == -1) {
-    if (frameCount%noise_direction_change_rate==1){
-      angle = noise(frameCount/noise_direction_change_rate)*sort_noise_scale;
+  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
+    if (frameCount%noiseDirectionChangeRate==1){
+      angle = noise(frameCount/noiseDirectionChangeRate)*sortNoiseScale;
       noise_coordinates = angleToCoordinates(angle, noise_radius);
       PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
     }
-    for (let i = 0; i < pixel_sorting_passes; i++) {
-      PSShader.setUniform('iFrame', (initial_pixel_sort_max_steps + pixel_sort_step) * pixel_sorting_passes + i)
+    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
+      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
       filter(PSShader)
     }
     pixel_sort_step+=1
@@ -173,8 +160,8 @@ function draw() {
 
   // Cellular Automata
   color_buffer.begin();
-  if (cellular_automata_step < cellular_automata_max_steps || cellular_automata_max_steps ==-1) {
-    if (frameCount%random_color_change_rate==1){
+  if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
+    if (frameCount%CARandomColorChangeRate==1){
       new_random_color_index = Math.round(random(0,palette.length-1))
       CaShader.setUniform('next_random_color', palette[new_random_color_index]);
     }
@@ -196,6 +183,153 @@ function draw() {
   }
 }
 
-function windowResized() {
-  scaleCanvasToFit(artworkWidth, artworkHeight);
+function initializeCanvas(input_image){
+  workingImageHeight = artworkHeight/pixelSize
+  workingImageWidth = artworkWidth/pixelSize
+
+  let color_buffer_otions = {
+    width: workingImageWidth,
+    height: workingImageHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  color_buffer = createFramebuffer(color_buffer_otions)
+
+  // Apply the loaded font
+  textFont(myFont);
+
+  let tex = canvas.getTexture(input_image);
+  tex.setInterpolation(NEAREST, NEAREST);
+  textureWrap(CLAMP)
+  
+  input_image = colorQuantize(input_image, number_of_colors)
+  palette = extractCollorPaletteFromImage(input_image)
+  palette_map = buildPaletteIndexDict(palette)
+
+  color_buffer.begin();
+  tex.setInterpolation(NEAREST, NEAREST);
+  image(input_image, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  tex.setInterpolation(NEAREST, NEAREST);
+  color_buffer.end()
+
+  // Pixel Sort
+  angle = noise(frameCount)*sortNoiseScale;
+  noise_coordinates = angleToCoordinates(angle, noise_radius);
+  color_buffer.begin();
+  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
+  for (let i=0;i < PixelSortInitialSteps; i++) {
+    for (let j = 0; j < pixelSortingPassesPerFrame; j++) {
+      PSShader.setUniform('iFrame', i * pixelSortingPassesPerFrame + j)
+      filter(PSShader)
+    }
+  }
+  color_buffer.end()
+
+  // Cellular automata
+  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
+  CaShader.setUniform('new_random_color_index', new_random_color_index);
+  CaShader.setUniform('palette', palette);
+  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
+
+  for (let j=0;j < CellularAutomataInitialSteps; j++) {
+    input_image = cellular_automata(input_image)
+    // console.log(j)
+  }
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+
 }
+
+function windowResized() {
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+}
+
+function applyUIChanges(){
+  updateArtworkSettings();
+
+  frameRate(fps);
+  // prepareP5Js(artwork_seed)
+
+  // // Update canvas size
+  // resizeCanvas(artworkWidth, artworkHeight);
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+  
+  // Reset pixel sorting and cellular automata steps
+  pixel_sort_step = 0;
+  cellular_automata_step = 0;
+  
+  // Redraw everything
+  updateArtworkSeed()
+  // initializeCanvas()
+}
+
+function updateArtworkSettings() {
+  fps = parseInt(MainInputs['FPS'].value);
+  artwork_seed = parseInt(MainInputs['artworkSeed'].value);
+  artworkWidth = parseInt(MainInputs['artworkWidth'].value);
+  artworkHeight = parseInt(MainInputs['artworkHeight'].value);
+  pixelSize = parseInt(MainInputs['pixelSize'].value);
+
+  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
+  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
+  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
+  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
+  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
+  
+  
+  CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
+  CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
+  CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
+}
+
+function updateArtworkSeed(){
+  artwork_seed = parseInt(MainInputs['artworkSeed'].value);
+  artwork_seed = prepareP5Js(artwork_seed)
+
+  // Set Current Seed text to current seed
+  MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
+
+  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+  console.log('image_path',image_path)
+  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+}
+
+function setSeed(){
+  // Set input seed to current seed
+  MainInputs['artworkSeed'].value = artwork_seed;
+  // Set Current Seed text to current seed
+  MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
+
+  artwork_seed = prepareP5Js(artwork_seed)
+  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+  console.log('image_path',image_path)
+  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+}
+
+function saveImage() {
+  let color_buffer_otions = {
+    width: artworkWidth,
+    height: artworkHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  let tmp_buffer = createFramebuffer(color_buffer_otions)
+
+  tmp_buffer.begin();
+  image(color_buffer, 0-artworkWidth/2, 0-artworkHeight/2, artworkWidth, artworkHeight);
+  tmp_buffer.end()
+  let filename =  `${artwork_seed}.png`
+  // Save the image
+  saveCanvas(tmp_buffer, filename, 'png');
+}
+
+window.preload = preload
+window.setup = setup
+window.draw = draw
