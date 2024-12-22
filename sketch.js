@@ -33,7 +33,7 @@ let workingImageWidth;
 let workingImageHeight;
 let pixelSize;
 let fps;
-let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
+export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
 // Pixel Sorting
 let sortNoiseScale;
 let noiseDirectionChangeRate;
