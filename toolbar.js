@@ -69,44 +69,23 @@ function intialize_toolbar(){
     var MainInputs = createArtworkSettingsCard();
     toolbar.appendChild(MainInputs['main-toolbar']);
     // // Initialize Defaults
-    MainInputs['FPS'].value = defaultFPS;
-    MainInputs['artworkSeed'].value = defaultArtworkSeed;
-  
-    console.log('currentSeed', MainInputs['currentSeed'])
-  
     MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
-    MainInputs['artworkWidth'].value = defaultArtworkWidth;
-    MainInputs['artworkHeight'].value = defaultArtworkHeight;
-    MainInputs['pixelSize'].value = defaultPixelSize;
 
     elements_dict['mainInputs'] = MainInputs;
   
     // Pixel Sorting UI
     var PSInputs = createPixelSortingSettings();
     toolbar.appendChild(PSInputs['main-toolbar']);
-    // // Initialize defaults
-    PSInputs['PSnoiseScale'].value = defaultSortNoiseScale
-    PSInputs['PSnoiseDirectionChangeRate'].value = defaultNoiseDirectionChangeRate
-    PSInputs['PSMaxSteps'].value = defaultPixelSortMaxSteps
-    PSInputs['PSinitialSteps'].value = defaultPixelSortInitialSteps
-    PSInputs['PSPassesPerFrame'].value = defaultPixelSortingPasses
-
     elements_dict['psInputs'] = PSInputs;
     
     // Cellular Automata UI
     var CAInputs = createCASettingsCard();
     toolbar.appendChild(CAInputs['main-toolbar']);
-    // // Initialize defaults
-    CAInputs['CARandomColorChangeRate'].value = defaultRandomColorChangeRate
-    CAInputs['CAMaxSteps'].value = defaultCAMaxSteps
-    CAInputs['CAInitialSteps'].value = defaultCellularAutomataInitialSteps
-
     elements_dict['caInputs'] = CAInputs;
     
     // Main controll Buttons
     var MainButtons = createArtworkControlsCard();
     toolbar.appendChild(MainButtons['main-toolbar']);
-
     elements_dict['mainButtons'] = MainButtons;
   
     // toolbar.style.display = "none" // to hide toolbar
