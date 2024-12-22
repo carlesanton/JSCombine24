@@ -330,3 +330,6 @@ function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
+window.preload = preload
+window.setup = setup
+window.draw = draw
