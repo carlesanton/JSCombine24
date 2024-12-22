@@ -13,21 +13,11 @@ let CAInputs;
 
 // Defaults
 // Main
-const defaultArtworkWidth = 1280;
-const defaultArtworkHeight = 720;
-const defaultArtworkSeed = -1;
-const defaultPixelSize = 4;
-const defaultFPS = 15;
-// Pixel Sorting
-const defaultSortNoiseScale = 360
-const defaultNoiseDirectionChangeRate = 45;
-const defaultPixelSortMaxSteps = -1;
-const defaultPixelSortInitialSteps = 50; //50
-const defaultPixelSortingPasses = 8;
-// Cellular Automata
-const defaultRandomColorChangeRate = 3;
-const defaultCAMaxSteps = -1;
-const defaultCellularAutomataInitialSteps = 0;
+export const defaultArtworkWidth = 1280;
+export const defaultArtworkHeight = 720;
+export const defaultArtworkSeed = -1;
+export const defaultPixelSize = 4;
+export const defaultFPS = 15;
 
 // Variables
 // Main
