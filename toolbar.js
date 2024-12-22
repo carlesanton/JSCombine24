@@ -95,7 +95,5 @@ function intialize_toolbar(){
   }
 
 export {
-    createArtworkSettingsCard,
-    createArtworkControlsCard,
     intialize_toolbar,
 }
