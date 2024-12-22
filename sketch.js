@@ -326,3 +326,24 @@ function setSeed(){
   loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
+function saveImage() {
+  let color_buffer_otions = {
+    width: artworkWidth,
+    height: artworkHeight,
+    textureFiltering: NEAREST,
+    antialias: false,
+    desity: 1,
+    format: UNSIGNED_BYTE,
+    depth: false,
+    channels: RGBA,
+  }
+  let tmp_buffer = createFramebuffer(color_buffer_otions)
+
+  tmp_buffer.begin();
+  image(color_buffer, 0-artworkWidth/2, 0-artworkHeight/2, artworkWidth, artworkHeight);
+  tmp_buffer.end()
+  let filename =  `${artwork_seed}.png`
+  // Save the image
+  saveCanvas(tmp_buffer, filename, 'png');
+}
+
