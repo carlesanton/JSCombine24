@@ -259,6 +259,7 @@ function initializeCanvas(input_image){
     input_image = cellular_automata(input_image)
     // console.log(j)
   }
+  scaleCanvasToFit(artworkHeight, artworkWidth);
 
 }
 
