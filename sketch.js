@@ -263,7 +263,24 @@ function initializeCanvas(input_image){
 }
 
 function windowResized() {
-  scaleCanvasToFit(artworkHeight, artworkWidth);
+
+function applyUIChanges(){
+  updateArtworkSettings();
+
+  frameRate(fps);
+  // prepareP5Js(artwork_seed)
+
+  // // Update canvas size
+  // resizeCanvas(artworkWidth, artworkHeight);
+  scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+  
+  // Reset pixel sorting and cellular automata steps
+  pixel_sort_step = 0;
+  cellular_automata_step = 0;
+  
+  // Redraw everything
+  updateArtworkSeed()
+  // initializeCanvas()
 }
 
 function updateArtworkSettings() {

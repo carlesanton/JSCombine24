@@ -49,7 +49,7 @@ function createArtworkControlsCard() {
     const cardBody = card.getElementsByClassName('card-body')[0]
 
     // Add Buttons
-    const applyChangesButton = create_button('Apply Changes', 'updateArtworkSettings()');
+    const applyChangesButton = create_button('Apply Changes', 'applyUIChanges()');
     const saveFrameButton = create_button('Save Current Frame', 'saveImage()');
 
     cardBody.appendChild(applyChangesButton);
