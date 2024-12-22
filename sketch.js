@@ -5,22 +5,11 @@
 // If you target size is bigger you can reduce that value. e.g. "pixelDensity(2)".
 // Inputs
 // Main
-let artworkWidthInput;
-let artworkHeightInput;
-let artworkSeedInput;
-let currentSeedText;
-let pixelSizeInput;
-let FPSInput;
+let MainInputs
 // Pixel Sorting
-let sortNoiseScaleInput;
-let noiseDirectionChangeRateInput;
-let pixelSortMaxStepsInput;
-let initialPixelSortMaxStepsInput;
-let pixelSortingPassesInput;
+let PSInputs;
 // Cellular Automata
-let CARandomColorChangeRateInput;
-let CAMaxStepsInput;
-let initialCellularAutomataMaxStepsInput;
+let CAInputs;
 
 // Defaults
 // Main
