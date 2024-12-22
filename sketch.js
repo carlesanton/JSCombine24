@@ -200,7 +200,7 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   textureWrap(CLAMP)
   
-  input_image = colorQuantize(input_image, number_of_colors, get_pallete=true)
+  input_image = colorQuantize(input_image, number_of_colors)
   palette = extractCollorPaletteFromImage(input_image)
   palette_map = buildPaletteIndexDict(palette)
 
