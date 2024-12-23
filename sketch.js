@@ -148,6 +148,9 @@ function setup() {
   // Apply the loaded font
   textFont(myFont);
 
+  if (image_loaded_successfuly){
+    initializeCanvas(img)
+  }
 }
 
 function draw() {
