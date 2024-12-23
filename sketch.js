@@ -114,7 +114,11 @@ const preview_frame = 30;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
-  img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
+  img = loadImage(
+    imgFiles[floor(random(1000000000)%imgFiles.length)],
+    () => { image_loaded_successfuly = true; },
+    () => { image_loaded_successfuly = false; }
+)
   ca_src = loadStrings('./cellular_automata_shader.frag');
   ps_src = loadStrings('./pixel_sort_shader.frag');
 }
@@ -338,11 +342,16 @@ export function saveImage() {
 }
 
 export function load_user_image(user_image){
-  loadImage(user_image, (loadedImage)=>{
-    img = loadedImage;
-    initializeCanvas(loadedImage)
-  });
+  loadImage(user_image,
+    (loadedImage)=>{
+      img = loadedImage;
+      initializeCanvas(loadedImage)
+    },
+    () => { image_loaded_successfuly = false; loaded_user_image = true; }
+  );
   loaded_user_image = true;
+  image_loaded_successfuly = true;
+}
 
 function display_image_error_message(){
   fill(255, 0, 0);
