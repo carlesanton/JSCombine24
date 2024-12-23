@@ -343,6 +343,17 @@ export function load_user_image(user_image){
     initializeCanvas(loadedImage)
   });
   loaded_user_image = true;
+
+function display_image_error_message(){
+  fill(255, 0, 0);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  if (loaded_user_image){
+    text("Failed to load image. \n Upload a new image with the 'Load Image' button", 0, 0);
+  }
+  else {
+    text("Failed to load default image. \n Upload an image with the 'Load Image' button", 0, 0)
+  }
 }
 
 window.preload = preload
