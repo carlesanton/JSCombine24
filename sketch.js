@@ -45,9 +45,9 @@ let CARandomColorChangeRate;
 let CAMaxSteps;
 let CellularAutomataInitialSteps;
 
-// To check if user loaded an image
+// To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
-
+let image_loaded_successfuly = false;
 
 const pixel_density = 1;
 let canvas;
@@ -114,7 +114,11 @@ const preview_frame = 30;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
-  img = loadImage(imgFiles[floor(random(1000000000)%imgFiles.length)])
+  img = loadImage(
+    imgFiles[floor(random(1000000000)%imgFiles.length)],
+    () => { image_loaded_successfuly = true; },
+    () => { image_loaded_successfuly = false; }
+)
   ca_src = loadStrings('./cellular_automata_shader.frag');
   ps_src = loadStrings('./pixel_sort_shader.frag');
 }
@@ -141,10 +145,24 @@ function setup() {
   ps_src = resolveLygia(ps_src.join('\n'));
   PSShader = createFilterShader(ps_src);
 
-  initializeCanvas(img)
+  // Apply the loaded font
+  textFont(myFont);
+
+  if (image_loaded_successfuly){
+    initializeCanvas(img)
+  }
 }
 
 function draw() {
+  if (image_loaded_successfuly){
+    draw_steps()
+  }
+  else {
+    display_image_error_message()
+  }
+}
+
+function draw_steps(){
   // Pixel sorting
   color_buffer.begin();
   if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
@@ -201,9 +219,6 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
-
-  // Apply the loaded font
-  textFont(myFont);
 
   let tex = canvas.getTexture(input_image);
   tex.setInterpolation(NEAREST, NEAREST);
@@ -338,11 +353,27 @@ export function saveImage() {
 }
 
 export function load_user_image(user_image){
-  loadImage(user_image, (loadedImage)=>{
-    img = loadedImage;
-    initializeCanvas(loadedImage)
-  });
+  loadImage(user_image,
+    (loadedImage)=>{
+      img = loadedImage;
+      initializeCanvas(loadedImage)
+    },
+    () => { image_loaded_successfuly = false; loaded_user_image = true; }
+  );
   loaded_user_image = true;
+  image_loaded_successfuly = true;
+}
+
+function display_image_error_message(){
+  fill(255, 0, 0);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  if (loaded_user_image){
+    text("Failed to load image. \n Upload a new image with the 'Load Image' button", 0, 0);
+  }
+  else {
+    text("Failed to load default image. \n Upload an image with the 'Load Image' button", 0, 0)
+  }
 }
 
 window.preload = preload
