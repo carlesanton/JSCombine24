@@ -145,7 +145,9 @@ function setup() {
   ps_src = resolveLygia(ps_src.join('\n'));
   PSShader = createFilterShader(ps_src);
 
-  initializeCanvas(img)
+  // Apply the loaded font
+  textFont(myFont);
+
 }
 
 function draw() {
@@ -205,9 +207,6 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
-
-  // Apply the loaded font
-  textFont(myFont);
 
   let tex = canvas.getTexture(input_image);
   tex.setInterpolation(NEAREST, NEAREST);
