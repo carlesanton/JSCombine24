@@ -154,6 +154,10 @@ function setup() {
 }
 
 function draw() {
+  draw_steps()
+}
+
+function draw_steps(){
   // Pixel sorting
   color_buffer.begin();
   if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
