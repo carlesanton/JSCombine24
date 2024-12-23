@@ -1,5 +1,5 @@
-import {create_number_input_text, create_expandable_card, create_button, create_card} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed} from './sketch.js'
+import {create_number_input_text, create_expandable_card, create_button, create_card, create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
+import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
@@ -54,10 +54,13 @@ function createArtworkControlsCard() {
     // Add Buttons
     const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
     const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
+    const loadImage = create_input_image_button(load_user_image, 'Load Image', 'No file chosen', 'Loaded Image: ');
 
     cardBody.appendChild(applyChangesButton);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(saveFrameButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(loadImage);
 
     elements_dict['main-toolbar'] = card;
 
