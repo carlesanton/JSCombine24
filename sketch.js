@@ -45,9 +45,9 @@ let CARandomColorChangeRate;
 let CAMaxSteps;
 let CellularAutomataInitialSteps;
 
-// To check if user loaded an image
+// To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
-
+let image_loaded_successfuly = false;
 
 const pixel_density = 1;
 let canvas;
