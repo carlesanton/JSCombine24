@@ -329,6 +329,14 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
+export function load_user_image(user_image){
+  loadImage(user_image, (loadedImage)=>{
+    img = loadedImage;
+    initializeCanvas(loadedImage)
+  });
+  loaded_user_image = true;
+}
+
 window.preload = preload
 window.setup = setup
 window.draw = draw
