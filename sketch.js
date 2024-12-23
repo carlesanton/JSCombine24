@@ -45,6 +45,9 @@ let CARandomColorChangeRate;
 let CAMaxSteps;
 let CellularAutomataInitialSteps;
 
+// To check if user loaded an image
+let loaded_user_image = false;
+
 
 const pixel_density = 1;
 let canvas;
@@ -291,9 +294,14 @@ function updateArtworkSeed(){
   // Set Current Seed text to current seed
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
-  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-  console.log('image_path',image_path)
-  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+  if (!loaded_user_image){
+    var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+    console.log('Loading new image: ',image_path)
+    loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+  }
+  else{ // To restart the process if we already had a user image loaded but parameters change
+    initializeCanvas(img)
+  }
 }
 
 export function setSeed(){
@@ -329,6 +337,15 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
+export function load_user_image(user_image){
+  loadImage(user_image, (loadedImage)=>{
+    img = loadedImage;
+    initializeCanvas(loadedImage)
+  });
+  loaded_user_image = true;
+}
+
 window.preload = preload
 window.setup = setup
 window.draw = draw
+window.windowResized = windowResized
