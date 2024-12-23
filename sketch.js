@@ -154,7 +154,12 @@ function setup() {
 }
 
 function draw() {
-  draw_steps()
+  if (image_loaded_successfuly){
+    draw_steps()
+  }
+  else {
+    display_image_error_message()
+  }
 }
 
 function draw_steps(){
