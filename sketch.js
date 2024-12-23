@@ -348,3 +348,4 @@ export function load_user_image(user_image){
 window.preload = preload
 window.setup = setup
 window.draw = draw
+window.windowResized = windowResized
