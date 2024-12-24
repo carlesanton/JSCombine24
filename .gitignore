@@ -3,6 +3,7 @@
 *.jpeg
 *.png
 *.psd
+!/img/*.jpg
 
 # Ignore Videos
 *.avi
