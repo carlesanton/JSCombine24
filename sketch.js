@@ -86,25 +86,24 @@ let ca_src = '';
 let ps_src = '';
 
 const imgFiles = [
+  'img/1225657.jpg',
+  'img/1360200.jpg',
+  'img/1653604.jpg',
+  'img/1765471.jpg',
+  'img/1829806.jpg',
   'img/234155.jpg',
   'img/244273.jpg',
   'img/247580.jpg',
   'img/250669.jpg',
+  'img/2518195.jpg',
   'img/257703.jpg',
   'img/261968.jpg',
+  'img/2669108.jpg',
   'img/298002.jpg',
   'img/314808.jpg',
   'img/329943.jpg',
-  'img/332736.jpg',
-  'img/1225657.jpg',
-  'img/1360200.jpg',
-  'img/1639631.jpg',
-  'img/1653604.jpg',
-  'img/1765471.jpg',
-  'img/1829806.jpg',
-  'img/2518195.jpg',
-  'img/2669108.jpg',
   'img/3307280.jpg',
+  'img/332736.jpg',
   'img/3489753.jpg',
   'img/3526787.jpg'
 ]
@@ -114,8 +113,10 @@ const preview_frame = 30;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
+  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+  console.log('Loaded image: ', image_path)
   img = loadImage(
-    imgFiles[floor(random(1000000000)%imgFiles.length)],
+    image_path,
     () => { image_loaded_successfuly = true; },
     () => { image_loaded_successfuly = false; }
 )
