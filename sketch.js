@@ -113,8 +113,10 @@ const preview_frame = 30;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
+  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
+  console.log('Loaded image: ', image_path)
   img = loadImage(
-    imgFiles[floor(random(1000000000)%imgFiles.length)],
+    image_path,
     () => { image_loaded_successfuly = true; },
     () => { image_loaded_successfuly = false; }
 )
