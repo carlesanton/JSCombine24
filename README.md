@@ -32,33 +32,9 @@ git submodule update
 
 ## Images
 
-Images are not uploaded to the github repository, they should be in the project folder and added to the `imgFiles` list. The ones used for the project are:
+Users can upload their own images via the "Load Image" button, nevertheless some initial images are uploaded to the repository for experimentation without the need to upload an image.
 
-```
-const imgFiles = [
-  'img/234155.jpg',
-  'img/244273.jpg',
-  'img/247580.jpg',
-  'img/250669.jpg',
-  'img/257703.jpg',
-  'img/261968.jpg',
-  'img/298002.jpg',
-  'img/314808.jpg',
-  'img/329943.jpg',
-  'img/332736.jpg',
-  'img/1225657.jpg',
-  'img/1360200.jpg',
-  'img/1639631.jpg',
-  'img/1653604.jpg',
-  'img/1765471.jpg',
-  'img/1829806.jpg',
-  'img/2518195.jpg',
-  'img/2669108.jpg',
-  'img/3307280.jpg',
-  'img/3489753.jpg',
-  'img/3526787.jpg'
-]
-```
+The images are taken from copyright-free pieces of [the Finnish National Gallery collection](https://www.kansallisgalleria.fi/en/search). The images were originaly taken for the [Combine24 competition](https://combine24.alusta.art/) where contestants had to use images from the Finnish National Gallery. Images are taken with a max width of 500px.
 
 # Pixel Sorting
 
