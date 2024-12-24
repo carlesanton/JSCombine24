@@ -5,6 +5,9 @@
 *.psd
 !/img/*.jpg
 
+# Ignore Combine24objects.json
+Combine24objects*.json
+
 # Ignore Videos
 *.avi
 *.mp4
