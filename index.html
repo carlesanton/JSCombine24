@@ -11,16 +11,11 @@
 </head>
 <body>
   <script type="module" src="sketch.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <div class="container-fluid vh-100">
-    <div class="row h-100 align-items-stretch">
-      <div class="col-3" id="toolbar">
-          <br>
-      </div>
-      <div class="col">
+    <div class="flex">
+      <div class="w-140" id="toolbar"></div>
+      <div class="grow h-screen">
         <div id="sketch-container" style="width: 100%; height: 100%;">
           <div id="canvas-wrapper"></div>
-        </div>
       </div>
     </div>
   </div>
