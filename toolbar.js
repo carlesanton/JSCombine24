@@ -1,4 +1,4 @@
-import {create_number_input_text, create_daisyui_expandable_card, create_button, create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
+import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
 import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
@@ -11,7 +11,7 @@ function createArtworkSettingsCard() {
     const cardBody = card.getElementsByClassName('collapse-content')[0]
 
     // Add Inputs
-    const fps = create_number_input_text('FPS', 'FPS', defaultFPS, '0', '300');
+    const fps = create_number_input_slider_and_number('FPS', 'FPS', defaultFPS, '0', '300');
     elements_dict['FPS'] = fps.getElementsByTagName('input')[0];
 
     const seed = create_number_input_text('artworkSeed', 'Artwork Seed', defaultArtworkSeed, '-1', '99999999');
@@ -20,13 +20,13 @@ function createArtworkSettingsCard() {
     const seedButton = create_button('Set Seed', () => { setSeed(); },'Current Seed:', 'xs')
     elements_dict['currentSeed'] = seedButton.getElementsByTagName('text')[0];
 
-    const width = create_number_input_text('artworkWidth', 'Artwork Width', defaultArtworkWidth,'100', '4000');
+    const width = create_number_input_slider_and_number('artworkWidth', 'Artwork Width', 1280, 0, 4000);
     elements_dict['artworkWidth'] = width.getElementsByTagName('input')[0];
 
-    const height = create_number_input_text('artworkHeight', 'Artwork Height', defaultArtworkHeight,'100', '4000');
+    const height = create_number_input_slider_and_number('artworkHeight', 'Artwork Height', defaultArtworkHeight,0, 4000);
     elements_dict['artworkHeight'] = height.getElementsByTagName('input')[0];
 
-    const pixelSize = create_number_input_text('pixelSize', 'Pixel Size', defaultPixelSize,'1', '4000');
+    const pixelSize = create_number_input_slider_and_number('pixelSize', 'Pixel Size', defaultPixelSize,1, 4000);
     elements_dict['pixelSize'] = pixelSize.getElementsByTagName('input')[0];
 
     cardBody.appendChild(fps);
