@@ -143,8 +143,7 @@ function setup() {
   canvas.pixelDensity(pixel_density);
 
   CaShader = createFilterShader(ca_src.join('\n'));
-  ps_src = resolveLygia(ps_src.join('\n'));
-  PSShader = createFilterShader(ps_src);
+  PSShader = createFilterShader(ps_src.join('\n'));
 
   // Apply the loaded font
   textFont(myFont);
