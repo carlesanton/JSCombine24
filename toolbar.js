@@ -17,7 +17,7 @@ function createArtworkSettingsCard() {
     const seed = create_number_input_text('artworkSeed', 'Artwork Seed', defaultArtworkSeed, '-1', '99999999');
     elements_dict['artworkSeed'] = seed.getElementsByTagName('input')[0];
 
-    const seedButton = create_button('Set Seed', () => { setSeed(); },'Current Seed:')
+    const seedButton = create_button('Set Seed', () => { setSeed(); },'Current Seed:', 'xs')
     elements_dict['currentSeed'] = seedButton.getElementsByTagName('text')[0];
 
     const width = create_number_input_text('artworkWidth', 'Artwork Width', defaultArtworkWidth,'100', '4000');
