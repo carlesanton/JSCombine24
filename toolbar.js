@@ -1,4 +1,4 @@
-import {create_number_input_text, create_expandable_card, create_button, create_card, create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
+import {create_number_input_text, create_daisyui_expandable_card, create_button, create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
 import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
@@ -7,8 +7,8 @@ function createArtworkSettingsCard() {
     var elements_dict = {};
 
     // Create Main Card
-    const card = create_expandable_card('artworkSettings', 'Artwork Settings');
-    const cardBody = card.getElementsByClassName('card-body')[0]
+    const card = create_daisyui_expandable_card('artworkSettings', 'Artwork Settings');
+    const cardBody = card.getElementsByClassName('collapse-content')[0]
 
     // Add Inputs
     const fps = create_number_input_text('FPS', 'FPS', defaultFPS, '0', '300');
@@ -48,8 +48,8 @@ function createArtworkSettingsCard() {
 function createArtworkControlsCard() {
     var elements_dict = {};
     // Create the main card
-    const card = create_card('controllsCard')
-    const cardBody = card.getElementsByClassName('card-body')[0]
+    var card = create_daisyui_expandable_card('mainButtons', 'Main Actions')
+    const cardBody = card.getElementsByClassName('collapse-content')[0]
 
     // Add Buttons
     const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
