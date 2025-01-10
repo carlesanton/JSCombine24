@@ -15,8 +15,10 @@ uniform vec2 direction;
 uniform int iFrame;
 
 float hsvbrightness(vec3 c);
+float random(vec3 pos);
 
-#include "lygia/generative/random.glsl"
+#define RANDOM_SCALE vec4(443.897, 441.423, .0973, .1099)
+#define FNC_RANDOM
 
 void main() {
   vec2 uv = vTexCoord;
@@ -88,4 +90,10 @@ float hsvbrightness(vec3 c){
   vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
 
   return q.x;
+}
+
+float random(in vec3 pos) {
+    pos  = fract(pos * RANDOM_SCALE.xyz);
+    pos += dot(pos, pos.zyx + 31.32);
+    return fract((pos.x + pos.y) * pos.z);
 }
