@@ -74,6 +74,7 @@ function intialize_toolbar(){
     // Main Settings UI
     var MainInputs = createArtworkSettingsCard();
     toolbar.appendChild(MainInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
     // // Initialize Defaults
     MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
@@ -82,16 +83,19 @@ function intialize_toolbar(){
     // Pixel Sorting UI
     var PSInputs = createPixelSortingSettings();
     toolbar.appendChild(PSInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
     elements_dict['psInputs'] = PSInputs;
     
     // Cellular Automata UI
     var CAInputs = createCASettingsCard();
     toolbar.appendChild(CAInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
     
     // Main controll Buttons
     var MainButtons = createArtworkControlsCard();
     toolbar.appendChild(MainButtons['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
     elements_dict['mainButtons'] = MainButtons;
   
     // toolbar.style.display = "none" // to hide toolbar
