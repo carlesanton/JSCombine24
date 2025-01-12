@@ -122,7 +122,7 @@ function preload() {
     () => { image_loaded_successfuly = false; }
 )
   load_pixel_shader_code();
-  ps_src = loadStrings('./pixel_sort_shader.frag');
+  load_cellular_automata_code();
 }
 
 function setup() {
@@ -144,7 +144,7 @@ function setup() {
   canvas.pixelDensity(pixel_density);
 
   initialize_cellular_automata_shader()
-  PSShader = createFilterShader(ps_src.join('\n'));
+  initialize_pixel_sorting_shader()
 
   // Apply the loaded font
   textFont(myFont);
@@ -165,20 +165,8 @@ function draw() {
 
 function draw_steps(){
   // Pixel sorting
-  color_buffer.begin();
-  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
-    if (frameCount%noiseDirectionChangeRate==1){
-      angle = noise(frameCount/noiseDirectionChangeRate)*sortNoiseScale;
-      noise_coordinates = angleToCoordinates(angle, noise_radius);
-      PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-    }
-    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
-      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
-      filter(PSShader)
-    }
-    pixel_sort_step+=1
-  }
-  color_buffer.end()
+  color_buffer = pixel_sorting_gpu(color_buffer, true)
+
 
   // Cellular Automata
   if (frameCount%get_CARandomColorChangeRate()==1){
@@ -231,19 +219,13 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
 
-  // Pixel Sort
-  angle = noise(frameCount)*sortNoiseScale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  color_buffer.begin();
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  for (let i=0;i < PixelSortInitialSteps; i++) {
-    for (let j = 0; j < pixelSortingPassesPerFrame; j++) {
-      PSShader.setUniform('iFrame', i * pixelSortingPassesPerFrame + j)
-      filter(PSShader)
-    }
+  var old_max_steps = set_ps_max_steps(get_PixelSortInitialSteps())
+  change_ps_direction()
+  for (let i=0; i<get_PixelSortInitialSteps(); i++){
+    color_buffer = pixel_sorting_gpu(color_buffer, false)
   }
-  color_buffer.end()
-
+  set_ps_max_steps(old_max_steps)
+  
   // Cellular automata
   var new_random_color_index = Math.round(random(0,palette.length-1))
   var new_ca_random_color =  palette[new_random_color_index];
