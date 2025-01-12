@@ -225,7 +225,7 @@ export function applyUIChanges(){
   
   // Redraw everything
   updateArtworkSeed()
-  // initializeCanvas()
+  initializeCanvas()
 }
 
 function updateArtworkSettings() {
