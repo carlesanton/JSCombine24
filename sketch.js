@@ -31,16 +31,6 @@ let workingImageHeight;
 let pixelSize;
 let fps;
 export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
-// Pixel Sorting
-let sortNoiseScale;
-let noiseDirectionChangeRate;
-let pixelSortMaxSteps;
-let PixelSortInitialSteps;
-let pixelSortingPassesPerFrame;
-// Cellular Automata
-let CARandomColorChangeRate;
-let CAMaxSteps;
-let CellularAutomataInitialSteps;
 
 // To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
@@ -58,29 +48,10 @@ const palleteHeight = 1000;
 const showPallete = false;
 const number_of_colors = 20;
 
-
-// Pixel sort variables
-let pixel_sort_step = 0
-const noise_radius = 1.5;
-let angle = -180;
-let noise_coordinates;
-let PSShader; // variable for the shader
-
-// Cellular automata variables
-let cellular_automata_step = 0
-let new_random_color_index=0;
-let CaShader; // variable for the shader
-
 let img;
-let collor_pallete;
-var sorted_image;
 let palette;
-let palette_map;
 let myFont;
 let color_buffer;
-
-let ca_src = '';
-let ps_src = '';
 
 const imgFiles = [
   'img/1225657.jpg',
