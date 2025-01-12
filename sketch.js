@@ -121,7 +121,7 @@ function preload() {
     () => { image_loaded_successfuly = true; },
     () => { image_loaded_successfuly = false; }
 )
-  ca_src = loadStrings('./cellular_automata_shader.frag');
+  load_pixel_shader_code();
   ps_src = loadStrings('./pixel_sort_shader.frag');
 }
 
@@ -143,7 +143,7 @@ function setup() {
   frameRate(fps);
   canvas.pixelDensity(pixel_density);
 
-  CaShader = createFilterShader(ca_src.join('\n'));
+  initialize_cellular_automata_shader()
   PSShader = createFilterShader(ps_src.join('\n'));
 
   // Apply the loaded font
@@ -181,16 +181,12 @@ function draw_steps(){
   color_buffer.end()
 
   // Cellular Automata
-  color_buffer.begin();
-  if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
-    if (frameCount%CARandomColorChangeRate==1){
-      new_random_color_index = Math.round(random(0,palette.length-1))
-      CaShader.setUniform('next_random_color', palette[new_random_color_index]);
-    }
-    filter(CaShader)
-    cellular_automata_step+=1
+  if (frameCount%get_CARandomColorChangeRate()==1){
+    var new_random_color_index = Math.round(random(0,palette.length-1))
+    var new_ca_random_color =  palette[new_random_color_index];
+    set_ca_new_random_color(new_ca_random_color)
   }
-  color_buffer.end();
+  color_buffer = cellular_automata_gpu(color_buffer)
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   image(color_buffer, 0-width/2, 0-height/2, width, height)
@@ -249,15 +245,16 @@ function initializeCanvas(input_image){
   color_buffer.end()
 
   // Cellular automata
-  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
-  CaShader.setUniform('new_random_color_index', new_random_color_index);
-  CaShader.setUniform('palette', palette);
-  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
+  var new_random_color_index = Math.round(random(0,palette.length-1))
+  var new_ca_random_color =  palette[new_random_color_index];
+  set_ca_new_random_color(new_ca_random_color)
 
-  for (let j=0;j < CellularAutomataInitialSteps; j++) {
-    input_image = cellular_automata(input_image)
-    // console.log(j)
+  var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
+  for (let j=0;j < get_CellularAutomataInitialSteps(); j++) {
+    color_buffer = cellular_automata_gpu(color_buffer)
   }
+  set_ca_max_steps(old_max_steps)
+
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
 }
