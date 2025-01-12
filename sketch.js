@@ -300,6 +300,15 @@ export function load_user_image(user_image){
   image_loaded_successfuly = true;
 }
 
+export function change_fps(new_fps){
+  var old_fps = fps;
+  fps = parseInt(new_fps);
+  console.log('Changing FPS to: ', fps)
+  frameRate(fps);
+  return old_fps
+}
+
+
 function display_image_error_message(){
   fill(255, 0, 0);
   textSize(32);
