@@ -205,7 +205,6 @@ function initializeCanvas(input_image){
   
   input_image = colorQuantize(input_image, number_of_colors)
   palette = extractCollorPaletteFromImage(input_image)
-  palette_map = buildPaletteIndexDict(palette)
 
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
