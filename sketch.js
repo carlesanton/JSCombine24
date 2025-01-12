@@ -1,5 +1,6 @@
 import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
-import {angleToCoordinates} from './lib/JSGenerativeArtTools/pixel_sort.js';
+import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
+import {load_cellular_automata_code, set_ca_max_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
@@ -12,10 +13,6 @@ import {intialize_toolbar} from './toolbar.js';
 // Inputs
 // Main
 let MainInputs
-// Pixel Sorting
-let PSInputs;
-// Cellular Automata
-let CAInputs;
 
 // Defaults
 // Main
@@ -34,16 +31,6 @@ let workingImageHeight;
 let pixelSize;
 let fps;
 export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
-// Pixel Sorting
-let sortNoiseScale;
-let noiseDirectionChangeRate;
-let pixelSortMaxSteps;
-let PixelSortInitialSteps;
-let pixelSortingPassesPerFrame;
-// Cellular Automata
-let CARandomColorChangeRate;
-let CAMaxSteps;
-let CellularAutomataInitialSteps;
 
 // To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
@@ -61,29 +48,10 @@ const palleteHeight = 1000;
 const showPallete = false;
 const number_of_colors = 20;
 
-
-// Pixel sort variables
-let pixel_sort_step = 0
-const noise_radius = 1.5;
-let angle = -180;
-let noise_coordinates;
-let PSShader; // variable for the shader
-
-// Cellular automata variables
-let cellular_automata_step = 0
-let new_random_color_index=0;
-let CaShader; // variable for the shader
-
 let img;
-let collor_pallete;
-var sorted_image;
 let palette;
-let palette_map;
 let myFont;
 let color_buffer;
-
-let ca_src = '';
-let ps_src = '';
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -120,16 +88,14 @@ function preload() {
     () => { image_loaded_successfuly = true; },
     () => { image_loaded_successfuly = false; }
 )
-  ca_src = loadStrings('./cellular_automata_shader.frag');
-  ps_src = loadStrings('./pixel_sort_shader.frag');
+  load_pixel_shader_code();
+  load_cellular_automata_code();
 }
 
 function setup() {
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
-  PSInputs = toolbar_elements.psInputs;
-  CAInputs = toolbar_elements.caInputs;
-  
+
   updateArtworkSettings()
 
   // Create Canvas
@@ -142,8 +108,8 @@ function setup() {
   frameRate(fps);
   canvas.pixelDensity(pixel_density);
 
-  CaShader = createFilterShader(ca_src.join('\n'));
-  PSShader = createFilterShader(ps_src.join('\n'));
+  initialize_cellular_automata_shader()
+  initialize_pixel_sorting_shader()
 
   // Apply the loaded font
   textFont(myFont);
@@ -164,32 +130,16 @@ function draw() {
 
 function draw_steps(){
   // Pixel sorting
-  color_buffer.begin();
-  if (pixel_sort_step < pixelSortMaxSteps || pixelSortMaxSteps == -1) {
-    if (frameCount%noiseDirectionChangeRate==1){
-      angle = noise(frameCount/noiseDirectionChangeRate)*sortNoiseScale;
-      noise_coordinates = angleToCoordinates(angle, noise_radius);
-      PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-    }
-    for (let i = 0; i < pixelSortingPassesPerFrame; i++) {
-      PSShader.setUniform('iFrame', (PixelSortInitialSteps + pixel_sort_step) * pixelSortingPassesPerFrame + i)
-      filter(PSShader)
-    }
-    pixel_sort_step+=1
-  }
-  color_buffer.end()
+  color_buffer = pixel_sorting_gpu(color_buffer, true)
+
 
   // Cellular Automata
-  color_buffer.begin();
-  if (cellular_automata_step < CAMaxSteps || CAMaxSteps ==-1) {
-    if (frameCount%CARandomColorChangeRate==1){
-      new_random_color_index = Math.round(random(0,palette.length-1))
-      CaShader.setUniform('next_random_color', palette[new_random_color_index]);
-    }
-    filter(CaShader)
-    cellular_automata_step+=1
+  if (frameCount%get_CARandomColorChangeRate()==1){
+    var new_random_color_index = Math.round(random(0,palette.length-1))
+    var new_ca_random_color =  palette[new_random_color_index];
+    set_ca_new_random_color(new_ca_random_color)
   }
-  color_buffer.end();
+  color_buffer = cellular_automata_gpu(color_buffer)
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   image(color_buffer, 0-width/2, 0-height/2, width, height)
@@ -226,7 +176,6 @@ function initializeCanvas(input_image){
   
   input_image = colorQuantize(input_image, number_of_colors)
   palette = extractCollorPaletteFromImage(input_image)
-  palette_map = buildPaletteIndexDict(palette)
 
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
@@ -234,29 +183,24 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
 
-  // Pixel Sort
-  angle = noise(frameCount)*sortNoiseScale;
-  noise_coordinates = angleToCoordinates(angle, noise_radius);
-  color_buffer.begin();
-  PSShader.setUniform('direction', [noise_coordinates.x, noise_coordinates.y])
-  for (let i=0;i < PixelSortInitialSteps; i++) {
-    for (let j = 0; j < pixelSortingPassesPerFrame; j++) {
-      PSShader.setUniform('iFrame', i * pixelSortingPassesPerFrame + j)
-      filter(PSShader)
-    }
+  var old_max_steps = set_ps_max_steps(get_PixelSortInitialSteps())
+  change_ps_direction()
+  for (let i=0; i<get_PixelSortInitialSteps(); i++){
+    color_buffer = pixel_sorting_gpu(color_buffer, false)
   }
-  color_buffer.end()
-
+  set_ps_max_steps(old_max_steps)
+  
   // Cellular automata
-  CaShader.setUniform("normalRes", [1.0/workingImageWidth, 1.0/workingImageHeight]);
-  CaShader.setUniform('new_random_color_index', new_random_color_index);
-  CaShader.setUniform('palette', palette);
-  CaShader.setUniform('next_random_color', palette[new_random_color_index]);
+  var new_random_color_index = Math.round(random(0,palette.length-1))
+  var new_ca_random_color =  palette[new_random_color_index];
+  set_ca_new_random_color(new_ca_random_color)
 
-  for (let j=0;j < CellularAutomataInitialSteps; j++) {
-    input_image = cellular_automata(input_image)
-    // console.log(j)
+  var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
+  for (let j=0;j < get_CellularAutomataInitialSteps(); j++) {
+    color_buffer = cellular_automata_gpu(color_buffer)
   }
+  set_ca_max_steps(old_max_steps)
+
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
 }
@@ -290,16 +234,8 @@ function updateArtworkSettings() {
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
 
-  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
-  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
-  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
-  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
-  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
-  
-  
-  CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
-  CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
-  CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
+  update_all_ps_parametters()
+  update_all_ca_parametters()
 }
 
 function updateArtworkSeed(){
