@@ -13,10 +13,6 @@ import {intialize_toolbar} from './toolbar.js';
 // Inputs
 // Main
 let MainInputs
-// Pixel Sorting
-let PSInputs;
-// Cellular Automata
-let CAInputs;
 
 // Defaults
 // Main
@@ -128,9 +124,7 @@ function preload() {
 function setup() {
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
-  PSInputs = toolbar_elements.psInputs;
-  CAInputs = toolbar_elements.caInputs;
-  
+
   updateArtworkSettings()
 
   // Create Canvas
@@ -270,16 +264,8 @@ function updateArtworkSettings() {
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
 
-  sortNoiseScale = parseInt(PSInputs['PSnoiseScale'].value)
-  noiseDirectionChangeRate = parseInt(PSInputs['PSnoiseDirectionChangeRate'].value)
-  pixelSortMaxSteps = parseInt(PSInputs['PSMaxSteps'].value)
-  PixelSortInitialSteps = parseInt(PSInputs['PSinitialSteps'].value)
-  pixelSortingPassesPerFrame = parseInt(PSInputs['PSPassesPerFrame'].value)
-  
-  
-  CARandomColorChangeRate = parseInt(CAInputs['CARandomColorChangeRate'].value)
-  CAMaxSteps = parseInt(CAInputs['CAMaxSteps'].value)
-  CellularAutomataInitialSteps = parseInt(CAInputs['CAInitialSteps'].value)
+  update_all_ps_parametters()
+  update_all_ca_parametters()
 }
 
 function updateArtworkSeed(){
