@@ -1,6 +1,6 @@
 import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
 import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
-import {load_cellular_automata_code, set_ca_max_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
+import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
@@ -185,6 +185,7 @@ function initializeCanvas(input_image){
 
   var old_max_steps = set_ps_max_steps(get_PixelSortInitialSteps())
   change_ps_direction()
+  reset_ps_steps()
   for (let i=0; i<get_PixelSortInitialSteps(); i++){
     color_buffer = pixel_sorting_gpu(color_buffer, false)
   }
@@ -196,6 +197,7 @@ function initializeCanvas(input_image){
   set_ca_new_random_color(new_ca_random_color)
 
   var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
+  reset_ca_steps()
   for (let j=0;j < get_CellularAutomataInitialSteps(); j++) {
     color_buffer = cellular_automata_gpu(color_buffer)
   }
@@ -220,12 +222,10 @@ export function applyUIChanges(){
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
   
   // Reset pixel sorting and cellular automata steps
-  pixel_sort_step = 0;
-  cellular_automata_step = 0;
   
   // Redraw everything
   updateArtworkSeed()
-  // initializeCanvas()
+  initializeCanvas()
 }
 
 function updateArtworkSettings() {
@@ -299,6 +299,15 @@ export function load_user_image(user_image){
   loaded_user_image = true;
   image_loaded_successfuly = true;
 }
+
+export function change_fps(new_fps){
+  var old_fps = fps;
+  fps = parseInt(new_fps);
+  console.log('Changing FPS to: ', fps)
+  frameRate(fps);
+  return old_fps
+}
+
 
 function display_image_error_message(){
   fill(255, 0, 0);

@@ -1,5 +1,5 @@
 import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
+import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, change_fps, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
@@ -11,7 +11,7 @@ function createArtworkSettingsCard() {
     const cardBody = card.getElementsByClassName('collapse-content')[0]
 
     // Add Inputs
-    const fps = create_number_input_slider_and_number('FPS', 'FPS', defaultFPS, '0', '300');
+    const fps = create_number_input_slider_and_number('FPS', 'FPS', defaultFPS, '0', '300', change_fps);
     elements_dict['FPS'] = fps.getElementsByTagName('input')[0];
 
     const seed = create_number_input_text('artworkSeed', 'Artwork Seed', defaultArtworkSeed, '-1', '99999999');
