@@ -30,6 +30,19 @@ function bind_audio_reactive_controls(){
     });
     disable_ps_passes_per_frame();
 
+
+    // Energy Ratio
+    console.log('Binding CA Speed to MidHigh/Low energy ratio')
+    setOnEnergyRatioChangeCallback(function(energyRatio) {
+        var remapedRatio = map(energyRatio, 0, 0.3, 0, 5)
+        remapedRatio = parseInt(constrain(remapedRatio, 0, 5))
+        if (energyRatio<=0.1){ // To generate some CA movement without any audio
+            remapedRatio = 1
+        }
+        set_ca_passes_per_frame_from_slider(remapedRatio);
+    });
+    disable_ca_passes_per_frame();
+
 }
 
 
