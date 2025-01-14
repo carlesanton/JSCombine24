@@ -114,7 +114,7 @@ function setup() {
   initialize_pixel_sorting_shader()
 
   // Bind Audio Reactive Methods
-  initializeAudio();
+  userStartAudio([], initializeAudio());
   bind_audio_reactive_controls();
 
   // Apply the loaded font
