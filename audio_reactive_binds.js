@@ -7,6 +7,14 @@ var ps_speed_max_value = 23;
 
 function bind_audio_reactive_controls(){
     console.log('Binding audio reactive controls')
+
+    // Beat Detect
+    console.log('Binding PS Direction to Beat Detection')
+    setOnBeatCallback(function() {
+        change_ps_direction();
+    });
+    set_ps_direction_change_rate_from_slider(0);
+    disable_ps_direction_change_rate();
 }
 
 
