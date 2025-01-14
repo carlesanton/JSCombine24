@@ -15,6 +15,21 @@ function bind_audio_reactive_controls(){
     });
     set_ps_direction_change_rate_from_slider(0);
     disable_ps_direction_change_rate();
+
+    // Audio Level
+    console.log('Binding PS Speed to audio level')
+    setOnLevelChangeCallback(function(e) {
+        var scaled_level = level_scale * e;
+        var remapedForLog = map(scaled_level, level_min_value, level_max_value, 1, 2.8)
+        remapedForLog = constrain(remapedForLog, 1, 2.8)
+
+        var remapedLevel = map(log(remapedForLog), 0, 1, ps_speed_min_value, ps_speed_max_value)
+        remapedLevel = pow(remapedLevel, 1.3)
+        remapedLevel = constrain(remapedLevel, ps_speed_min_value, ps_speed_max_value)
+        set_ps_passes_per_frame_from_slider(remapedLevel);
+    });
+    disable_ps_passes_per_frame();
+
 }
 
 
