@@ -30,6 +30,14 @@ function bind_audio_reactive_controls(){
     });
     disable_ps_passes_per_frame();
 
+    // Centroid
+    // console.log('Binding PS Speed to audio level')
+    // setOnCentroidChange(function(c) {
+    //     var remapedCentroid = map(c, 20, 4000, 30, 2)
+    //     remapedCentroid = constrain(remapedCentroid, 2, 30)
+    //     set_ca_color_change_rate_from_slider(remapedCentroid);
+    // });
+    // disable_ca_color_change_rate();
 
     // Energy Ratio
     console.log('Binding CA Speed to MidHigh/Low energy ratio')
@@ -42,6 +50,37 @@ function bind_audio_reactive_controls(){
         set_ca_passes_per_frame_from_slider(remapedRatio);
     });
     disable_ca_passes_per_frame();
+
+    // HM Energy
+    // // Discarted at the moment, using only the energy level of one band
+    // // ends up being almost the same as using the level of the whole audio.
+    // // better use the ratio between two bands.
+    // setOnHMEnergyChangeCallback(function(energy) {
+    //     // var remapedEnergy = map(e, 0, 25, 30, 2)
+    //     // console.log('remapedEnergy, e', remapedEnergy + ', ' + e)
+    //     // remapedEnergy = constrain(remapedEnergy, 2, 30)
+    //     var new_ppf = 1;
+    //     if (energy > 0.0001 && energy <= 1){
+    //         new_ppf = 0
+    //     }
+    //     else if (energy > 1 && energy <= 10){
+    //         new_ppf = 1
+    //     }
+    //     else if(energy > 10 && energy <= 15){
+    //         new_ppf = 2
+    //     }
+    //     else if(energy > 15 && energy <= 20){
+    //         new_ppf = 3
+    //     }
+    //     else if(energy > 20 && energy <= 30){
+    //         new_ppf = 4
+    //     }
+    //     else if(energy > 40){
+    //         new_ppf = 5
+    //     }
+    //     set_ca_passes_per_frame_from_slider(new_ppf);
+    // });
+    // disable_ca_passes_per_frame();
 
 }
 
