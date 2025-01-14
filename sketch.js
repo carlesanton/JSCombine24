@@ -4,6 +4,8 @@ import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_Cellu
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
+import {initializeAudio, getEnergyRatio, getHMEnergy, getSpectrum, getAudioLevel, detectBeat} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
+import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
@@ -111,6 +113,10 @@ function setup() {
   initialize_cellular_automata_shader()
   initialize_pixel_sorting_shader()
 
+  // Bind Audio Reactive Methods
+  initializeAudio();
+  bind_audio_reactive_controls();
+
   // Apply the loaded font
   textFont(myFont);
 
@@ -120,6 +126,8 @@ function setup() {
 }
 
 function draw() {
+  run_audio_analysis();
+
   if (image_loaded_successfuly){
     draw_steps()
   }
@@ -205,6 +213,14 @@ function initializeCanvas(input_image){
 
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
+}
+
+function run_audio_analysis(){
+  var audioLevel = getAudioLevel()
+  getSpectrum()
+  getHMEnergy()
+  getEnergyRatio()
+  detectBeat(audioLevel)
 }
 
 function windowResized() {
