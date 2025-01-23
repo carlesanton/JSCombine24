@@ -1,5 +1,5 @@
 import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, change_fps, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image} from './sketch.js'
+import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, change_fps, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image, audioReactive} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
@@ -80,6 +80,14 @@ function intialize_toolbar(){
 
     elements_dict['mainInputs'] = MainInputs;
   
+    // Audio Reactive
+    console.log('audioReactive', audioReactive)
+    // var AudioInput = audioReactive.createAudioReactiveControlsCard()
+    var AudioInput = audioReactive.createAudioReactiveControlsCard()
+    toolbar.appendChild(AudioInput['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
+    elements_dict['AudioInputs'] = AudioInput;
+
     // Pixel Sorting UI
     var PSInputs = createPixelSortingSettings();
     toolbar.appendChild(PSInputs['main-toolbar']);
