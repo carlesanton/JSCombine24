@@ -57,6 +57,9 @@ function bind_audio_reactive_controls(){
     });
     audioReactive.addControllToTakeOver(disable_ca_passes_per_frame);
 
+    if(audioReactive.isAudioEnabled()){
+        audioReactive.takeOverControlls()
+    }
     // HM Energy
     // // Discarted at the moment, using only the energy level of one band
     // // ends up being almost the same as using the level of the whole audio.
