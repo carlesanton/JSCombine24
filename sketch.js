@@ -139,6 +139,8 @@ function draw() {
   else {
     display_image_error_message()
   }
+
+  drawInterface()
 }
 
 function draw_steps(){
@@ -156,15 +158,25 @@ function draw_steps(){
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   image(color_buffer, 0-width/2, 0-height/2, width, height)
+}
 
+function drawInterface(){
+  interface_color_buffer.begin()
+  clear()
   if (showPallete){
-    displayPalette(palette, palleteWidth, palleteHeight)
+    displayPalette(palette, -artworkWidth/2, -artworkHeight/2, palleteWidth, palleteHeight)
   }
 
   if (showFPS) {
     fps = calculateFPS(millis());
-    displayFPS(fps);
+    displayFPS(fps, artworkWidth/2, -artworkHeight/2);
   }
+
+  if (audioReactive.isDisplayVisualizationEnabled()){
+    audioReactive.displayVisualization();
+  }
+  interface_color_buffer.end()
+  image(interface_color_buffer, 0-width/2, 0-height/2, width, height)
 }
 
 function initializeCanvas(input_image){
