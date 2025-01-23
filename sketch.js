@@ -4,7 +4,7 @@ import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_Cellu
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
-import {initializeAudio, getEnergyRatio, getHMEnergy, getSpectrum, getAudioLevel, detectBeat} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
+import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 
 // The desired artwork size in which everything is pixel perfect.
@@ -79,6 +79,7 @@ const imgFiles = [
 ]
 
 const preview_frame = 30;
+export let audioReactive;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -95,6 +96,7 @@ function preload() {
 }
 
 function setup() {
+  audioReactive = new AudioReactive()
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
 
@@ -114,7 +116,7 @@ function setup() {
   initialize_pixel_sorting_shader()
 
   // Bind Audio Reactive Methods
-  userStartAudio([], initializeAudio());
+  userStartAudio([], audioReactive.initializeAudio());
   bind_audio_reactive_controls();
 
   // Apply the loaded font
@@ -216,11 +218,11 @@ function initializeCanvas(input_image){
 }
 
 function run_audio_analysis(){
-  var audioLevel = getAudioLevel()
-  getSpectrum()
-  getHMEnergy()
-  getEnergyRatio()
-  detectBeat(audioLevel)
+  let audioLevel = audioReactive.getAudioLevel()
+  audioReactive.getSpectrum()
+  audioReactive.getHMEnergy()
+  audioReactive.getEnergyRatio()
+  audioReactive.detectBeat(audioLevel)
 }
 
 function windowResized() {
