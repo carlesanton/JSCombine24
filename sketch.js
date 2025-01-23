@@ -128,7 +128,9 @@ function setup() {
 }
 
 function draw() {
-  run_audio_analysis();
+  if (audioReactive.isAudioEnabled()){
+    run_audio_analysis();
+  }
 
   if (image_loaded_successfuly){
     draw_steps()
