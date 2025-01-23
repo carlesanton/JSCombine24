@@ -4,7 +4,7 @@ import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_Cellu
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
-import {initializeAudio, getEnergyRatio, getHMEnergy, getSpectrum, getAudioLevel, detectBeat} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
+import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 
 // The desired artwork size in which everything is pixel perfect.
@@ -54,6 +54,7 @@ let img;
 let palette;
 let myFont;
 let color_buffer;
+let interface_color_buffer;
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -79,6 +80,7 @@ const imgFiles = [
 ]
 
 const preview_frame = 30;
+export let audioReactive;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -95,6 +97,7 @@ function preload() {
 }
 
 function setup() {
+  audioReactive = new AudioReactive()
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
 
@@ -114,7 +117,7 @@ function setup() {
   initialize_pixel_sorting_shader()
 
   // Bind Audio Reactive Methods
-  userStartAudio([], initializeAudio());
+  userStartAudio([], audioReactive.initializeAudio());
   bind_audio_reactive_controls();
 
   // Apply the loaded font
@@ -126,7 +129,9 @@ function setup() {
 }
 
 function draw() {
-  run_audio_analysis();
+  if (audioReactive.isAudioEnabled()){
+    run_audio_analysis();
+  }
 
   if (image_loaded_successfuly){
     draw_steps()
@@ -134,6 +139,8 @@ function draw() {
   else {
     display_image_error_message()
   }
+
+  drawInterface()
 }
 
 function draw_steps(){
@@ -151,15 +158,25 @@ function draw_steps(){
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   image(color_buffer, 0-width/2, 0-height/2, width, height)
+}
 
+function drawInterface(){
+  interface_color_buffer.begin()
+  clear()
   if (showPallete){
-    displayPalette(palette, palleteWidth, palleteHeight)
+    displayPalette(palette, -artworkWidth/2, -artworkHeight/2, palleteWidth, palleteHeight)
   }
 
   if (showFPS) {
     fps = calculateFPS(millis());
-    displayFPS(fps);
+    displayFPS(fps, artworkWidth/2, -artworkHeight/2);
   }
+
+  if (audioReactive.isDisplayVisualizationEnabled()){
+    audioReactive.displayVisualization();
+  }
+  interface_color_buffer.end()
+  image(interface_color_buffer, 0-width/2, 0-height/2, width, height)
 }
 
 function initializeCanvas(input_image){
@@ -177,6 +194,7 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
+  interface_color_buffer = createFramebuffer({width: artworkWidth, height: artworkHeight})
 
   let tex = canvas.getTexture(input_image);
   tex.setInterpolation(NEAREST, NEAREST);
@@ -216,11 +234,11 @@ function initializeCanvas(input_image){
 }
 
 function run_audio_analysis(){
-  var audioLevel = getAudioLevel()
-  getSpectrum()
-  getHMEnergy()
-  getEnergyRatio()
-  detectBeat(audioLevel)
+  let audioLevel = audioReactive.getAudioLevel()
+  audioReactive.getSpectrum()
+  audioReactive.getHMEnergy()
+  audioReactive.getEnergyRatio()
+  audioReactive.detectBeat(audioLevel)
 }
 
 function windowResized() {
