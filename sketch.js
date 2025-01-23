@@ -54,6 +54,7 @@ let img;
 let palette;
 let myFont;
 let color_buffer;
+let interface_color_buffer;
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -181,6 +182,7 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
+  interface_color_buffer = createFramebuffer({width: artworkWidth, height: artworkHeight})
 
   let tex = canvas.getTexture(input_image);
   tex.setInterpolation(NEAREST, NEAREST);
