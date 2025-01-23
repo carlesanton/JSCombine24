@@ -18,3 +18,6 @@ Combine24objects*.json
 
 # Ignore VSCode settings
 .vscode/*
+
+# Ignore Open Call files (dossiers and pdfs and so on)
+dossiers/*
