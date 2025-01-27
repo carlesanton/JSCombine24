@@ -1,5 +1,5 @@
-import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultFPS, defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, change_fps, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image, audioReactive} from './sketch.js'
+import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button, turnDaisyUICardIntoBodyWithTitle} from './lib/JSGenerativeArtTools/ui.js'
+import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image, audioReactive, colorPalette, fps} from './sketch.js'
 import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
 import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
 
@@ -11,9 +11,6 @@ function createArtworkSettingsCard() {
     const cardBody = card.getElementsByClassName('collapse-content')[0]
 
     // Add Inputs
-    const fps = create_number_input_slider_and_number('FPS', 'FPS', defaultFPS, '0', '300', change_fps);
-    elements_dict['FPS'] = fps.getElementsByTagName('input')[0];
-
     const width = create_number_input_slider_and_number('artworkWidth', 'Artwork Width', defaultArtworkWidth, 0, 4000);
     elements_dict['artworkWidth'] = width.getElementsByTagName('input')[0];
 
@@ -29,8 +26,11 @@ function createArtworkSettingsCard() {
     const pixelSize = create_number_input_slider_and_number('pixelSize', 'Pixel Size', defaultPixelSize,1, 4000);
     elements_dict['pixelSize'] = pixelSize.getElementsByTagName('input')[0];
 
-    cardBody.appendChild(fps);
-    cardBody.appendChild(document.createElement('br'));
+    // FPS, take only body
+    var FPSInputs = fps.createFPSSettingsCard();
+    var FPSInputsBody = turnDaisyUICardIntoBodyWithTitle(FPSInputs['main-toolbar'])
+    elements_dict['fpsInputs'] = FPSInputs;
+
     cardBody.appendChild(width);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(height);
@@ -39,6 +39,8 @@ function createArtworkSettingsCard() {
     cardBody.appendChild(seedButton);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(pixelSize);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(FPSInputsBody);
 
     elements_dict['main-toolbar'] = card;
 
@@ -70,7 +72,7 @@ function createArtworkControlsCard() {
 function intialize_toolbar(){
     var elements_dict = {}
     toolbar = document.getElementById('toolbar');
-  
+
     // Main Settings UI
     var MainInputs = createArtworkSettingsCard();
     toolbar.appendChild(MainInputs['main-toolbar']);
@@ -100,6 +102,12 @@ function intialize_toolbar(){
     toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
     
+    // Color Palette
+    var PaletteInputs = colorPalette.createColorPaletteControlsCard();
+    toolbar.appendChild(PaletteInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
+    elements_dict['paletteInputs'] = PaletteInputs;
+
     // Main controll Buttons
     var MainButtons = createArtworkControlsCard();
     toolbar.appendChild(MainButtons['main-toolbar']);

@@ -1,8 +1,8 @@
-import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
+import {ColorPalette} from './lib/JSGenerativeArtTools/colorPalette/colorPalette.js';
+import {FPS} from './lib/JSGenerativeArtTools/fps/FPS.js';
 import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
 import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
-import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
@@ -31,7 +31,6 @@ let artworkHeight;
 let workingImageWidth;
 let workingImageHeight;
 let pixelSize;
-let fps;
 export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
 
 // To check if user loaded an image or default one is loaded
@@ -41,17 +40,7 @@ let image_loaded_successfuly = false;
 const pixel_density = 1;
 let canvas;
 
-// FPS parametters
-const showFPS = false;
-
-// Pallete display variables
-const palleteWidth = 40
-const palleteHeight = 1000;
-const showPallete = false;
-const number_of_colors = 20;
-
 let img;
-let palette;
 let myFont;
 let color_buffer;
 let interface_color_buffer;
@@ -81,6 +70,8 @@ const imgFiles = [
 
 const preview_frame = 30;
 export let audioReactive;
+export let colorPalette;
+export let fps;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -98,6 +89,8 @@ function preload() {
 
 function setup() {
   audioReactive = new AudioReactive()
+  colorPalette = new ColorPalette()
+  fps = new FPS()
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
 
@@ -109,8 +102,7 @@ function setup() {
   // Move Canvas to canvas-wrapper div
   canvas.parent("canvas-wrapper")
 
-  // Set FrameRate and pixelDensity
-  frameRate(fps);
+  // Set pixelDensity
   canvas.pixelDensity(pixel_density);
 
   initialize_cellular_automata_shader()
@@ -150,8 +142,7 @@ function draw_steps(){
 
   // Cellular Automata
   if (frameCount%get_CARandomColorChangeRate()==1){
-    var new_random_color_index = Math.round(random(0,palette.length-1))
-    var new_ca_random_color =  palette[new_random_color_index];
+    var new_ca_random_color = colorPalette.getRandomColor()
     set_ca_new_random_color(new_ca_random_color)
   }
   color_buffer = cellular_automata_gpu(color_buffer)
@@ -163,13 +154,13 @@ function draw_steps(){
 function drawInterface(){
   interface_color_buffer.begin()
   clear()
-  if (showPallete){
-    displayPalette(palette, -artworkWidth/2, -artworkHeight/2, palleteWidth, palleteHeight)
+  if (colorPalette.isDisplayEnabled()){
+    colorPalette.display(-artworkWidth/2, -artworkHeight/2)
   }
 
-  if (showFPS) {
-    fps = calculateFPS(millis());
-    displayFPS(fps, artworkWidth/2, -artworkHeight/2);
+  if (fps.isDisplayEnabled()) {
+    fps.calculateFPS(millis());
+    fps.displayFPS(artworkWidth/2, -artworkHeight/2);
   }
 
   if (audioReactive.isDisplayVisualizationEnabled()){
@@ -200,8 +191,8 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   textureWrap(CLAMP)
   
-  input_image = colorQuantize(input_image, number_of_colors)
-  palette = extractCollorPaletteFromImage(input_image)
+  input_image = colorPalette.colorQuantize(input_image)
+  colorPalette.extractFromImage(input_image)
 
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
@@ -218,8 +209,7 @@ function initializeCanvas(input_image){
   set_ps_max_steps(old_max_steps)
   
   // Cellular automata
-  var new_random_color_index = Math.round(random(0,palette.length-1))
-  var new_ca_random_color =  palette[new_random_color_index];
+  var new_ca_random_color =  colorPalette.getRandomColor()
   set_ca_new_random_color(new_ca_random_color)
 
   var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
@@ -248,7 +238,6 @@ function windowResized() {
 export function applyUIChanges(){
   updateArtworkSettings();
 
-  frameRate(fps);
   // prepareP5Js(artwork_seed)
 
   // // Update canvas size
@@ -262,7 +251,6 @@ export function applyUIChanges(){
 }
 
 function updateArtworkSettings() {
-  fps = parseInt(MainInputs['FPS'].value);
   artworkWidth = parseInt(MainInputs['artworkWidth'].value);
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
@@ -332,15 +320,6 @@ export function load_user_image(user_image){
   loaded_user_image = true;
   image_loaded_successfuly = true;
 }
-
-export function change_fps(new_fps){
-  var old_fps = fps;
-  fps = parseInt(new_fps);
-  console.log('Changing FPS to: ', fps)
-  frameRate(fps);
-  return old_fps
-}
-
 
 function display_image_error_message(){
   fill(255, 0, 0);
