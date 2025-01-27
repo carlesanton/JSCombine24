@@ -1,8 +1,8 @@
 import {ColorPalette} from './lib/JSGenerativeArtTools/colorPalette/colorPalette.js';
+import {FPS} from './lib/JSGenerativeArtTools/fps/FPS.js';
 import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
 import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
-import {calculateFPS, displayFPS} from './lib/JSGenerativeArtTools/fps.js';
 import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
@@ -31,7 +31,6 @@ let artworkHeight;
 let workingImageWidth;
 let workingImageHeight;
 let pixelSize;
-let fps;
 export let artwork_seed; // -1 used for random seeds, if set to a positive integer the number is used
 
 // To check if user loaded an image or default one is loaded
@@ -40,10 +39,6 @@ let image_loaded_successfuly = false;
 
 const pixel_density = 1;
 let canvas;
-
-// FPS parametters
-const showFPS = false;
-
 
 let img;
 let myFont;
@@ -76,6 +71,7 @@ const imgFiles = [
 const preview_frame = 30;
 export let audioReactive;
 export let colorPalette;
+export let fps;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -94,6 +90,7 @@ function preload() {
 function setup() {
   audioReactive = new AudioReactive()
   colorPalette = new ColorPalette()
+  fps = new FPS()
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
 
@@ -105,8 +102,7 @@ function setup() {
   // Move Canvas to canvas-wrapper div
   canvas.parent("canvas-wrapper")
 
-  // Set FrameRate and pixelDensity
-  frameRate(fps);
+  // Set pixelDensity
   canvas.pixelDensity(pixel_density);
 
   initialize_cellular_automata_shader()
@@ -162,9 +158,9 @@ function drawInterface(){
     colorPalette.display(-artworkWidth/2, -artworkHeight/2)
   }
 
-  if (showFPS) {
-    fps = calculateFPS(millis());
-    displayFPS(fps, artworkWidth/2, -artworkHeight/2);
+  if (fps.isDisplayEnabled()) {
+    fps.calculateFPS(millis());
+    fps.displayFPS(artworkWidth/2, -artworkHeight/2);
   }
 
   if (audioReactive.isDisplayVisualizationEnabled()){
@@ -242,7 +238,6 @@ function windowResized() {
 export function applyUIChanges(){
   updateArtworkSettings();
 
-  frameRate(fps);
   // prepareP5Js(artwork_seed)
 
   // // Update canvas size
@@ -256,7 +251,6 @@ export function applyUIChanges(){
 }
 
 function updateArtworkSettings() {
-  fps = parseInt(MainInputs['FPS'].value);
   artworkWidth = parseInt(MainInputs['artworkWidth'].value);
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
@@ -326,15 +320,6 @@ export function load_user_image(user_image){
   loaded_user_image = true;
   image_loaded_successfuly = true;
 }
-
-export function change_fps(new_fps){
-  var old_fps = fps;
-  fps = parseInt(new_fps);
-  console.log('Changing FPS to: ', fps)
-  frameRate(fps);
-  return old_fps
-}
-
 
 function display_image_error_message(){
   fill(255, 0, 0);
