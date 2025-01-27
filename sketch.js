@@ -1,4 +1,4 @@
-import {extractCollorPaletteFromImage, buildPaletteIndexDict, displayPalette, colorQuantize} from './lib/JSGenerativeArtTools/collor_palette.js';
+import {ColorPalette} from './lib/JSGenerativeArtTools/colorPalette/colorPalette.js';
 import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
 import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
@@ -44,14 +44,8 @@ let canvas;
 // FPS parametters
 const showFPS = false;
 
-// Pallete display variables
-const palleteWidth = 40
-const palleteHeight = 1000;
-const showPallete = false;
-const number_of_colors = 20;
 
 let img;
-let palette;
 let myFont;
 let color_buffer;
 let interface_color_buffer;
@@ -81,6 +75,7 @@ const imgFiles = [
 
 const preview_frame = 30;
 export let audioReactive;
+export let colorPalette;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -98,6 +93,7 @@ function preload() {
 
 function setup() {
   audioReactive = new AudioReactive()
+  colorPalette = new ColorPalette()
   var toolbar_elements = intialize_toolbar();
   MainInputs = toolbar_elements.mainInputs;
 
@@ -150,8 +146,7 @@ function draw_steps(){
 
   // Cellular Automata
   if (frameCount%get_CARandomColorChangeRate()==1){
-    var new_random_color_index = Math.round(random(0,palette.length-1))
-    var new_ca_random_color =  palette[new_random_color_index];
+    var new_ca_random_color = colorPalette.getRandomColor()
     set_ca_new_random_color(new_ca_random_color)
   }
   color_buffer = cellular_automata_gpu(color_buffer)
@@ -163,8 +158,8 @@ function draw_steps(){
 function drawInterface(){
   interface_color_buffer.begin()
   clear()
-  if (showPallete){
-    displayPalette(palette, -artworkWidth/2, -artworkHeight/2, palleteWidth, palleteHeight)
+  if (colorPalette.isDisplayEnabled()){
+    colorPalette.display(-artworkWidth/2, -artworkHeight/2)
   }
 
   if (showFPS) {
@@ -200,8 +195,8 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   textureWrap(CLAMP)
   
-  input_image = colorQuantize(input_image, number_of_colors)
-  palette = extractCollorPaletteFromImage(input_image)
+  input_image = colorPalette.colorQuantize(input_image)
+  colorPalette.extractFromImage(input_image)
 
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
@@ -218,8 +213,7 @@ function initializeCanvas(input_image){
   set_ps_max_steps(old_max_steps)
   
   // Cellular automata
-  var new_random_color_index = Math.round(random(0,palette.length-1))
-  var new_ca_random_color =  palette[new_random_color_index];
+  var new_ca_random_color =  colorPalette.getRandomColor()
   set_ca_new_random_color(new_ca_random_color)
 
   var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
