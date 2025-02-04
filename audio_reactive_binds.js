@@ -15,14 +15,14 @@ function bind_audio_reactive_controls(){
         change_ps_direction();
     });
     audioReactive.addControllToTakeOver(
-        () => {
+        (enable) => {
             if (audioReactive.isAudioEnabled()){
                 set_ps_direction_change_rate_from_slider(0);
             }
             else {
                 set_ps_direction_change_rate_from_slider(defaultNoiseDirectionChangeRate);
             }
-            disable_ps_direction_change_rate()
+            disable_ps_direction_change_rate(enable);
         }
     );
 
