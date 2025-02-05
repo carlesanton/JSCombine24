@@ -39,6 +39,7 @@ function bind_audio_reactive_controls(){
         set_ps_passes_per_frame_from_slider(remapedLevel);
     });
     audioReactive.addControllToTakeOver(disable_ps_passes_per_frame);
+    audioReactive.setAudioLevelStrengthSliderLabel('Pixel Sorting Speed Sensitivity:'); // Change label to make use clearer
 
     // Centroid
     // console.log('Binding PS Speed to audio level')
@@ -61,6 +62,7 @@ function bind_audio_reactive_controls(){
         set_ca_passes_per_frame_from_slider(remapedRatio);
     });
     audioReactive.addControllToTakeOver(disable_ca_passes_per_frame);
+    audioReactive.setLHEnergyRatioStrengthLabel('Cellular Automata Speed Sensitivity:')
 
     if(audioReactive.isAudioEnabled()){
         audioReactive.takeOverControlls()
