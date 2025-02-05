@@ -30,7 +30,11 @@ function bind_audio_reactive_controls(){
     console.log('Binding PS Speed to audio level')
     audioReactive.setOnLevelChangeCallback(function(e) {
         let remapedLevel = audioReactive.mapLevel(e, audioReactive.levelScale)
-        remapedLevel = map(remapedLevel, 0, level_max_value_, ps_speed_min_value, ps_speed_max_value)
+        remapedLevel = map(remapedLevel, 0,  0.1, ps_speed_min_value, ps_speed_max_value)
+        // What this steps do is: center the remaped value to 0 (removing the min output value), scale it and then recenter it to the min output value
+        remapedLevel-= ps_speed_min_value
+        remapedLevel*=audioReactive.getAudioLevelStrength()
+        remapedLevel+= ps_speed_min_value
         remapedLevel = constrain(remapedLevel, ps_speed_min_value, ps_speed_max_value)
         set_ps_passes_per_frame_from_slider(remapedLevel);
     });
@@ -48,7 +52,8 @@ function bind_audio_reactive_controls(){
     // Energy Ratio
     console.log('Binding CA Speed to MidHigh/Low energy ratio')
     audioReactive.setOnEnergyRatioChangeCallback(function(energyRatio) {
-        var remapedRatio = map(energyRatio, 0, 0.3, 0, 5)
+        // We should take the same steps for scaling as in setOnLevelChangeCallback but since the min output is 0 its not needed
+        var remapedRatio = map(energyRatio, 0, 0.3, 0, 5) * audioReactive.getLHEnergyRatioStrength();
         remapedRatio = parseInt(constrain(remapedRatio, 0, 5))
         if (energyRatio<=0.1){ // To generate some CA movement without any audio
             remapedRatio = 1
