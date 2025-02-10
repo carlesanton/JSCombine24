@@ -1,7 +1,7 @@
 import {ColorPalette} from './lib/JSGenerativeArtTools/colorPalette/colorPalette.js';
 import {FPS} from './lib/JSGenerativeArtTools/fps/fps.js';
-import {load_pixel_shader_code, initialize_pixel_sorting_shader, change_ps_direction, pixel_sorting_gpu, update_all_ps_parametters, set_ps_max_steps, reset_ps_steps, get_PixelSortInitialSteps} from './lib/JSGenerativeArtTools/pixel_sort.js';
-import {load_cellular_automata_code, set_ca_max_steps, reset_ca_steps, get_CellularAutomataInitialSteps, initialize_cellular_automata_shader, cellular_automata_gpu, update_all_ca_parametters, set_ca_new_random_color, get_CARandomColorChangeRate} from './lib/JSGenerativeArtTools/cellular_automata.js';
+import {PixelSort} from './lib/JSGenerativeArtTools/pixelSorting/pixelSort.js';
+import {CellularAutomata} from './lib/JSGenerativeArtTools/cellularAutomata/cellularAutomata.js'
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
 import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
@@ -72,6 +72,8 @@ const preview_frame = 30;
 export let audioReactive;
 export let colorPalette;
 export let fps;
+export let pixelSort;
+export let cellularAutomata;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -83,8 +85,8 @@ function preload() {
     () => { image_loaded_successfuly = true; },
     () => { image_loaded_successfuly = false; }
 )
-  load_pixel_shader_code();
-  load_cellular_automata_code();
+  pixelSort = new PixelSort();
+  cellularAutomata = new CellularAutomata();
 }
 
 function setup() {
@@ -105,8 +107,10 @@ function setup() {
   // Set pixelDensity
   canvas.pixelDensity(pixel_density);
 
-  initialize_cellular_automata_shader()
-  initialize_pixel_sorting_shader()
+  // initialize_cellular_automata_shader()
+  // initialize_pixel_sorting_shader()
+  pixelSort.initializeShader()
+  cellularAutomata.initializeShader()
 
   // Bind Audio Reactive Methods
   userStartAudio([], audioReactive.initializeAudio());
@@ -137,15 +141,15 @@ function draw() {
 
 function draw_steps(){
   // Pixel sorting
-  color_buffer = pixel_sorting_gpu(color_buffer, true)
+  color_buffer = pixelSort.pixelSortingGPU(color_buffer, true)
 
 
   // Cellular Automata
-  if (frameCount%get_CARandomColorChangeRate()==1){
+  if (frameCount%cellularAutomata.getRandomColorChangeRate()==1){
     var new_ca_random_color = colorPalette.getRandomColor()
-    set_ca_new_random_color(new_ca_random_color)
+    cellularAutomata.setNewRandomColor(new_ca_random_color)
   }
-  color_buffer = cellular_automata_gpu(color_buffer)
+  color_buffer = cellularAutomata.cellularAutomataGPU(color_buffer)
 
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
   image(color_buffer, 0-width/2, 0-height/2, width, height)
@@ -200,24 +204,24 @@ function initializeCanvas(input_image){
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
 
-  var old_max_steps = set_ps_max_steps(get_PixelSortInitialSteps())
-  change_ps_direction()
-  reset_ps_steps()
-  for (let i=0; i<get_PixelSortInitialSteps(); i++){
-    color_buffer = pixel_sorting_gpu(color_buffer, false)
+  var old_max_steps = pixelSort.setMaxSteps(pixelSort.getInitialSteps())
+  pixelSort.changeDirection();
+  pixelSort.resetSteps()
+  for (let i=0; i<pixelSort.getInitialSteps(); i++){
+    color_buffer = pixelSort.pixelSortingGPU(color_buffer, false)
   }
-  set_ps_max_steps(old_max_steps)
+  pixelSort.setMaxSteps(old_max_steps)
   
   // Cellular automata
   var new_ca_random_color =  colorPalette.getRandomColor()
-  set_ca_new_random_color(new_ca_random_color)
+  cellularAutomata.setNewRandomColor(new_ca_random_color);
 
-  var old_max_steps = set_ca_max_steps(get_CellularAutomataInitialSteps())
-  reset_ca_steps()
-  for (let j=0;j < get_CellularAutomataInitialSteps(); j++) {
-    color_buffer = cellular_automata_gpu(color_buffer)
+  var old_max_steps = cellularAutomata.setMaxSteps(cellularAutomata.getInitialSteps());
+  cellularAutomata.resetSteps();
+  for (let j=0;j < cellularAutomata.getInitialSteps(); j++) {
+    color_buffer = cellularAutomata.cellularAutomataGPU(color_buffer);
   }
-  set_ca_max_steps(old_max_steps)
+  cellularAutomata.setMaxSteps(old_max_steps);
 
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
@@ -255,8 +259,8 @@ function updateArtworkSettings() {
   artworkHeight = parseInt(MainInputs['artworkHeight'].value);
   pixelSize = parseInt(MainInputs['pixelSize'].value);
 
-  update_all_ps_parametters()
-  update_all_ca_parametters()
+  pixelSort.updateAllParameters();
+  cellularAutomata.updateAllParameters()
 }
 
 function updateArtworkSeed(){

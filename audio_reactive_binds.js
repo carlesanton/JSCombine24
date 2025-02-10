@@ -1,6 +1,4 @@
-import {change_ps_direction, disable_ps_direction_change_rate, set_ps_direction_change_rate_from_slider, set_ps_passes_per_frame_from_slider, disable_ps_passes_per_frame, defaultNoiseDirectionChangeRate} from './lib/JSGenerativeArtTools/pixel_sort.js'
-import {set_ca_passes_per_frame_from_slider, disable_ca_passes_per_frame} from './lib/JSGenerativeArtTools/cellular_automata.js'
-import {audioReactive} from './sketch.js'
+import {audioReactive, pixelSort, cellularAutomata} from './sketch.js'
 
 var ps_speed_min_value = 2;
 var ps_speed_max_value = 23;
@@ -12,17 +10,17 @@ function bind_audio_reactive_controls(){
     // Beat Detect
     console.log('Binding PS Direction to Beat Detection')
     audioReactive.setOnBeatCallback(function() {
-        change_ps_direction();
+        pixelSort.changeDirection();
     });
     audioReactive.addControllToTakeOver(
         (enable) => {
             if (audioReactive.isAudioEnabled()){
-                set_ps_direction_change_rate_from_slider(0);
+                pixelSort.setDirectionChangeRateFromSlider(0);
             }
             else {
-                set_ps_direction_change_rate_from_slider(defaultNoiseDirectionChangeRate);
+                pixelSort.setDirectionChangeRateFromSliderToDefault();
             }
-            disable_ps_direction_change_rate(enable);
+            pixelSort.disableDirectionChangeRate(enable);
         }
     );
 
@@ -36,9 +34,9 @@ function bind_audio_reactive_controls(){
         remapedLevel*=audioReactive.getAudioLevelStrength()
         remapedLevel+= ps_speed_min_value
         remapedLevel = constrain(remapedLevel, ps_speed_min_value, ps_speed_max_value)
-        set_ps_passes_per_frame_from_slider(remapedLevel);
+        pixelSort.setPassesPerFrameFromSlider(remapedLevel);
     });
-    audioReactive.addControllToTakeOver(disable_ps_passes_per_frame);
+    audioReactive.addControllToTakeOver((enable) => {pixelSort.disablePassesPerFrame(enable)});
     audioReactive.setAudioLevelStrengthSliderLabel('Pixel Sorting Speed Sensitivity:'); // Change label to make use clearer
 
     // Centroid
@@ -59,9 +57,9 @@ function bind_audio_reactive_controls(){
         if (energyRatio<=0.1){ // To generate some CA movement without any audio
             remapedRatio = 1
         }
-        set_ca_passes_per_frame_from_slider(remapedRatio);
+        cellularAutomata.setPassesPerFrameFromSlider(remapedRatio);
     });
-    audioReactive.addControllToTakeOver(disable_ca_passes_per_frame);
+    audioReactive.addControllToTakeOver((enable) => {cellularAutomata.disableRandomColorChangeRate(enable)});
     audioReactive.setLHEnergyRatioStrengthLabel('Cellular Automata Speed Sensitivity:')
 
     if(audioReactive.isAudioEnabled()){
