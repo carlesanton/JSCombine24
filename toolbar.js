@@ -1,7 +1,5 @@
 import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button, turnDaisyUICardIntoBodyWithTitle} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image, audioReactive, colorPalette, fps} from './sketch.js'
-import {createPixelSortingSettings} from './lib/JSGenerativeArtTools/pixel_sort.js'
-import {createCASettingsCard} from './lib/JSGenerativeArtTools/cellular_automata.js'
+import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata} from './sketch.js'
 
 function createArtworkSettingsCard() {
     var elements_dict = {};
@@ -91,13 +89,13 @@ function intialize_toolbar(){
     elements_dict['AudioInputs'] = AudioInput;
 
     // Pixel Sorting UI
-    var PSInputs = createPixelSortingSettings();
+    var PSInputs = pixelSort.createPixelSortingSettings();
     toolbar.appendChild(PSInputs['main-toolbar']);
     toolbar.appendChild(document.createElement('br'));
     elements_dict['psInputs'] = PSInputs;
     
     // Cellular Automata UI
-    var CAInputs = createCASettingsCard();
+    var CAInputs = cellularAutomata.createSettingsCard();
     toolbar.appendChild(CAInputs['main-toolbar']);
     toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
