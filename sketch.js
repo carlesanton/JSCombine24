@@ -74,6 +74,7 @@ export let colorPalette;
 export let fps;
 export let pixelSort;
 export let cellularAutomata;
+let inputs;
 
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
@@ -93,8 +94,8 @@ function setup() {
   audioReactive = new AudioReactive()
   colorPalette = new ColorPalette()
   fps = new FPS()
-  var toolbar_elements = intialize_toolbar();
-  MainInputs = toolbar_elements.mainInputs;
+  inputs = intialize_toolbar();
+  MainInputs = inputs.mainInputs;
 
   updateArtworkSettings()
 
