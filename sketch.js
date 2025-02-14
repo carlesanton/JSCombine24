@@ -247,11 +247,13 @@ export function applyUIChanges(){
   // // Update canvas size
   // resizeCanvas(artworkWidth, artworkHeight);
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+  audioReactive.setVisualizationSize(artworkHeight, artworkWidth)
   
   // Reset pixel sorting and cellular automata steps
   
   // Redraw everything
   updateArtworkSeed()
+  colorPalette.setHeight(artworkHeight)
 }
 
 function updateArtworkSettings() {
