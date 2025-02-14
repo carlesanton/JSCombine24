@@ -292,6 +292,33 @@ export function setSeed(){
   loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
+export function flipSize(){
+  // Set input seed to current seed
+  const oldArtworkWidth = MainInputs['artworkWidth'].value;
+  const oldArtworkHeight = MainInputs['artworkHeight'].value;
+
+  artworkWidth = oldArtworkHeight;
+  artworkHeight = oldArtworkWidth;
+
+  MainInputs['artworkWidth'].value = artworkWidth;
+  MainInputs['artworkHeight'].value = artworkHeight;
+
+  // Update slider aswell by sending input event
+  var event = new Event('input');
+  MainInputs['artworkWidth'].dispatchEvent(event);
+  MainInputs['artworkHeight'].dispatchEvent(event);
+
+  updateArtworkSettings();
+  audioReactive.setVisualizationSize(artworkHeight, artworkWidth)
+
+  // Restart Artowk with current seed
+  const oldSeed = MainInputs['artworkSeed'].value
+  setSeed()
+
+  // Set input seed to current seed
+  MainInputs['artworkSeed'].value = oldSeed;
+}
+
 export function saveImage() {
   let color_buffer_otions = {
     width: artworkWidth,
