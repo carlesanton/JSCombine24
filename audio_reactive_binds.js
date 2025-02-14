@@ -21,6 +21,7 @@ function bind_audio_reactive_controls(){
                 pixelSort.setDirectionChangeRateFromSliderToDefault();
             }
             pixelSort.disableDirectionChangeRate(enable);
+            pixelSort.toggleDirectionChangeRateAudioControlled(enable);
         }
     );
 
@@ -36,8 +37,10 @@ function bind_audio_reactive_controls(){
         remapedLevel = constrain(remapedLevel, ps_speed_min_value, ps_speed_max_value)
         pixelSort.setPassesPerFrameFromSlider(remapedLevel);
     });
-    audioReactive.addControllToTakeOver((enable) => {pixelSort.disablePassesPerFrame(enable)});
-    audioReactive.setAudioLevelStrengthSliderLabel('Pixel Sorting Speed Sensitivity:'); // Change label to make use clearer
+    audioReactive.addControllToTakeOver((enable) => {
+        pixelSort.disablePassesPerFrame(enable);
+        pixelSort.togglePassesPerFrameAudioControlled(enable);
+    });
 
     // Centroid
     // console.log('Binding PS Speed to audio level')
@@ -59,8 +62,10 @@ function bind_audio_reactive_controls(){
         }
         cellularAutomata.setPassesPerFrameFromSlider(remapedRatio);
     });
-    audioReactive.addControllToTakeOver((enable) => {cellularAutomata.disableRandomColorChangeRate(enable)});
-    audioReactive.setLHEnergyRatioStrengthLabel('Cellular Automata Speed Sensitivity:')
+    audioReactive.addControllToTakeOver((enable) => {
+        cellularAutomata.disablePassesPerFrame(enable);
+        cellularAutomata.togglePassesPerFrameRateAudioControlled(enable);
+    });
 
     if(audioReactive.isAudioEnabled()){
         audioReactive.takeOverControlls()
