@@ -3,6 +3,7 @@
 *.jpeg
 *.png
 *.psd
+*.webp
 !/img/*.jpg
 
 # Ignore Combine24objects.json
@@ -12,6 +13,9 @@ Combine24objects*.json
 *.avi
 *.mp4
 *.webm
+
+# Ignore all exports folder
+exports/*
 
 # Ignore .DS_Store
 .DS_Store
