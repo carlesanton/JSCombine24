@@ -6,6 +6,7 @@ import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js
 import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
+import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
 
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
@@ -74,6 +75,7 @@ export let colorPalette;
 export let fps;
 export let pixelSort;
 export let cellularAutomata;
+export let recorder;
 let inputs;
 
 function preload() {
@@ -93,6 +95,7 @@ function preload() {
 function setup() {
   audioReactive = new AudioReactive()
   colorPalette = new ColorPalette()
+  recorder = new Recorder()
   fps = new FPS()
   inputs = intialize_toolbar();
   MainInputs = inputs.mainInputs;
