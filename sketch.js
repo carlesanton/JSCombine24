@@ -113,8 +113,6 @@ function setup() {
   // Set pixelDensity
   canvas.pixelDensity(pixel_density);
 
-  // initialize_cellular_automata_shader()
-  // initialize_pixel_sorting_shader()
   pixelSort.initializeShader()
   cellularAutomata.initializeShader()
 
