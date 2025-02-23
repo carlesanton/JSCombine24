@@ -1,5 +1,5 @@
 import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button, turnDaisyUICardIntoBodyWithTitle, createSmallBreak, create_subtitle} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata} from './sketch.js'
+import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata, recorder} from './sketch.js'
 
 function createArtworkSettingsCard() {
     var elements_dict = {};
@@ -127,6 +127,12 @@ function intialize_toolbar(){
     toolbar.appendChild(CAInputs['main-toolbar']);
     toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
+
+    // Recorder UI
+    var recorderInputs = recorder.createSettingsCard();
+    toolbar.appendChild(recorderInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
+    elements_dict['recorderInputs'] = recorderInputs;
     
     elements_dict['toolbar'] = toolbar;
     // toolbar.style.display = "none" // to hide toolbar
