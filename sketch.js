@@ -100,6 +100,8 @@ function setup() {
   inputs = intialize_toolbar();
   MainInputs = inputs.mainInputs;
 
+  recorder.setSketchFPSMethod(() => {return fps.getFPS()})
+
   updateArtworkSettings()
 
   // Create Canvas
