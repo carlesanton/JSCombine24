@@ -231,6 +231,7 @@ function initializeCanvas(input_image){
 
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
+  recorder.setFilenameSufix('seed-'+ artwork_seed);
 }
 
 function run_audio_analysis(){
