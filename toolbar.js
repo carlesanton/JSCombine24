@@ -1,5 +1,5 @@
 import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button, turnDaisyUICardIntoBodyWithTitle, createSmallBreak, create_subtitle} from './lib/JSGenerativeArtTools/ui.js'
-import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata, recorder} from './sketch.js'
+import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata, recorder, mask} from './sketch.js'
 
 function createArtworkSettingsCard() {
     var elements_dict = {};
@@ -115,6 +115,12 @@ function intialize_toolbar(){
     toolbar.appendChild(AudioInput['main-toolbar']);
     toolbar.appendChild(document.createElement('br'));
     elements_dict['AudioInputs'] = AudioInput;
+    
+    // Mask
+    var MaskInputs = mask.createMaskSettings()
+    toolbar.appendChild(MaskInputs['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
+    elements_dict['MaskInputs'] = MaskInputs;
 
     // Pixel Sorting UI
     var PSInputs = pixelSort.createPixelSortingSettings();
