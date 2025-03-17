@@ -192,6 +192,7 @@ function drawInterface(){
   if (audioReactive.isDisplayVisualizationEnabled()){
     audioReactive.displayVisualization();
   }
+
   interface_color_buffer.end()
   image(interface_color_buffer, 0-width/2, 0-height/2, width, height)
 }
@@ -235,6 +236,7 @@ function initializeCanvas(input_image){
   pixelSort.setMask(maskImage);
   cellularAutomata.setMask(maskImage);
 
+  // Pixel Sort
   var old_max_steps = pixelSort.setMaxSteps(pixelSort.getInitialSteps())
   pixelSort.changeDirection();
   pixelSort.resetSteps()
