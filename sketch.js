@@ -149,6 +149,14 @@ function draw() {
 }
 
 function draw_steps(){
+  // Recreate Mask if needed
+  maskImage = mask.createMask(mask.getPreviousUsedImage());
+  if (!mask.getEnable()) { // If masking is not enabled return black mask
+    maskImage = null;
+  }
+  pixelSort.setMask(maskImage);
+  cellularAutomata.setMask(maskImage);
+
   // Pixel sorting
   color_buffer = pixelSort.pixelSortingGPU(color_buffer, true)
 
@@ -215,6 +223,12 @@ function initializeCanvas(input_image){
   image(input_image, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
+
+  if (!mask.getEnable()) { // If masking is not enabled return black mask
+    maskImage = null;
+  }
+  pixelSort.setMask(maskImage);
+  cellularAutomata.setMask(maskImage);
 
   var old_max_steps = pixelSort.setMaxSteps(pixelSort.getInitialSteps())
   pixelSort.changeDirection();
