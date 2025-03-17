@@ -175,6 +175,11 @@ function draw_steps(){
 function drawInterface(){
   interface_color_buffer.begin()
   clear()
+  
+  if (mask.isDisplayEnabled()){
+    mask.displayMask();
+  }
+  
   if (colorPalette.isDisplayEnabled()){
     colorPalette.display(-artworkWidth/2, -artworkHeight/2)
   }
