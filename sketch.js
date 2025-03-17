@@ -7,6 +7,7 @@ import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
+import { Mask } from './lib/JSGenerativeArtTools/mask/mask.js';
 
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
@@ -76,6 +77,8 @@ export let fps;
 export let pixelSort;
 export let cellularAutomata;
 export let recorder;
+export let mask;
+let maskImage;
 let inputs;
 
 function preload() {
@@ -90,6 +93,7 @@ function preload() {
 )
   pixelSort = new PixelSort();
   cellularAutomata = new CellularAutomata();
+  mask = new Mask();
 }
 
 function setup() {
@@ -115,6 +119,7 @@ function setup() {
 
   pixelSort.initializeShader()
   cellularAutomata.initializeShader()
+  mask.initializeShader()
 
   // Bind Audio Reactive Methods
   userStartAudio([], audioReactive.initializeAudio());
@@ -201,6 +206,9 @@ function initializeCanvas(input_image){
   
   input_image = colorPalette.colorQuantize(input_image)
   colorPalette.extractFromImage(input_image)
+
+  // Create mask
+  maskImage = mask.createMask(input_image);
 
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
