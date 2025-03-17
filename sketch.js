@@ -7,6 +7,7 @@ import {intialize_toolbar} from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
+import { Mask } from './lib/JSGenerativeArtTools/mask/mask.js';
 
 // The desired artwork size in which everything is pixel perfect.
 // Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
@@ -76,6 +77,8 @@ export let fps;
 export let pixelSort;
 export let cellularAutomata;
 export let recorder;
+export let mask;
+let maskImage;
 let inputs;
 
 function preload() {
@@ -90,6 +93,7 @@ function preload() {
 )
   pixelSort = new PixelSort();
   cellularAutomata = new CellularAutomata();
+  mask = new Mask();
 }
 
 function setup() {
@@ -115,6 +119,7 @@ function setup() {
 
   pixelSort.initializeShader()
   cellularAutomata.initializeShader()
+  mask.initializeShader()
 
   // Bind Audio Reactive Methods
   userStartAudio([], audioReactive.initializeAudio());
@@ -144,6 +149,14 @@ function draw() {
 }
 
 function draw_steps(){
+  // Recreate Mask if needed
+  maskImage = mask.createMask(mask.getPreviousUsedImage());
+  if (!mask.getEnable()) { // If masking is not enabled return black mask
+    maskImage = null;
+  }
+  pixelSort.setMask(maskImage);
+  cellularAutomata.setMask(maskImage);
+
   // Pixel sorting
   color_buffer = pixelSort.pixelSortingGPU(color_buffer, true)
 
@@ -162,6 +175,11 @@ function draw_steps(){
 function drawInterface(){
   interface_color_buffer.begin()
   clear()
+  
+  if (mask.isDisplayEnabled()){
+    mask.displayMask();
+  }
+  
   if (colorPalette.isDisplayEnabled()){
     colorPalette.display(-artworkWidth/2, -artworkHeight/2)
   }
@@ -174,6 +192,7 @@ function drawInterface(){
   if (audioReactive.isDisplayVisualizationEnabled()){
     audioReactive.displayVisualization();
   }
+
   interface_color_buffer.end()
   image(interface_color_buffer, 0-width/2, 0-height/2, width, height)
 }
@@ -202,12 +221,22 @@ function initializeCanvas(input_image){
   input_image = colorPalette.colorQuantize(input_image)
   colorPalette.extractFromImage(input_image)
 
+  // Create mask
+  maskImage = mask.createMask(input_image);
+
   color_buffer.begin();
   tex.setInterpolation(NEAREST, NEAREST);
   image(input_image, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
   tex.setInterpolation(NEAREST, NEAREST);
   color_buffer.end()
 
+  if (!mask.getEnable()) { // If masking is not enabled return black mask
+    maskImage = null;
+  }
+  pixelSort.setMask(maskImage);
+  cellularAutomata.setMask(maskImage);
+
+  // Pixel Sort
   var old_max_steps = pixelSort.setMaxSteps(pixelSort.getInitialSteps())
   pixelSort.changeDirection();
   pixelSort.resetSteps()
