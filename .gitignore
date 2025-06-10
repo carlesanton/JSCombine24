@@ -25,3 +25,8 @@ exports/*
 
 # Ignore Open Call files (dossiers and pdfs and so on)
 dossiers/*
+!dossiers/with_emedemir/
+!dossiers/with_emedemir/**/*.pdf
+
+# # Ignore indesign files
+*.indd
