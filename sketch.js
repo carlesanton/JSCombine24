@@ -46,6 +46,8 @@ let img;
 let myFont;
 let color_buffer;
 let interface_color_buffer;
+const videoFormats = ['mp4', 'webm', 'mkv', 'flv', 'avi', 'mov', 'm4p']
+
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -376,17 +378,38 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
-export function load_user_image(user_image){
-  loadImage(user_image,
-    (loadedImage)=>{
-      img = loadedImage;
-      initializeCanvas(loadedImage)
-    },
-    () => { image_loaded_successfuly = false; loaded_user_image = true; }
-  );
+export function load_user_file(user_file){
+  const fileExtension = getFileExtension(user_file);
+  if (videoFormats.includes(fileExtension)) {
+    console.log('Cannot use video')
+  }
+  else {
+    loadImage(user_file,
+      (loadedImage)=>{
+        img = loadedImage;
+        initializeCanvas(loadedImage)
+      },
+      () => { image_loaded_successfuly = false; loaded_user_image = true; }
+    );
+  }
   loaded_user_image = true;
   image_loaded_successfuly = true;
 }
+
+function getFileExtension(base64String) {
+  // Extract the MIME type
+  const match = /^data:(.*?);base64,/.exec(base64String);
+  if (!match || match.length < 2) {
+      throw new Error("Invalid base64 string format");
+  }
+
+  const mimeType = match[1]; // e.g., "video/mp4" or "image/jpeg"  
+  // Get the extension from the MIME type
+  const extension = mimeType.split('/')[1];
+
+  return extension;
+}
+
 
 function display_image_error_message(){
   fill(255, 0, 0);
