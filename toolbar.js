@@ -9,7 +9,29 @@ import {
     create_subtitle,
     createToggleButton,
 } from './lib/JSGenerativeArtTools/ui.js'
-import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata, recorder, mask} from './sketch.js'
+import {
+    defaultArtworkSeed,
+    defaultArtworkWidth,
+    defaultArtworkHeight,
+    defaultPixelSize,
+    artwork_seed,
+    applyUIChanges,
+    saveImage,
+    setSeed,
+    flipSize,
+    load_user_file,
+    audioReactive,
+    colorPalette,
+    fps,
+    pixelSort,
+    cellularAutomata,
+    recorder,
+    mask,
+    setFadeToNewImage,
+    setFadeSpeed,
+    loadNewImage,
+    applyTransition,
+} from './sketch.js'
 
 function createArtworkSettingsCard() {
     var elements_dict = {};
@@ -107,6 +129,52 @@ function createArtworkControlsCard() {
     return elements_dict;
 }
 
+function createFadeToNewImageCard() {
+    const elements_dict = {};
+    
+    const card = create_daisyui_expandable_card('newImageSettings', 'New Image');
+    const cardBody = card.getElementsByClassName('collapse-content')[0];
+
+    // New Image input
+    const newImageButton = create_input_file_button((img) => {loadNewImage(img)}, 'New Image', 'No file chosen', 'Loaded Image: ');
+
+    // Fade To new Image
+    const activateFade = createToggleButton('Fade to new Image', (a) => {
+        setFadeToNewImage(a.target.checked);
+    }, cellularAutomata.fadeToNewImage);
+    elements_dict['activateFade'] = activateFade.getElementsByTagName('button')[0];
+    
+    // Stop Transition
+    const applyTransitionButton = create_button(
+        'Apply Transition',
+        applyTransition,
+    )
+    elements_dict['applyTransition'] = activateFade.getElementsByTagName('button')[0];
+
+    // Fade Speed
+    const fadeSpeed = create_number_input_slider_and_number(
+        'FadeSpeed',
+        'Fade Speed',
+        cellularAutomata.fadeSpeed,
+        0.,
+        1.,
+        (value) => setFadeSpeed(value),
+        0.01
+    );
+    elements_dict['fadeSpeed'] = fadeSpeed.getElementsByTagName('input')[0];
+
+    cardBody.appendChild(newImageButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(activateFade);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(applyTransitionButton);
+    cardBody.appendChild(document.createElement('br'));
+    cardBody.appendChild(fadeSpeed);
+
+    elements_dict['main-toolbar'] = card;
+    return elements_dict;
+}
+
 function intialize_toolbar(){
     var elements_dict = {}
     toolbar = document.getElementById('toolbar');
@@ -143,6 +211,12 @@ function intialize_toolbar(){
     toolbar.appendChild(CAInputs['main-toolbar']);
     toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
+
+    // New Image UI
+    var NewImageInput = createFadeToNewImageCard();
+    toolbar.appendChild(NewImageInput['main-toolbar']);
+    toolbar.appendChild(document.createElement('br'));
+    elements_dict['newImageInputs'] = NewImageInput;
 
     // Recorder UI
     var recorderInputs = recorder.createSettingsCard();
