@@ -27,11 +27,13 @@ exports/*
 # Ignore Live Recordings
 live_recordings/
 
+TD*/
 
 # Ignore Open Call files (dossiers and pdfs and so on)
 dossiers/*
 !dossiers/with_emedemir/
 !dossiers/with_emedemir/**/*.pdf
+dossiers/with_emedemir/**/*optimized.pdf
 
 # # Ignore indesign files
 *.indd
