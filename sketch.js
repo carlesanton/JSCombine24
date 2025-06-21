@@ -425,6 +425,47 @@ function getFileExtension(base64String) {
   return extension;
 }
 
+export function setFadeToNewImage(newFadeToNewImage) {
+  fadeToNewImage = newFadeToNewImage;
+  if (nextImg !== null && nextImg !== undefined){ // Only start if a new image is ready
+    cellularAutomata.setFadeToNewImage(fadeToNewImage)
+  }
+}
+
+export function setFadeSpeed(newFadeSpeed) {
+  fadeSpeed = newFadeSpeed;
+  cellularAutomata.setFadeSpeed(fadeSpeed)
+}
+
+export function loadNewImage(new_image_path) {
+  loadImage(
+    new_image_path,
+    (loadedImage)=>{
+      nextImg = loadedImage;
+      cellularAutomata.setFadeToNewImage(fadeToNewImage); // Set fadeToNewImage in case we didn't do it when 
+                                                          // it was activated if there was no image loaded
+    }
+  );
+}
+
+export function applyTransition() {
+  console.log('Applying Transition')
+
+  // Copy chroma buffer to color_buffer to actuate with it
+  color_buffer.begin();
+  image(chroma_buffer, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  color_buffer.end();
+
+  // Color quantixe and extract palette of new image
+  nextImg = colorPalette.colorQuantize(nextImg)
+  colorPalette.extractFromImage(nextImg)
+  // Create new mask, it will be passed to PS and CA in new loop
+  // mostly we create it here to update the last used image by the mask
+  maskImage = mask.createMask(nextImg);
+
+  nextImg = null; // Remove previous image
+  cellularAutomata.setFadeToNewImage(false); // Stop fading from CA
+}
 
 function display_image_error_message(){
   fill(255, 0, 0);
