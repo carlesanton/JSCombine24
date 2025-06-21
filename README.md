@@ -91,7 +91,7 @@ Threshold to not sort pixels based on a brightness threshold with variable `THRE
 # Libs used
 From **[JSGenerativeArtTools repo](https://github.com/carlesanton/JSGenerativeArtTools)**
 - `pixel_sort.js`
-- `collor_palette.js`
+- `collorPalette.js`
 - `utils.js`
 
 [P5Js Library](https://p5js.org/es/download/)

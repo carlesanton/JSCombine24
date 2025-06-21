@@ -46,6 +46,14 @@ let img;
 let myFont;
 let color_buffer;
 let interface_color_buffer;
+const videoFormats = ['mp4', 'webm', 'mkv', 'flv', 'avi', 'mov', 'm4p']
+
+// Chroma Fade Vars
+let nextImg;
+let chroma_buffer; // To store the image with chroma applied without losing the color_buffer
+let fadeSpeed = 0.03;
+let fadeToNewImage = false;
+let chromaColor = [0.,1.,0.,1.];
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -121,6 +129,8 @@ function setup() {
   cellularAutomata.initializeShader()
   mask.initializeShader()
 
+  cellularAutomata.setChromaColor(chromaColor);
+
   // Bind Audio Reactive Methods
   userStartAudio([], audioReactive.initializeAudio());
   bind_audio_reactive_controls();
@@ -168,8 +178,14 @@ function draw_steps(){
   }
   color_buffer = cellularAutomata.cellularAutomataGPU(color_buffer)
 
+  // Apply Chroma if active
+  chroma_buffer = color_buffer;
+  if (fadeToNewImage && nextImg !== null && nextImg !== undefined){
+    chroma_buffer = mask.applyMask(color_buffer, nextImg, chromaColor)
+  }
+
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
-  image(color_buffer, 0-width/2, 0-height/2, width, height)
+  image(chroma_buffer, 0-width/2, 0-height/2, width, height)
 }
 
 function drawInterface(){
@@ -212,6 +228,7 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
+  chroma_buffer = createFramebuffer(color_buffer_otions)
   interface_color_buffer = createFramebuffer({width: artworkWidth, height: artworkHeight})
 
   let tex = canvas.getTexture(input_image);
@@ -376,16 +393,78 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
-export function load_user_image(user_image){
-  loadImage(user_image,
-    (loadedImage)=>{
-      img = loadedImage;
-      initializeCanvas(loadedImage)
-    },
-    () => { image_loaded_successfuly = false; loaded_user_image = true; }
-  );
+export function load_user_file(user_file){
+  const fileExtension = getFileExtension(user_file);
+  if (videoFormats.includes(fileExtension)) {
+    console.log('Cannot use video')
+  }
+  else {
+    loadImage(user_file,
+      (loadedImage)=>{
+        img = loadedImage;
+        initializeCanvas(loadedImage)
+      },
+      () => { image_loaded_successfuly = false; loaded_user_image = true; }
+    );
+  }
   loaded_user_image = true;
   image_loaded_successfuly = true;
+}
+
+function getFileExtension(base64String) {
+  // Extract the MIME type
+  const match = /^data:(.*?);base64,/.exec(base64String);
+  if (!match || match.length < 2) {
+      throw new Error("Invalid base64 string format");
+  }
+
+  const mimeType = match[1]; // e.g., "video/mp4" or "image/jpeg"  
+  // Get the extension from the MIME type
+  const extension = mimeType.split('/')[1];
+
+  return extension;
+}
+
+export function setFadeToNewImage(newFadeToNewImage) {
+  fadeToNewImage = newFadeToNewImage;
+  if (nextImg !== null && nextImg !== undefined){ // Only start if a new image is ready
+    cellularAutomata.setFadeToNewImage(fadeToNewImage)
+  }
+}
+
+export function setFadeSpeed(newFadeSpeed) {
+  fadeSpeed = newFadeSpeed;
+  cellularAutomata.setFadeSpeed(fadeSpeed)
+}
+
+export function loadNewImage(new_image_path) {
+  loadImage(
+    new_image_path,
+    (loadedImage)=>{
+      nextImg = loadedImage;
+      cellularAutomata.setFadeToNewImage(fadeToNewImage); // Set fadeToNewImage in case we didn't do it when 
+                                                          // it was activated if there was no image loaded
+    }
+  );
+}
+
+export function applyTransition() {
+  console.log('Applying Transition')
+
+  // Copy chroma buffer to color_buffer to actuate with it
+  color_buffer.begin();
+  image(chroma_buffer, 0-workingImageWidth/2, 0-workingImageHeight/2, workingImageWidth, workingImageHeight);
+  color_buffer.end();
+
+  // Color quantixe and extract palette of new image
+  nextImg = colorPalette.colorQuantize(nextImg)
+  colorPalette.extractFromImage(nextImg)
+  // Create new mask, it will be passed to PS and CA in new loop
+  // mostly we create it here to update the last used image by the mask
+  maskImage = mask.createMask(nextImg);
+
+  nextImg = null; // Remove previous image
+  cellularAutomata.setFadeToNewImage(false); // Stop fading from CA
 }
 
 function display_image_error_message(){

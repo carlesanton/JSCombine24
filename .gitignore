@@ -4,6 +4,7 @@
 *.png
 *.psd
 *.webp
+*.tiff
 !/img/*.jpg
 
 # Ignore Combine24objects.json
@@ -13,6 +14,7 @@ Combine24objects*.json
 *.avi
 *.mp4
 *.webm
+*.mov
 
 # Ignore all exports folder
 exports/*
@@ -22,6 +24,9 @@ exports/*
 
 # Ignore VSCode settings
 .vscode/*
+# Ignore Live Recordings
+live_recordings/
+
 
 # Ignore Open Call files (dossiers and pdfs and so on)
 dossiers/*
