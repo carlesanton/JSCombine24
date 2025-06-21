@@ -1,0 +1,22 @@
+gloria-1: https://www.lavanguardia.com/local/tarragona/20200210/473405040925/delta-ebro-gloria-trabucador-la-banya-buda-alfacada-sant-jaume-denveja-poble-nou.html
+gloria-2: https://www.publico.es/sociedad/seis-meses-despues-gloria-delta-ebro-espera-soluciones.html
+gloria-3: https://www.publico.es/sociedad/seis-meses-despues-gloria-delta-ebro-espera-soluciones.html
+cantera-1: https://www.diaridetarragona.com/reus/denuncian-el-impacto-de-las-canteras-y-la-posible-creacion-de-una-planta-de-asfalto-20220211-0047-YJDT202202110047
+presa-mequinensa-1: https://es.wikipedia.org/wiki/Embalse_de_Mequinenza
+presa-mequinensa-2: https://docomomoiberico.com/edificios/central-hidroelectrica-de-mequinenza/
+presa-mequinensa-3: https://docomomoiberico.com/edificios/central-hidroelectrica-de-mequinenza/
+aiguamolls-artificials-1: https://www.elperiodico.cat/ca/societat/20220928/aiguamolls-artificials-depuracio-gran-exemple-75986456
+flamencs-1: https://www.eltemps.cat/article/1867/parc-natural-del-delta-de-lebre
+desembocadura-1: https://www.eltemps.cat/article/1867/parc-natural-del-delta-de-lebre
+bombament-1: https://www.regantsesquerra.cat/les-estacions-de-bombament/
+bombament-2: https://www.imaginaradio.cat/la-comunitat-de-regants-allega-contra-latermenament-a-deltebre-impulsat-pel-govern-espanyol/
+ecros-flix-1: https://www.eltriangle.eu/es/2022/11/19/el-ere-de-la-historica-fabrica-de-ercros-en-flix-afectara-a-41-de-los-48-trabajadores/
+exros-flix-2 : https://www.elperiodico.com/es/economia/20171128/ercros-cierra-plantas-cloro-flix-tarrgona-cardona-6455708
+eliminacion-contaminacion-flix-1: https://www.acuamed.es/es/actuacion/eliminacion-de-la-contaminacion-quimica-del-embalse-de-flix-1a-fase#prettyPhoto
+eliminacion-contaminacion-flix-2: https://www.acuamed.es/es/actuacion/eliminacion-de-la-contaminacion-quimica-del-embalse-de-flix-1a-fase#prettyPhoto
+eliminacion-contaminacion-flix-3: https://www.acuamed.es/es/actuacion/eliminacion-de-la-contaminacion-quimica-del-embalse-de-flix-1a-fase#prettyPhoto
+eliminacion-contaminacion-flix-4: https://espores.org/es/es-conservacion/flix-la-descontaminacion-de-un-pantano/
+proyecto-castor-1: https://www.elconfidencial.com/espana/2017-05-14/claves-castor-proyecto-castellon-acs-florentino_1381769/
+proyecto-castor-2: https://www.lavanguardia.com/natural/20131101/54392655775/cientificos-terremotos-proyecto-castor.html
+proyecto-castor-3: https://cadenaser.com/comunitat-valenciana/2023/09/21/tumban-el-recurso-de-escal-contra-el-fallo-de-la-cnmc-que-le-pedia-209-millones-por-castor-radio-castellon/
+proyecto-castor-4: https://www.elnacional.cat/es/politica/gobierno-permite-despues-tres-anos-sellar-pozos-proyecto-castor_987849_102.html
