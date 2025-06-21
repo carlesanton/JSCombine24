@@ -48,6 +48,12 @@ let color_buffer;
 let interface_color_buffer;
 const videoFormats = ['mp4', 'webm', 'mkv', 'flv', 'avi', 'mov', 'm4p']
 
+// Chroma Fade Vars
+let nextImg;
+let chroma_buffer; // To store the image with chroma applied without losing the color_buffer
+let fadeSpeed = 0.03;
+let fadeToNewImage = false;
+let chromaColor = [0.,1.,0.,1.];
 
 const imgFiles = [
   'img/1225657.jpg',
@@ -123,6 +129,8 @@ function setup() {
   cellularAutomata.initializeShader()
   mask.initializeShader()
 
+  cellularAutomata.setChromaColor(chromaColor);
+
   // Bind Audio Reactive Methods
   userStartAudio([], audioReactive.initializeAudio());
   bind_audio_reactive_controls();
@@ -170,8 +178,14 @@ function draw_steps(){
   }
   color_buffer = cellularAutomata.cellularAutomataGPU(color_buffer)
 
+  // Apply Chroma if active
+  chroma_buffer = color_buffer;
+  if (fadeToNewImage && nextImg !== null && nextImg !== undefined){
+    chroma_buffer = mask.applyMask(color_buffer, nextImg, chromaColor)
+  }
+
   // Example of scaling an image to fit the canvas while maintaining aspect ratio
-  image(color_buffer, 0-width/2, 0-height/2, width, height)
+  image(chroma_buffer, 0-width/2, 0-height/2, width, height)
 }
 
 function drawInterface(){
@@ -214,6 +228,7 @@ function initializeCanvas(input_image){
     channels: RGBA,
   }
   color_buffer = createFramebuffer(color_buffer_otions)
+  chroma_buffer = createFramebuffer(color_buffer_otions)
   interface_color_buffer = createFramebuffer({width: artworkWidth, height: artworkHeight})
 
   let tex = canvas.getTexture(input_image);
