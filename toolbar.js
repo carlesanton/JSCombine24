@@ -1,4 +1,14 @@
-import {create_number_input_text, create_number_input_slider_and_number, create_daisyui_expandable_card, create_button,create_input_image_button, turnDaisyUICardIntoBodyWithTitle, createSmallBreak, create_subtitle} from './lib/JSGenerativeArtTools/ui.js'
+import {
+    create_number_input_text,
+    create_number_input_slider_and_number,
+    create_daisyui_expandable_card,
+    create_button,
+    create_input_file_button,
+    turnDaisyUICardIntoBodyWithTitle,
+    createSmallBreak,
+    create_subtitle,
+    createToggleButton,
+} from './lib/JSGenerativeArtTools/ui.js'
 import {defaultArtworkSeed, defaultArtworkWidth, defaultArtworkHeight, defaultPixelSize, artwork_seed, applyUIChanges, saveImage, setSeed, flipSize, load_user_image, audioReactive, colorPalette, fps, pixelSort, cellularAutomata, recorder, mask} from './sketch.js'
 
 function createArtworkSettingsCard() {
@@ -34,7 +44,7 @@ function createArtworkSettingsCard() {
     // Buttons
     const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
     const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
-    const loadImage = create_input_image_button(load_user_image, 'Load Image', 'No file chosen', 'Loaded Image: ');
+    const loadImage = create_input_file_button(load_user_file, 'Load Image', 'No file chosen', 'Loaded Image: ');
 
     // FPS, take only body
     var FPSInputs = fps.createFPSSettingsCard();
@@ -84,7 +94,7 @@ function createArtworkControlsCard() {
     // Add Buttons
     const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
     const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
-    const loadImage = create_input_image_button(load_user_image, 'Load Image', 'No file chosen', 'Loaded Image: ');
+    const loadImage = create_input_file_button(load_user_file, 'Load Image', 'No file chosen', 'Loaded Image: ');
 
     cardBody.appendChild(applyChangesButton);
     cardBody.appendChild(document.createElement('br'));
