@@ -16,6 +16,10 @@ Combine24objects*.json
 *.webm
 *.mov
 
+# Ingore Audios
+*.wav
+*.mp3
+
 # Ignore all exports folder
 exports/*
 
