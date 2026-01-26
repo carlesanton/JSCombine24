@@ -3,7 +3,7 @@ import {FPS} from './lib/JSGenerativeArtTools/fps/fps.js';
 import {PixelSort} from './lib/JSGenerativeArtTools/pixelSorting/pixelSort.js';
 import {CellularAutomata} from './lib/JSGenerativeArtTools/cellularAutomata/cellularAutomata.js'
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
-import {intialize_toolbar} from './toolbar.js';
+import { intialize_toolbar, is_toolbar_hiden, hide_toolbar, show_toolbar } from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
@@ -166,6 +166,9 @@ function setup() {
   // Apply the loaded font
   textFont(myFont);
 
+  // Load main parameters from config json
+  set_main_parameters()
+
   if (image_loaded_successfuly){
     initializeCanvas(img)
   }
@@ -245,6 +248,9 @@ function drawInterface(){
 }
 
 function initializeCanvas(input_image){
+  set_main_parameters()
+  set_image_parameters()
+
   workingImageHeight = artworkHeight/pixelSize
   workingImageWidth = artworkWidth/pixelSize
 
@@ -527,6 +533,127 @@ function display_image_error_message(){
     text("Failed to load default image. \n Upload an image with the 'Load Image' button", 0, 0)
   }
 }
+
+function set_main_parameters() {
+  // Guard against missing or invalid data
+  if (
+    !parameters_json ||
+    typeof parameters_json !== 'object' ||
+    !current_image_path
+  ) {
+    return;
+  }
+
+  // Check if the current image key exists in the JSON
+  if (Object.prototype.hasOwnProperty.call(parameters_json, "main_parameters")) {
+    const main_parameters_dict = parameters_json["main_parameters"];
+
+    // Ensure the value is a plain object before passing it on
+    if (main_parameters_dict && typeof main_parameters_dict === 'object') {
+      set_parameters_from_dict(main_parameters_dict);
+    }
+  }
+}
+
+function set_image_parameters() {
+  // Guard against missing or invalid data
+  if (
+    !parameters_json ||
+    typeof parameters_json !== 'object' ||
+    !current_image_path
+  ) {
+    return;
+  }
+  if (!Object.prototype.hasOwnProperty.call(parameters_json, 'images')){
+    return;
+  }
+
+  // Check if the current image key exists in the JSON
+  if (Object.prototype.hasOwnProperty.call(parameters_json['images'], current_image_path)) {
+    const image_parameters_dict = parameters_json['images'][current_image_path];
+
+    // Ensure the value is a plain object before passing it on
+    if (image_parameters_dict && typeof image_parameters_dict === 'object') {
+      set_parameters_from_dict(image_parameters_dict);
+    }
+  }
+}
+
+function set_parameters_from_dict(image_parameters_dict) {
+  console.log('Setting image parameters from dict', image_parameters_dict)
+  // Get all values if available
+  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload')
+  var reaload_time = get_value_if_exists(image_parameters_dict, 'secondsBetweenReloads')
+  var pixel_size = get_value_if_exists(image_parameters_dict, 'pixelSize')
+  var width = get_value_if_exists(image_parameters_dict, 'width')
+  var height = get_value_if_exists(image_parameters_dict, 'height')
+  var hideToolbar = get_value_if_exists(image_parameters_dict, 'hideToolbar')
+  var mask_enable = get_value_if_exists(image_parameters_dict, 'maskEnable')
+  var mask_min = get_value_if_exists(image_parameters_dict, 'maskMin')
+  var mask_max = get_value_if_exists(image_parameters_dict, 'maskMax')
+  var mask_display = get_value_if_exists(image_parameters_dict, 'maskDisplay')
+  var mask_opacity = get_value_if_exists(image_parameters_dict, 'maskOpacity')
+  var audio_reactive_enable = get_value_if_exists(image_parameters_dict, 'audioReactiveEnable')
+  var audio_reactive_audio_scale = get_value_if_exists(image_parameters_dict, 'audioReactiveAudioScale')
+  var audio_reactive_beat_detection = get_value_if_exists(image_parameters_dict, 'audioReactiveBeatDetection')
+  var audio_reactive_decay_rate = get_value_if_exists(image_parameters_dict, 'audioReactiveDecayRate')
+  var audio_reactive_ps_strenght = get_value_if_exists(image_parameters_dict, 'audioReactivePsStrenght')
+  var audio_reactive_ca_strenght = get_value_if_exists(image_parameters_dict, 'audioReactiveCaStrenght')
+  var ps_direction_change_rate = get_value_if_exists(image_parameters_dict, 'psDirectionChangeRate')
+  var ca_color_change_rate = get_value_if_exists(image_parameters_dict, 'caColorChangeRate')
+  
+  // Set values
+  // Main
+  if (auto_reload !== undefined) {auto_reload_images = auto_reload}
+  if (reaload_time !== undefined) {seconds_between_reloads = reaload_time}
+  if (pixel_size !== undefined) {pixelSize = pixel_size}
+  if (width !== undefined) {artworkWidth = width}
+  if (height !== undefined) {artworkHeight = height}
+  // Mask
+  if (mask_enable !== undefined) {mask.setEnable(mask_enable)}
+  if (mask_min !== undefined) {mask.setMinBirghtness(mask_min)}
+  if (mask_max !== undefined) {mask.setMaxBirghtness(mask_max)}
+  if (mask_display !== undefined) {mask.setDisplay(mask_display)}
+  if (mask_opacity !== undefined) {mask.setOpacity(mask_opacity)}
+  // AudioReactive
+  if (audio_reactive_enable !== undefined) {
+    audioReactive.setEnableAudio(audio_reactive_enable);
+    // Not using takeOverControlls because it will make the direction change rate still have effect
+  }
+  if (audio_reactive_audio_scale !== undefined) {audioReactive.setLevelScale(audio_reactive_audio_scale)}
+  if (audio_reactive_beat_detection !== undefined) {audioReactive.setBeatDetectLevel(audio_reactive_beat_detection)}
+  if (audio_reactive_decay_rate !== undefined) {audioReactive.setBeatDecayRate(audio_reactive_decay_rate)}
+  if (audio_reactive_ps_strenght !== undefined) {audioReactive.setAudioLevelStrength(audio_reactive_ps_strenght)}
+  // if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  // Pixel Sorting
+  if (ps_direction_change_rate !== undefined) {pixelSort.setDirectionChangeRate(ps_direction_change_rate)}
+  // Cellular automata
+  if (ca_color_change_rate !== undefined) {cellularAutomata.setRandomColorChangeRate(ca_color_change_rate)}
+  // Toolbar
+  if (hideToolbar!== undefined) {
+    if (hideToolbar) {
+      hide_toolbar(inputs['toolbar']);
+    } else {
+      show_toolbar(inputs['toolbar']);
+    }
+  }
+
+  console.log('is TOOLBAR hiden', is_toolbar_hiden(inputs['toolbar']))
+
+}
+
+function get_value_if_exists(dict, key) {
+  if (!dict || typeof dict !== 'object') {
+    return undefined;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dict, key)) {
+    return dict[key];
+  }
+
+  return undefined;
+}
+
 
 function periodicaly_reload_image(time_between_reloads) {
   var current_time = millis();
