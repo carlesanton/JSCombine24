@@ -130,6 +130,8 @@ function preload() {
 }
 
 function setup() {
+  remaining_images_to_reload = structuredClone(img_files)
+
   audioReactive = new AudioReactive()
   colorPalette = new ColorPalette()
   recorder = new Recorder()
