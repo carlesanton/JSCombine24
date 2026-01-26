@@ -8,6 +8,7 @@ import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
 import { Mask } from './lib/JSGenerativeArtTools/mask/mask.js';
+import { log_memory } from './lib/log_memory.js'
 
 // Parameter file
 const parameter_file_path = 'param_files/parameters.json'
