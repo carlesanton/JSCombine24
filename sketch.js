@@ -50,7 +50,7 @@ let fadeSpeed = 0.03;
 let fadeToNewImage = false;
 let chromaColor = [0.,1.,0.,1.];
 
-const imgFiles = [
+const defaultImgFiles = [
   'img/1225657.jpg',
   'img/1360200.jpg',
   'img/1653604.jpg',
@@ -72,6 +72,10 @@ const imgFiles = [
   'img/3489753.jpg',
   'img/3526787.jpg'
 ]
+let img_files;
+let current_image_path;
+
+
 
 const preview_frame = 30;
 export let audioReactive;
@@ -87,13 +91,29 @@ let inputs;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
-  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-  console.log('Loaded image: ', image_path)
-  img = loadImage(
-    image_path,
-    () => { image_loaded_successfuly = true; },
-    () => { image_loaded_successfuly = false; }
-)
+  
+  // Load default images as first image before we can access the ones form params file
+  loadJSON(
+    parameter_file_path, loaded_json => {
+      console.log('Successfuly loaded params file', parameter_file_path)
+      parameters_json = loaded_json
+      if (Object.prototype.hasOwnProperty.call(parameters_json, "images")) {
+        img_files = Object.keys(parameters_json['images'])
+      }
+      else {
+        img_files = defaultImgFiles
+      }
+      if (img_files.length == 0) { img_files = defaultImgFiles}
+      current_image_path = img_files[floor(random(1000000000)%img_files.length)]
+      img = loadImage(
+        current_image_path,
+        () => { image_loaded_successfuly = true; },
+        () => { image_loaded_successfuly = false; }
+      )
+      console.log('Loaded image: ', current_image_path)
+    },
+  );
+
   pixelSort = new PixelSort();
   cellularAutomata = new CellularAutomata();
   mask = new Mask();
@@ -319,9 +339,9 @@ function updateArtworkSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   if (!loaded_user_image){
-    var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-    console.log('Loading new image: ',image_path)
-    loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+    current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+    console.log('Loading new image: ',current_image_path)
+    loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
   }
   else{ // To restart the process if we already had a user image loaded but parameters change
     initializeCanvas(img)
@@ -388,7 +408,8 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
-export function load_user_file(user_file){
+export function load_user_file(user_file, user_file_name){
+  current_image_path = user_file_name
   const fileExtension = getFileExtension(user_file);
   if (videoFormats.includes(fileExtension)) {
     console.log('Cannot use video')
@@ -432,9 +453,10 @@ export function setFadeSpeed(newFadeSpeed) {
   cellularAutomata.setFadeSpeed(fadeSpeed)
 }
 
-export function loadNewImage(new_image_path) {
+export function loadNewImage(new_image, new_image_path) {
+  current_image_path = new_image_path
   loadImage(
-    new_image_path,
+    new_image,
     (loadedImage)=>{
       nextImg = loadedImage;
       cellularAutomata.setFadeToNewImage(fadeToNewImage); // Set fadeToNewImage in case we didn't do it when 
