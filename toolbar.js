@@ -136,7 +136,7 @@ function createFadeToNewImageCard() {
     const cardBody = card.getElementsByClassName('collapse-content')[0];
 
     // New Image input
-    const newImageButton = create_input_file_button((img) => {loadNewImage(img)}, 'New Image', 'No file chosen', 'Loaded Image: ');
+    const newImageButton = create_input_file_button(loadNewImage, 'New Image', 'No file chosen', 'Loaded Image: ');
 
     // Fade To new Image
     const activateFade = createToggleButton('Fade to new Image', (a) => {
@@ -227,10 +227,39 @@ function intialize_toolbar(){
     elements_dict['toolbar'] = toolbar;
     // toolbar.style.display = "none" // to hide toolbar
 
+    document.addEventListener('keydown', (event) => {
+        // Ignore if the user is typing in an input/textarea
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+        if (event.key === 'f' || event.key === 'F') {
+            if (is_toolbar_hiden(toolbar)) {
+                show_toolbar(toolbar);
+            } else {
+                hide_toolbar(toolbar);
+            }
+        }
+    });
+
     return elements_dict;
 
-  }
+}
+
+function show_toolbar(toolbar) {
+    toolbar.style.display = '';
+}
+
+function hide_toolbar(toolbar) {
+    toolbar.style.display = 'none';
+}
+
+function is_toolbar_hiden(toolbar) {
+    return toolbar.style.display === 'none'
+}
 
 export {
     intialize_toolbar,
+    is_toolbar_hiden,
+    show_toolbar,
+    hide_toolbar
 }
