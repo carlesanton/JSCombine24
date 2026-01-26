@@ -191,6 +191,7 @@ function draw_steps(){
   // Recreate Mask if needed
   maskImage = mask.createMask(mask.getPreviousUsedImage());
   if (!mask.getEnable()) { // If masking is not enabled return black mask
+    console.log('Not Masking')
     maskImage = null;
   }
   pixelSort.setMask(maskImage);
