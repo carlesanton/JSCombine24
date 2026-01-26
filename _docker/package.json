@@ -1,0 +1,10 @@
+{
+  "name": "p5-docker",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "http-server ../app/ -p 8080"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
