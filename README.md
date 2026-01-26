@@ -101,6 +101,57 @@ From **[JSGenerativeArtTools repo](https://github.com/carlesanton/JSGenerativeAr
 
 [RgbQuant.js](https://github.com/leeoniya/RgbQuant.js/tree/master)
 
+# Parameter files
+Load default parameters using a parameter json file. File path is defined by the `parameter_file_path` variable.
+
+The parameters can be set for as defaults loaded at the begining or in a per image basis. Default/main parameters will be reloaded for each image and then overiden by the specific parameters of each image. To set the parameters as defaults use the `"main_parameters"` key in the json, to set them per image use the image path as key (p.e. `"img/1225657.jpg"`). The available keys and example json format are:
+
+```json
+{
+    "main_parameters": {
+        "autoReload": false, // bool
+        "secondsBetweenReloads": 300, // int
+        "audioReactiveEnable": true, // bool
+        "audioReactiveAudioScale": 7, // int
+        "audioReactivePsStrenght": 10, // int
+        "audioReactiveCaStrenght": 10, // int
+        "audioReactiveBeatDetection": 0.15,
+        "audioReactiveDecayRate": 0.1, // float
+        "psDirectionChangeRate": 450, // int
+        "hideToolbar": false, // bool
+        "pixelSize": 4, // int
+        "width": 1500, // int
+        "height": 1000, // int
+        "maskEnable": true, // bool
+        "maskMin": 0.6, // float
+        "maskMax": 1, // float
+        "maskDisplay": false, // bool
+        "maskOpacity": 50, // int
+        "caColorChangeRate": 100000 // int
+        
+    },
+    "images": {
+        "<image-1-path>": {
+            "pixelSize": 10,
+            "width": 1000,
+            "height": 500,
+            "maskEnable": false,
+            "maskMin": 0.2,
+            "maskMax": 0.8,
+            "maskDisplay": false,
+            "maskOpacity": 50,
+            "audioReactiveEnable": false,
+            "psDirectionChangeRate": 45,
+            "caColorChangeRate": 100
+        },
+        "<image-2-path>": {
+            ...
+        },
+        ...
+    }
+}
+```
+
 # Experiments
 
 At the moment the best result seems to be with no pixel sorting while the drawing phase and only celular automata.
