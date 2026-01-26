@@ -10,6 +10,10 @@
 # Ignore Combine24objects.json
 Combine24objects*.json
 
+# Ignore parameters files except main
+param_files/*
+!param_files/parameters.json
+
 # Ignore Videos
 *.avi
 *.mp4
