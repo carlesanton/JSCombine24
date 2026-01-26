@@ -254,6 +254,19 @@ function initializeCanvas(input_image){
     depth: false,
     channels: RGBA,
   }
+  // Remove buffers if existing
+  if(color_buffer !== undefined) {
+    color_buffer.remove(); // Delete from GPU memory.
+    color_buffer = undefined; // Delete from CPU memory.
+  }
+  if(chroma_buffer !== undefined) {
+    chroma_buffer.remove(); // Delete from GPU memory.
+    chroma_buffer = undefined; // Delete from CPU memory.
+  }
+  if(interface_color_buffer !== undefined) {
+    interface_color_buffer.remove(); // Delete from GPU memory.
+    interface_color_buffer = undefined; // Delete from CPU memory.
+  }
   color_buffer = createFramebuffer(color_buffer_otions)
   chroma_buffer = createFramebuffer(color_buffer_otions)
   interface_color_buffer = createFramebuffer({width: artworkWidth, height: artworkHeight})
@@ -303,6 +316,10 @@ function initializeCanvas(input_image){
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
   recorder.setFilenameSufix('seed-'+ artwork_seed);
+
+  // Remove textures and image
+  tex.dispose?.();      // if available
+  tex.delete?.();       // some renderers
 }
 
 function run_audio_analysis(){
