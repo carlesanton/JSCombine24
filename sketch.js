@@ -367,9 +367,8 @@ export function setSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   artwork_seed = prepareP5Js(artwork_seed)
-  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-  console.log('image_path',image_path)
-  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+  current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+  loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
 export function flipSize(){
