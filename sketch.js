@@ -9,6 +9,10 @@ import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
 import { Mask } from './lib/JSGenerativeArtTools/mask/mask.js';
 
+// Parameter file
+const parameter_file_path = 'param_files/parameters.json'
+let parameters_json;
+
 // Inputs
 // Main
 let MainInputs
