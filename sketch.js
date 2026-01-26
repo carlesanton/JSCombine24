@@ -80,6 +80,12 @@ let img_files;
 let current_image_path;
 
 
+// Automaticaly Reload Images
+let auto_reload_images = false;
+let last_reload_time;
+let seconds_between_reloads = 300;
+let remaining_images_to_reload;
+
 
 const preview_frame = 30;
 export let audioReactive;
@@ -160,6 +166,7 @@ function setup() {
   if (image_loaded_successfuly){
     initializeCanvas(img)
   }
+  last_reload_time = millis(); // Initialize when we actualy start
 }
 
 function draw() {
@@ -175,6 +182,7 @@ function draw() {
   }
 
   drawInterface()
+  if (auto_reload_images) {periodicaly_reload_image(seconds_between_reloads)}
 }
 
 function draw_steps(){
@@ -499,6 +507,32 @@ function display_image_error_message(){
     text("Failed to load default image. \n Upload an image with the 'Load Image' button", 0, 0)
   }
 }
+
+function periodicaly_reload_image(time_between_reloads) {
+  var current_time = millis();
+  if (current_time - last_reload_time >= time_between_reloads*1000) {
+    last_reload_time = current_time;
+    if (!loaded_user_image){
+      const new_image_index = floor(random(1000000000)%remaining_images_to_reload.length)
+      const new_image_path = remaining_images_to_reload[new_image_index];
+      current_image_path = new_image_path
+
+      // Remove selected image (the fast way)
+      remaining_images_to_reload[new_image_index] = remaining_images_to_reload[remaining_images_to_reload.length - 1];
+      remaining_images_to_reload.pop();
+
+      console.log('Reloading image after ',time_between_reloads, 'seconds')
+      console.log('Remaining images:', remaining_images_to_reload.length)
+      console.log('Loading new image: ',current_image_path)
+      if (remaining_images_to_reload.length === 0) {
+        remaining_images_to_reload = structuredClone(img_files)
+      }
+      loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+      log_memory()
+    }
+  }
+}
+
 
 window.preload = preload
 window.setup = setup
