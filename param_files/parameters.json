@@ -1,30 +1,6 @@
 {
     "main_parameters": {
-        "autoReload": true,
-        "secondsBetweenReloads": 10,
-        "audioReactiveEnable": true,
-        "audioReactiveAudioScale": 7,
-        "audioReactivePsStrenght": 10,
-        "audioReactiveCaStrenght": 10,
-        "audioReactiveBeatDetection": 0.15,
-        "audioReactiveDecayRate": 0.1,
-        "psDirectionChangeRate": 450,
-        "hideToolbar": true,
-        "pixelSize": 1
-        
     },
     "images": {
-        "img/deltebre/ecros-flix-1.jpg": {
-            "pixelSize": 5,
-            "width": 1000,
-            "height": 500
-        },
-        "img/1225657.jpg": {
-            "width": 1000,
-            "height": 500
-        },
-        "img/3526787.jpg": {
-            "pixelSize": 100
-        }
     }
 }
