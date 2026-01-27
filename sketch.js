@@ -3,17 +3,17 @@ import {FPS} from './lib/JSGenerativeArtTools/fps/fps.js';
 import {PixelSort} from './lib/JSGenerativeArtTools/pixelSorting/pixelSort.js';
 import {CellularAutomata} from './lib/JSGenerativeArtTools/cellularAutomata/cellularAutomata.js'
 import {scaleCanvasToFit, prepareP5Js} from './lib/JSGenerativeArtTools/utils.js';
-import {intialize_toolbar} from './toolbar.js';
+import { intialize_toolbar, is_toolbar_hiden, hide_toolbar, show_toolbar } from './toolbar.js';
 import {AudioReactive} from './lib/JSGenerativeArtTools/audio/audio_reactive.js'
 import {bind_audio_reactive_controls} from './audio_reactive_binds.js'
 import { Recorder } from './lib/JSGenerativeArtTools/record/record.js';
 import { Mask } from './lib/JSGenerativeArtTools/mask/mask.js';
+import { log_memory } from './lib/log_memory.js'
 
-// The desired artwork size in which everything is pixel perfect.
-// Let the canvas resize itself to fit the screen in "scaleCanvasToFit()" function.
-// Note that if the size is too small it will look blurry on bigger screens, that is why
-// we set "pixelDensity(4)" in this example (400x400 is pretty small).
-// If you target size is bigger you can reduce that value. e.g. "pixelDensity(2)".
+// Parameter file
+const parameter_file_path = 'param_files/parameters.json'
+let parameters_json;
+
 // Inputs
 // Main
 let MainInputs
@@ -55,7 +55,7 @@ let fadeSpeed = 0.03;
 let fadeToNewImage = false;
 let chromaColor = [0.,1.,0.,1.];
 
-const imgFiles = [
+const defaultImgFiles = [
   'img/1225657.jpg',
   'img/1360200.jpg',
   'img/1653604.jpg',
@@ -77,6 +77,16 @@ const imgFiles = [
   'img/3489753.jpg',
   'img/3526787.jpg'
 ]
+let img_files;
+let current_image_path;
+
+
+// Automaticaly Reload Images
+let auto_reload_images = false;
+let last_reload_time;
+let seconds_between_reloads = 300;
+let remaining_images_to_reload;
+
 
 const preview_frame = 30;
 export let audioReactive;
@@ -92,19 +102,37 @@ let inputs;
 function preload() {
   artwork_seed = prepareP5Js(defaultArtworkSeed); // Order is important! First setup randomness then prepare the token
   myFont = loadFont('./fonts/PixelifySans-Medium.ttf');
-  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-  console.log('Loaded image: ', image_path)
-  img = loadImage(
-    image_path,
-    () => { image_loaded_successfuly = true; },
-    () => { image_loaded_successfuly = false; }
-)
+  
+  // Load default images as first image before we can access the ones form params file
+  loadJSON(
+    parameter_file_path, loaded_json => {
+      console.log('Successfuly loaded params file', parameter_file_path)
+      parameters_json = loaded_json
+      if (Object.prototype.hasOwnProperty.call(parameters_json, "images")) {
+        img_files = Object.keys(parameters_json['images'])
+      }
+      else {
+        img_files = defaultImgFiles
+      }
+      if (img_files.length == 0) { img_files = defaultImgFiles}
+      current_image_path = img_files[floor(random(1000000000)%img_files.length)]
+      img = loadImage(
+        current_image_path,
+        () => { image_loaded_successfuly = true; },
+        () => { image_loaded_successfuly = false; }
+      )
+      console.log('Loaded image: ', current_image_path)
+    },
+  );
+
   pixelSort = new PixelSort();
   cellularAutomata = new CellularAutomata();
   mask = new Mask();
 }
 
 function setup() {
+  remaining_images_to_reload = structuredClone(img_files)
+
   audioReactive = new AudioReactive()
   colorPalette = new ColorPalette()
   recorder = new Recorder()
@@ -138,9 +166,13 @@ function setup() {
   // Apply the loaded font
   textFont(myFont);
 
+  // Load main parameters from config json
+  set_main_parameters()
+
   if (image_loaded_successfuly){
     initializeCanvas(img)
   }
+  last_reload_time = millis(); // Initialize when we actualy start
 }
 
 function draw() {
@@ -156,12 +188,14 @@ function draw() {
   }
 
   drawInterface()
+  if (auto_reload_images) {periodicaly_reload_image(seconds_between_reloads)}
 }
 
 function draw_steps(){
   // Recreate Mask if needed
   maskImage = mask.createMask(mask.getPreviousUsedImage());
   if (!mask.getEnable()) { // If masking is not enabled return black mask
+    console.log('Not Masking')
     maskImage = null;
   }
   pixelSort.setMask(maskImage);
@@ -214,6 +248,9 @@ function drawInterface(){
 }
 
 function initializeCanvas(input_image){
+  set_main_parameters()
+  set_image_parameters()
+
   workingImageHeight = artworkHeight/pixelSize
   workingImageWidth = artworkWidth/pixelSize
 
@@ -226,6 +263,19 @@ function initializeCanvas(input_image){
     format: UNSIGNED_BYTE,
     depth: false,
     channels: RGBA,
+  }
+  // Remove buffers if existing
+  if(color_buffer !== undefined) {
+    color_buffer.remove(); // Delete from GPU memory.
+    color_buffer = undefined; // Delete from CPU memory.
+  }
+  if(chroma_buffer !== undefined) {
+    chroma_buffer.remove(); // Delete from GPU memory.
+    chroma_buffer = undefined; // Delete from CPU memory.
+  }
+  if(interface_color_buffer !== undefined) {
+    interface_color_buffer.remove(); // Delete from GPU memory.
+    interface_color_buffer = undefined; // Delete from CPU memory.
   }
   color_buffer = createFramebuffer(color_buffer_otions)
   chroma_buffer = createFramebuffer(color_buffer_otions)
@@ -276,6 +326,10 @@ function initializeCanvas(input_image){
   scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
 
   recorder.setFilenameSufix('seed-'+ artwork_seed);
+
+  // Remove textures and image
+  tex.dispose?.();      // if available
+  tex.delete?.();       // some renderers
 }
 
 function run_audio_analysis(){
@@ -324,9 +378,9 @@ function updateArtworkSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   if (!loaded_user_image){
-    var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-    console.log('Loading new image: ',image_path)
-    loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+    current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+    console.log('Loading new image: ',current_image_path)
+    loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
   }
   else{ // To restart the process if we already had a user image loaded but parameters change
     initializeCanvas(img)
@@ -340,9 +394,8 @@ export function setSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   artwork_seed = prepareP5Js(artwork_seed)
-  var image_path = imgFiles[floor(random(1000000000)%imgFiles.length)]
-  console.log('image_path',image_path)
-  loadImage(image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+  current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+  loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
 export function flipSize(){
@@ -393,7 +446,8 @@ export function saveImage() {
   saveCanvas(tmp_buffer, filename, 'png');
 }
 
-export function load_user_file(user_file){
+export function load_user_file(user_file, user_file_name){
+  current_image_path = user_file_name
   const fileExtension = getFileExtension(user_file);
   if (videoFormats.includes(fileExtension)) {
     console.log('Cannot use video')
@@ -437,9 +491,10 @@ export function setFadeSpeed(newFadeSpeed) {
   cellularAutomata.setFadeSpeed(fadeSpeed)
 }
 
-export function loadNewImage(new_image_path) {
+export function loadNewImage(new_image, new_image_path) {
+  current_image_path = new_image_path
   loadImage(
-    new_image_path,
+    new_image,
     (loadedImage)=>{
       nextImg = loadedImage;
       cellularAutomata.setFadeToNewImage(fadeToNewImage); // Set fadeToNewImage in case we didn't do it when 
@@ -478,6 +533,153 @@ function display_image_error_message(){
     text("Failed to load default image. \n Upload an image with the 'Load Image' button", 0, 0)
   }
 }
+
+function set_main_parameters() {
+  // Guard against missing or invalid data
+  if (
+    !parameters_json ||
+    typeof parameters_json !== 'object' ||
+    !current_image_path
+  ) {
+    return;
+  }
+
+  // Check if the current image key exists in the JSON
+  if (Object.prototype.hasOwnProperty.call(parameters_json, "main_parameters")) {
+    const main_parameters_dict = parameters_json["main_parameters"];
+
+    // Ensure the value is a plain object before passing it on
+    if (main_parameters_dict && typeof main_parameters_dict === 'object') {
+      set_parameters_from_dict(main_parameters_dict);
+    }
+  }
+}
+
+function set_image_parameters() {
+  // Guard against missing or invalid data
+  if (
+    !parameters_json ||
+    typeof parameters_json !== 'object' ||
+    !current_image_path
+  ) {
+    return;
+  }
+  if (!Object.prototype.hasOwnProperty.call(parameters_json, 'images')){
+    return;
+  }
+
+  // Check if the current image key exists in the JSON
+  if (Object.prototype.hasOwnProperty.call(parameters_json['images'], current_image_path)) {
+    const image_parameters_dict = parameters_json['images'][current_image_path];
+
+    // Ensure the value is a plain object before passing it on
+    if (image_parameters_dict && typeof image_parameters_dict === 'object') {
+      set_parameters_from_dict(image_parameters_dict);
+    }
+  }
+}
+
+function set_parameters_from_dict(image_parameters_dict) {
+  console.log('Setting image parameters from dict', image_parameters_dict)
+  // Get all values if available
+  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload')
+  var reaload_time = get_value_if_exists(image_parameters_dict, 'secondsBetweenReloads')
+  var pixel_size = get_value_if_exists(image_parameters_dict, 'pixelSize')
+  var width = get_value_if_exists(image_parameters_dict, 'width')
+  var height = get_value_if_exists(image_parameters_dict, 'height')
+  var hideToolbar = get_value_if_exists(image_parameters_dict, 'hideToolbar')
+  var mask_enable = get_value_if_exists(image_parameters_dict, 'maskEnable')
+  var mask_min = get_value_if_exists(image_parameters_dict, 'maskMin')
+  var mask_max = get_value_if_exists(image_parameters_dict, 'maskMax')
+  var mask_display = get_value_if_exists(image_parameters_dict, 'maskDisplay')
+  var mask_opacity = get_value_if_exists(image_parameters_dict, 'maskOpacity')
+  var audio_reactive_enable = get_value_if_exists(image_parameters_dict, 'audioReactiveEnable')
+  var audio_reactive_audio_scale = get_value_if_exists(image_parameters_dict, 'audioReactiveAudioScale')
+  var audio_reactive_beat_detection = get_value_if_exists(image_parameters_dict, 'audioReactiveBeatDetection')
+  var audio_reactive_decay_rate = get_value_if_exists(image_parameters_dict, 'audioReactiveDecayRate')
+  var audio_reactive_ps_strenght = get_value_if_exists(image_parameters_dict, 'audioReactivePsStrenght')
+  var audio_reactive_ca_strenght = get_value_if_exists(image_parameters_dict, 'audioReactiveCaStrenght')
+  var ps_direction_change_rate = get_value_if_exists(image_parameters_dict, 'psDirectionChangeRate')
+  var ca_color_change_rate = get_value_if_exists(image_parameters_dict, 'caColorChangeRate')
+  
+  // Set values
+  // Main
+  if (auto_reload !== undefined) {auto_reload_images = auto_reload}
+  if (reaload_time !== undefined) {seconds_between_reloads = reaload_time}
+  if (pixel_size !== undefined) {pixelSize = pixel_size}
+  if (width !== undefined) {artworkWidth = width}
+  if (height !== undefined) {artworkHeight = height}
+  // Mask
+  if (mask_enable !== undefined) {mask.setEnable(mask_enable)}
+  if (mask_min !== undefined) {mask.setMinBirghtness(mask_min)}
+  if (mask_max !== undefined) {mask.setMaxBirghtness(mask_max)}
+  if (mask_display !== undefined) {mask.setDisplay(mask_display)}
+  if (mask_opacity !== undefined) {mask.setOpacity(mask_opacity)}
+  // AudioReactive
+  if (audio_reactive_enable !== undefined) {
+    audioReactive.setEnableAudio(audio_reactive_enable);
+    // Not using takeOverControlls because it will make the direction change rate still have effect
+  }
+  if (audio_reactive_audio_scale !== undefined) {audioReactive.setLevelScale(audio_reactive_audio_scale)}
+  if (audio_reactive_beat_detection !== undefined) {audioReactive.setBeatDetectLevel(audio_reactive_beat_detection)}
+  if (audio_reactive_decay_rate !== undefined) {audioReactive.setBeatDecayRate(audio_reactive_decay_rate)}
+  if (audio_reactive_ps_strenght !== undefined) {audioReactive.setAudioLevelStrength(audio_reactive_ps_strenght)}
+  // if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  // Pixel Sorting
+  if (ps_direction_change_rate !== undefined) {pixelSort.setDirectionChangeRate(ps_direction_change_rate)}
+  // Cellular automata
+  if (ca_color_change_rate !== undefined) {cellularAutomata.setRandomColorChangeRate(ca_color_change_rate)}
+  // Toolbar
+  if (hideToolbar!== undefined) {
+    if (hideToolbar) {
+      hide_toolbar(inputs['toolbar']);
+    } else {
+      show_toolbar(inputs['toolbar']);
+    }
+  }
+
+  console.log('is TOOLBAR hiden', is_toolbar_hiden(inputs['toolbar']))
+
+}
+
+function get_value_if_exists(dict, key) {
+  if (!dict || typeof dict !== 'object') {
+    return undefined;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dict, key)) {
+    return dict[key];
+  }
+
+  return undefined;
+}
+
+
+function periodicaly_reload_image(time_between_reloads) {
+  var current_time = millis();
+  if (current_time - last_reload_time >= time_between_reloads*1000) {
+    last_reload_time = current_time;
+    if (!loaded_user_image){
+      const new_image_index = floor(random(1000000000)%remaining_images_to_reload.length)
+      const new_image_path = remaining_images_to_reload[new_image_index];
+      current_image_path = new_image_path
+
+      // Remove selected image (the fast way)
+      remaining_images_to_reload[new_image_index] = remaining_images_to_reload[remaining_images_to_reload.length - 1];
+      remaining_images_to_reload.pop();
+
+      console.log('Reloading image after ',time_between_reloads, 'seconds')
+      console.log('Remaining images:', remaining_images_to_reload.length)
+      console.log('Loading new image: ',current_image_path)
+      if (remaining_images_to_reload.length === 0) {
+        remaining_images_to_reload = structuredClone(img_files)
+      }
+      loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
+      log_memory()
+    }
+  }
+}
+
 
 window.preload = preload
 window.setup = setup
