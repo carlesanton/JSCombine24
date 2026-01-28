@@ -599,8 +599,10 @@ function set_parameters_from_dict(image_parameters_dict) {
   var audio_reactive_decay_rate = get_value_if_exists(image_parameters_dict, 'audioReactiveDecayRate')
   var audio_reactive_ps_strenght = get_value_if_exists(image_parameters_dict, 'audioReactivePsStrenght')
   var audio_reactive_ca_strenght = get_value_if_exists(image_parameters_dict, 'audioReactiveCaStrenght')
+  var ps_enable = get_value_if_exists(image_parameters_dict, 'psEnable')
   var ps_direction_change_rate = get_value_if_exists(image_parameters_dict, 'psDirectionChangeRate')
   var ca_color_change_rate = get_value_if_exists(image_parameters_dict, 'caColorChangeRate')
+  var ca_enable = get_value_if_exists(image_parameters_dict, 'caEnable')
   
   // Set values
   // Main
@@ -624,10 +626,12 @@ function set_parameters_from_dict(image_parameters_dict) {
   if (audio_reactive_beat_detection !== undefined) {audioReactive.setBeatDetectLevel(audio_reactive_beat_detection)}
   if (audio_reactive_decay_rate !== undefined) {audioReactive.setBeatDecayRate(audio_reactive_decay_rate)}
   if (audio_reactive_ps_strenght !== undefined) {audioReactive.setAudioLevelStrength(audio_reactive_ps_strenght)}
-  // if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
   // Pixel Sorting
+  if (ps_enable !== undefined) {pixelSort.setEnable(ps_enable)}
   if (ps_direction_change_rate !== undefined) {pixelSort.setDirectionChangeRate(ps_direction_change_rate)}
   // Cellular automata
+  if (ca_enable !== undefined) {cellularAutomata.setEnable(ca_enable)}
   if (ca_color_change_rate !== undefined) {cellularAutomata.setRandomColorChangeRate(ca_color_change_rate)}
   // Toolbar
   if (hideToolbar!== undefined) {
