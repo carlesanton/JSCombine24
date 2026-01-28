@@ -119,6 +119,7 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
         "audioReactiveBeatDetection": 0.15,
         "audioReactiveDecayRate": 0.1, // float
         "psDirectionChangeRate": 450, // int
+        "psEnable": true, // bool
         "hideToolbar": false, // bool
         "pixelSize": 4, // int
         "width": 1500, // int
@@ -128,7 +129,8 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
         "maskMax": 1, // float
         "maskDisplay": false, // bool
         "maskOpacity": 50, // int
-        "caColorChangeRate": 100000 // int
+        "caColorChangeRate": 100000, // int
+        "caEnable": true // bool
         
     },
     "images": {
