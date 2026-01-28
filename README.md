@@ -155,6 +155,39 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
 }
 ```
 
+# Exhibition builds
+Docker compose command
+```sh
+docker compose -f ./_docker/docker-compose.yml up
+```
+
+To run Chrome browser in kiosk mode
+```sh
+google-chrome --kiosk http://127.0.0.1:8080/app/
+```
+
+Two services have been created, one to run the container and another one to run Chrome in kiosk mode.
+
+The `Dockerfile`, `docker-compose.yml` and corresponding services can be found in the `_docker` folder. The `_` is used to avoid Github Pages to serve those files.
+
+## Services
+
+There are 2 services in charge of running the DOcker conatiner and running Google Chrome in the `_docker/services` folder.
+
+Link them
+```sh
+sudo ln -s \
+  $(pwd)/systemd/generative-landscapes-container.service \
+  /etc/systemd/system/generative-landscapes-container.service
+
+sudo ln -s \
+  $(pwd)/systemd/generative-landscapes-chrome.service \
+  /etc/systemd/system/generative-landscapes-chrome.service
+
+```
+
+
+
 # Experiments
 
 At the moment the best result seems to be with no pixel sorting while the drawing phase and only celular automata.
