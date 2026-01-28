@@ -378,7 +378,7 @@ function updateArtworkSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   if (!loaded_user_image){
-    current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+    current_image_path = img_files[floor(random(1000000000)%img_files.length)]
     console.log('Loading new image: ',current_image_path)
     loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
   }
@@ -394,7 +394,7 @@ export function setSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   artwork_seed = prepareP5Js(artwork_seed)
-  current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+  current_image_path = img_files[floor(random(1000000000)%img_files.length)]
   loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
