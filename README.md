@@ -11,12 +11,13 @@ This project uses a submodule for the `JSGenerativeArtTools` custom libs.
 ### Initialize:
 
 To intialise it run:
-```
+```sh
 git submodule init
+git submodule update
 ```
 
 Alternatively you can automaticaly get the submodule code when cloning the repository with:
-```
+```sh
 git clone --recurse-submodules
 ```
 
