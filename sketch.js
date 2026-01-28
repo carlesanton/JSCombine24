@@ -195,7 +195,6 @@ function draw_steps(){
   // Recreate Mask if needed
   maskImage = mask.createMask(mask.getPreviousUsedImage());
   if (!mask.getEnable()) { // If masking is not enabled return black mask
-    console.log('Not Masking')
     maskImage = null;
   }
   pixelSort.setMask(maskImage);
@@ -641,9 +640,6 @@ function set_parameters_from_dict(image_parameters_dict) {
       show_toolbar(inputs['toolbar']);
     }
   }
-
-  console.log('is TOOLBAR hiden', is_toolbar_hiden(inputs['toolbar']))
-
 }
 
 function get_value_if_exists(dict, key) {
