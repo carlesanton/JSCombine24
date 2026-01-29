@@ -38,6 +38,8 @@ export let artwork_seed; // -1 used for random seeds, if set to a positive integ
 // To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
 let image_loaded_successfuly = false;
+let reloadPagePeriodicaly = false;
+let reloadPageInterval = 100; // seconds
 
 const pixel_density = 1;
 let canvas;
@@ -175,6 +177,13 @@ function setup() {
     initializeCanvas(img)
   }
   last_reload_time = millis(); // Initialize when we actualy start
+  
+  // Auto reload page for Calandria
+  if (reloadPagePeriodicaly) {
+    setTimeout(() => {
+      location.reload();
+    }, reloadPageInterval * 1000)
+  }
 }
 
 function draw() {
