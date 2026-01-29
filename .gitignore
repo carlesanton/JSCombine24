@@ -27,6 +27,9 @@ param_files/*
 # Ignore all exports folder
 exports/*
 
+# Ignore logs
+_logs/*
+
 # Ignore .DS_Store
 .DS_Store
 
