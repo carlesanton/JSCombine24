@@ -176,15 +176,72 @@ There are 2 services in charge of running the DOcker conatiner and running Googl
 
 Link them
 ```sh
-sudo ln -s \
-  $(pwd)/systemd/generative-landscapes-container.service \
-  /etc/systemd/system/generative-landscapes-container.service
-
-sudo ln -s \
-  $(pwd)/systemd/generative-landscapes-chrome.service \
-  /etc/systemd/system/generative-landscapes-chrome.service
-
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-container.service ~/.config/systemd/user/generative-landscapes-container.service
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-chrome.service ~/.config/systemd/user/generative-landscapes-chrome.service
 ```
+
+We then must restart the services daemon:
+```sh
+systemctl --user daemon-reload
+```
+
+To start each service:
+```sh
+systemctl --user start generative-landscapes-container.service
+systemctl --user start generative-landscapes-chrome.service
+```
+
+To stop each service:
+```sh
+systemctl --user stop generative-landscapes-container.service
+systemctl --user stop generative-landscapes-chrome.service
+```
+
+To enable each service:
+```sh
+systemctl --user enable generative-landscapes-container.service
+systemctl --user enable generative-landscapes-chrome.service
+```
+
+To disable each service:
+```sh
+systemctl --user disable generative-landscapes-container.service
+systemctl --user disable generative-landscapes-chrome.service
+```
+
+To see status of each service
+```sh
+systemctl --user status generative-landscapes-container.service
+systemctl --user status generative-landscapes-chrome.service
+```
+
+To see full logs each service:
+```sh
+journalctl --user --user-unit=generative-landscapes-container.service
+journalctl --user --user-unit=generative-landscapes-chrome.service
+```
+
+## Diagnosis
+
+Check chrome memory:
+```sh
+ps -o pid,ppid,%mem,%cpu,cmd -C chrome
+```
+
+Check chrome logs:
+```sh
+cat ~/.config/google-chrome/chrome_debug.log
+
+# Copy
+cp  ~/.config/google-chrome/chrome_debug.log /home/generativelandscapes/repos/JSCombine24/_logs/$(date +%Y-%m-%d-%H-%M).log
+```
+
+Foromat of log file header is:
+```
+7219:7243:0129/132654.834725
+          MMDD/HHMMSS.microseconds
+```
+
 
 
 
