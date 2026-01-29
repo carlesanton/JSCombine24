@@ -110,8 +110,10 @@ function preload() {
       parameters_json = loaded_json
       if (Object.prototype.hasOwnProperty.call(parameters_json, "images")) {
         img_files = Object.keys(parameters_json['images'])
+        console.log('Loadnig images from json:', img_files)
       }
       else {
+        console.log('Using default images, faield to load images from json')
         img_files = defaultImgFiles
       }
       if (img_files.length == 0) { img_files = defaultImgFiles}
