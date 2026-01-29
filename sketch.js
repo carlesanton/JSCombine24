@@ -592,8 +592,10 @@ function set_image_parameters() {
 function set_parameters_from_dict(image_parameters_dict) {
   console.log('Setting image parameters from dict', image_parameters_dict)
   // Get all values if available
-  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload')
+  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload') // For changing images
   var reaload_time = get_value_if_exists(image_parameters_dict, 'secondsBetweenReloads')
+  var reload_page_periodicaly = get_value_if_exists(image_parameters_dict, 'reloadPagePeriodicaly') // For reloading full page
+  var reload_page_interval = get_value_if_exists(image_parameters_dict, 'reloadPageInterval') // For reloading full page
   var pixel_size = get_value_if_exists(image_parameters_dict, 'pixelSize')
   var width = get_value_if_exists(image_parameters_dict, 'width')
   var height = get_value_if_exists(image_parameters_dict, 'height')
@@ -609,15 +611,20 @@ function set_parameters_from_dict(image_parameters_dict) {
   var audio_reactive_decay_rate = get_value_if_exists(image_parameters_dict, 'audioReactiveDecayRate')
   var audio_reactive_ps_strenght = get_value_if_exists(image_parameters_dict, 'audioReactivePsStrenght')
   var audio_reactive_ca_strenght = get_value_if_exists(image_parameters_dict, 'audioReactiveCaStrenght')
+  var audio_reactive_show_viz = get_value_if_exists(image_parameters_dict, 'audioReactiveShowViz')
   var ps_enable = get_value_if_exists(image_parameters_dict, 'psEnable')
   var ps_direction_change_rate = get_value_if_exists(image_parameters_dict, 'psDirectionChangeRate')
+  var ps_initial_steps = get_value_if_exists(image_parameters_dict, 'psInitialSteps')
   var ca_color_change_rate = get_value_if_exists(image_parameters_dict, 'caColorChangeRate')
   var ca_enable = get_value_if_exists(image_parameters_dict, 'caEnable')
+  var ca_initial_steps = get_value_if_exists(image_parameters_dict, 'caInitialSteps')
   
   // Set values
   // Main
   if (auto_reload !== undefined) {auto_reload_images = auto_reload}
   if (reaload_time !== undefined) {seconds_between_reloads = reaload_time}
+  if (reload_page_periodicaly !== undefined) {reloadPagePeriodicaly = reload_page_periodicaly}
+  if (reload_page_interval !== undefined) {reloadPageInterval = reload_page_interval}
   if (pixel_size !== undefined) {pixelSize = pixel_size}
   if (width !== undefined) {artworkWidth = width}
   if (height !== undefined) {artworkHeight = height}
@@ -637,12 +644,15 @@ function set_parameters_from_dict(image_parameters_dict) {
   if (audio_reactive_decay_rate !== undefined) {audioReactive.setBeatDecayRate(audio_reactive_decay_rate)}
   if (audio_reactive_ps_strenght !== undefined) {audioReactive.setAudioLevelStrength(audio_reactive_ps_strenght)}
   if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  if (audio_reactive_show_viz !== undefined) {audioReactive.setDisplayVisualization(audio_reactive_show_viz)}
   // Pixel Sorting
   if (ps_enable !== undefined) {pixelSort.setEnable(ps_enable)}
   if (ps_direction_change_rate !== undefined) {pixelSort.setDirectionChangeRate(ps_direction_change_rate)}
+  if (ps_initial_steps !== undefined) {pixelSort.setInitialSteps(ps_initial_steps)}
   // Cellular automata
   if (ca_enable !== undefined) {cellularAutomata.setEnable(ca_enable)}
   if (ca_color_change_rate !== undefined) {cellularAutomata.setRandomColorChangeRate(ca_color_change_rate)}
+  if (ca_initial_steps !== undefined) {cellularAutomata.setInitialSteps(ca_initial_steps)}
   // Toolbar
   if (hideToolbar!== undefined) {
     if (hideToolbar) {
