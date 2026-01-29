@@ -1,15 +1,18 @@
 [Unit]
 Description=Generative Landscapes Chrome Kiosk
-After=generative-landscapes-container.service graphical.target
+After=generative-landscapes-container.service graphical.target graphical-session.target
 Requires=generative-landscapes-container.service
+PartOf=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/google-chrome --kiosk http://127.0.0.1:8080/app/
+ExecStartPre=/bin/bash -c 'mv  /home/generativelandscapes/.config/google-chrome/chrome_debug.log /home/generativelandscapes/repos/JSCombine24/_logs/$(date +%%Y-%%m-%%d-%%H-%%M).log'
+ExecStart=/usr/bin/google-chrome --kiosk http://127.0.0.1:8080/app/ --enable-logging --v=1
 Restart=always
 RestartSec=5
-Environment=DISPLAY=:0
+RuntimeMaxSec=40min
+Environment=DISPLAY=:1
 Environment=XAUTHORITY=/home/YOUR_USER/.Xauthority
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target graphical.target graphical-session.target
