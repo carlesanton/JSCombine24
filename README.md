@@ -242,6 +242,25 @@ Foromat of log file header is:
           MMDD/HHMMSS.microseconds
 ```
 
+## Calandria Specific changes
+
+For calandria expo with a screen of resolution `1380pxx780px` the audio reactive interface was moved to the very bottom right corner by manualy hardcoding the position. The set position was:
+
+```js
+    // .lib/JSGenerativeArtTools/audio_reactive.js
+    this.audioVisualizationModule = new AudioVisualizationModule(
+      this.audio,
+      // {x:0, y:0}, {x:640, y:360},
+      {x:475, y:265}, {x:950, y:530},
+      this.beatDetectLevel,
+      {
+        levelMappingMethod: this.mapLevel,
+        levelScale: this.levelScale,
+        smoothFactor: AudioReactive.smoothFactor,
+        colorSchemeIndex: 0,
+      },
+    )
+```
 
 
 
