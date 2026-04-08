@@ -38,6 +38,8 @@ export let artwork_seed; // -1 used for random seeds, if set to a positive integ
 // To check if user loaded an image or default one is loaded
 let loaded_user_image = false;
 let image_loaded_successfuly = false;
+let reloadPagePeriodicaly = false;
+let reloadPageInterval = 100; // seconds
 
 const pixel_density = 1;
 let canvas;
@@ -110,8 +112,10 @@ function preload() {
       parameters_json = loaded_json
       if (Object.prototype.hasOwnProperty.call(parameters_json, "images")) {
         img_files = Object.keys(parameters_json['images'])
+        console.log('Loadnig images from json:', img_files)
       }
       else {
+        console.log('Using default images, faield to load images from json')
         img_files = defaultImgFiles
       }
       if (img_files.length == 0) { img_files = defaultImgFiles}
@@ -141,6 +145,7 @@ function setup() {
   MainInputs = inputs.mainInputs;
 
   recorder.setSketchFPSMethod(() => {return fps.getFPS()})
+  recorder.setCaptureSingleFrameMethod(() => {saveImage()})
 
   updateArtworkSettings()
 
@@ -173,6 +178,13 @@ function setup() {
     initializeCanvas(img)
   }
   last_reload_time = millis(); // Initialize when we actualy start
+  
+  // Auto reload page for Calandria
+  if (reloadPagePeriodicaly) {
+    setTimeout(() => {
+      location.reload();
+    }, reloadPageInterval * 1000)
+  }
 }
 
 function draw() {
@@ -189,13 +201,15 @@ function draw() {
 
   drawInterface()
   if (auto_reload_images) {periodicaly_reload_image(seconds_between_reloads)}
+  if (frameCount%fps.getFPS() == 0 || frameCount == 1) { // Ensure canvas is fitted on screen
+    scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+  }
 }
 
 function draw_steps(){
   // Recreate Mask if needed
   maskImage = mask.createMask(mask.getPreviousUsedImage());
   if (!mask.getEnable()) { // If masking is not enabled return black mask
-    console.log('Not Masking')
     maskImage = null;
   }
   pixelSort.setMask(maskImage);
@@ -378,7 +392,7 @@ function updateArtworkSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   if (!loaded_user_image){
-    current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+    current_image_path = img_files[floor(random(1000000000)%img_files.length)]
     console.log('Loading new image: ',current_image_path)
     loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
   }
@@ -394,7 +408,7 @@ export function setSeed(){
   MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
   artwork_seed = prepareP5Js(artwork_seed)
-  current_image_path = defaultImgFiles[floor(random(1000000000)%defaultImgFiles.length)]
+  current_image_path = img_files[floor(random(1000000000)%img_files.length)]
   loadImage(current_image_path, (loadedImage)=>{initializeCanvas(loadedImage)});
 }
 
@@ -582,8 +596,10 @@ function set_image_parameters() {
 function set_parameters_from_dict(image_parameters_dict) {
   console.log('Setting image parameters from dict', image_parameters_dict)
   // Get all values if available
-  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload')
+  var auto_reload = get_value_if_exists(image_parameters_dict, 'autoReload') // For changing images
   var reaload_time = get_value_if_exists(image_parameters_dict, 'secondsBetweenReloads')
+  var reload_page_periodicaly = get_value_if_exists(image_parameters_dict, 'reloadPagePeriodicaly') // For reloading full page
+  var reload_page_interval = get_value_if_exists(image_parameters_dict, 'reloadPageInterval') // For reloading full page
   var pixel_size = get_value_if_exists(image_parameters_dict, 'pixelSize')
   var width = get_value_if_exists(image_parameters_dict, 'width')
   var height = get_value_if_exists(image_parameters_dict, 'height')
@@ -599,13 +615,20 @@ function set_parameters_from_dict(image_parameters_dict) {
   var audio_reactive_decay_rate = get_value_if_exists(image_parameters_dict, 'audioReactiveDecayRate')
   var audio_reactive_ps_strenght = get_value_if_exists(image_parameters_dict, 'audioReactivePsStrenght')
   var audio_reactive_ca_strenght = get_value_if_exists(image_parameters_dict, 'audioReactiveCaStrenght')
+  var audio_reactive_show_viz = get_value_if_exists(image_parameters_dict, 'audioReactiveShowViz')
+  var ps_enable = get_value_if_exists(image_parameters_dict, 'psEnable')
   var ps_direction_change_rate = get_value_if_exists(image_parameters_dict, 'psDirectionChangeRate')
+  var ps_initial_steps = get_value_if_exists(image_parameters_dict, 'psInitialSteps')
   var ca_color_change_rate = get_value_if_exists(image_parameters_dict, 'caColorChangeRate')
+  var ca_enable = get_value_if_exists(image_parameters_dict, 'caEnable')
+  var ca_initial_steps = get_value_if_exists(image_parameters_dict, 'caInitialSteps')
   
   // Set values
   // Main
   if (auto_reload !== undefined) {auto_reload_images = auto_reload}
   if (reaload_time !== undefined) {seconds_between_reloads = reaload_time}
+  if (reload_page_periodicaly !== undefined) {reloadPagePeriodicaly = reload_page_periodicaly}
+  if (reload_page_interval !== undefined) {reloadPageInterval = reload_page_interval}
   if (pixel_size !== undefined) {pixelSize = pixel_size}
   if (width !== undefined) {artworkWidth = width}
   if (height !== undefined) {artworkHeight = height}
@@ -624,11 +647,16 @@ function set_parameters_from_dict(image_parameters_dict) {
   if (audio_reactive_beat_detection !== undefined) {audioReactive.setBeatDetectLevel(audio_reactive_beat_detection)}
   if (audio_reactive_decay_rate !== undefined) {audioReactive.setBeatDecayRate(audio_reactive_decay_rate)}
   if (audio_reactive_ps_strenght !== undefined) {audioReactive.setAudioLevelStrength(audio_reactive_ps_strenght)}
-  // if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  if (audio_reactive_ca_strenght !== undefined) {audioReactive.setLHEnergyRatioStrength(audio_reactive_ca_strenght)}
+  if (audio_reactive_show_viz !== undefined) {audioReactive.setDisplayVisualization(audio_reactive_show_viz)}
   // Pixel Sorting
+  if (ps_enable !== undefined) {pixelSort.setEnable(ps_enable)}
   if (ps_direction_change_rate !== undefined) {pixelSort.setDirectionChangeRate(ps_direction_change_rate)}
+  if (ps_initial_steps !== undefined) {pixelSort.setInitialSteps(ps_initial_steps)}
   // Cellular automata
+  if (ca_enable !== undefined) {cellularAutomata.setEnable(ca_enable)}
   if (ca_color_change_rate !== undefined) {cellularAutomata.setRandomColorChangeRate(ca_color_change_rate)}
+  if (ca_initial_steps !== undefined) {cellularAutomata.setInitialSteps(ca_initial_steps)}
   // Toolbar
   if (hideToolbar!== undefined) {
     if (hideToolbar) {
@@ -637,9 +665,6 @@ function set_parameters_from_dict(image_parameters_dict) {
       show_toolbar(inputs['toolbar']);
     }
   }
-
-  console.log('is TOOLBAR hiden', is_toolbar_hiden(inputs['toolbar']))
-
 }
 
 function get_value_if_exists(dict, key) {

@@ -1,0 +1,14 @@
+[Unit]
+Description=Generative Landscapes Chrome Kiosk
+After=generative-landscapes-container.service graphical.target graphical-session.target
+Requires=generative-landscapes-container.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'until xset q >/dev/null 2>&1; do sleep 0.5; done; exec /usr/bin/firefox --kiosk http://127.0.0.1:8080/app/ --new-window'
+Restart=always
+RestartSec=5
+Environment=DISPLAY=:1
+
+[Install]
+WantedBy=default.target

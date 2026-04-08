@@ -6,6 +6,7 @@
 *.webp
 *.tiff
 !/img/*.jpg
+!favicon.png
 
 # Ignore Combine24objects.json
 Combine24objects*.json
@@ -13,6 +14,7 @@ Combine24objects*.json
 # Ignore parameters files except main
 param_files/*
 !param_files/parameters.json
+!param_files/parameters_calandria.json
 
 # Ignore Videos
 *.avi
@@ -26,6 +28,9 @@ param_files/*
 
 # Ignore all exports folder
 exports/*
+
+# Ignore logs
+_logs/*
 
 # Ignore .DS_Store
 .DS_Store

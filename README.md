@@ -11,12 +11,13 @@ This project uses a submodule for the `JSGenerativeArtTools` custom libs.
 ### Initialize:
 
 To intialise it run:
-```
+```sh
 git submodule init
+git submodule update
 ```
 
 Alternatively you can automaticaly get the submodule code when cloning the repository with:
-```
+```sh
 git clone --recurse-submodules
 ```
 
@@ -118,6 +119,7 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
         "audioReactiveBeatDetection": 0.15,
         "audioReactiveDecayRate": 0.1, // float
         "psDirectionChangeRate": 450, // int
+        "psEnable": true, // bool
         "hideToolbar": false, // bool
         "pixelSize": 4, // int
         "width": 1500, // int
@@ -127,7 +129,8 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
         "maskMax": 1, // float
         "maskDisplay": false, // bool
         "maskOpacity": 50, // int
-        "caColorChangeRate": 100000 // int
+        "caColorChangeRate": 100000, // int
+        "caEnable": true // bool
         
     },
     "images": {
@@ -151,6 +154,122 @@ The parameters can be set for as defaults loaded at the begining or in a per ima
     }
 }
 ```
+
+# Exhibition builds
+Docker compose command
+```sh
+docker compose -f ./_docker/docker-compose.yml up
+```
+
+To run Chrome browser in kiosk mode
+```sh
+google-chrome --kiosk http://127.0.0.1:8080/app/
+```
+
+Two services have been created, one to run the container and another one to run the browser in kiosk mode. There are 2 versions of the browser one, one with Chrome and one with Firefox, for Fundació Calandria expo at 02/2026 the working one was the Firefox one.
+
+The `Dockerfile`, `docker-compose.yml` and corresponding services can be found in the `_docker` folder. The `_` is used to avoid Github Pages to serve those files.
+
+## Services
+
+There are 2 services in charge of running the DOcker conatiner and running Google Chrome in the `_docker/services` folder.
+
+Link them
+```sh
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-container.service ~/.config/systemd/user/generative-landscapes-container.service
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-chrome.service ~/.config/systemd/user/generative-landscapes-chrome.service
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-firefox.service ~/.config/systemd/user/generative-landscapes-firefox.service
+```
+
+We then must restart the services daemon:
+```sh
+systemctl --user daemon-reload
+```
+
+To start each service:
+```sh
+systemctl --user start generative-landscapes-container.service
+systemctl --user start generative-landscapes-chrome.service
+systemctl --user start generative-landscapes-firefox.service
+```
+
+To stop each service:
+```sh
+systemctl --user stop generative-landscapes-container.service
+systemctl --user stop generative-landscapes-chrome.service
+systemctl --user stop generative-landscapes-firefox.service
+```
+
+To enable each service:
+```sh
+systemctl --user enable generative-landscapes-container.service
+systemctl --user enable generative-landscapes-chrome.service
+systemctl --user enable generative-landscapes-firefox.service
+```
+
+To disable each service:
+```sh
+systemctl --user disable generative-landscapes-container.service
+systemctl --user disable generative-landscapes-chrome.service
+systemctl --user disable generative-landscapes-firefox.service
+```
+
+To see status of each service
+```sh
+systemctl --user status generative-landscapes-container.service
+systemctl --user status generative-landscapes-chrome.service
+systemctl --user status generative-landscapes-firefox.service
+```
+
+To see full logs each service:
+```sh
+journalctl --user --user-unit=generative-landscapes-container.service
+journalctl --user --user-unit=generative-landscapes-chrome.service
+journalctl --user --user-unit=generative-landscapes-firefox.service
+```
+
+## Diagnosis
+
+Check chrome memory:
+```sh
+ps -o pid,ppid,%mem,%cpu,cmd -C chrome
+```
+
+Check chrome logs:
+```sh
+cat ~/.config/google-chrome/chrome_debug.log
+
+# Copy
+cp  ~/.config/google-chrome/chrome_debug.log /home/generativelandscapes/repos/JSCombine24/_logs/$(date +%Y-%m-%d-%H-%M).log
+```
+
+Foromat of log file header is:
+```
+7219:7243:0129/132654.834725
+          MMDD/HHMMSS.microseconds
+```
+
+## Calandria Specific changes
+
+For calandria expo with a screen of resolution `1380pxx780px` the audio reactive interface was moved to the very bottom right corner by manualy hardcoding the position. The set position was:
+
+```js
+    // .lib/JSGenerativeArtTools/audio_reactive.js
+    this.audioVisualizationModule = new AudioVisualizationModule(
+      this.audio,
+      // {x:0, y:0}, {x:640, y:360},
+      {x:475, y:265}, {x:950, y:530},
+      this.beatDetectLevel,
+      {
+        levelMappingMethod: this.mapLevel,
+        levelScale: this.levelScale,
+        smoothFactor: AudioReactive.smoothFactor,
+        colorSchemeIndex: 0,
+      },
+    )
+```
+
+
 
 # Experiments
 

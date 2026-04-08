@@ -1,0 +1,14 @@
+[Unit]
+Description=Generative Landscapes Docker Compose
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/generativelandscapes/repos/JSCombine24
+ExecStart=/usr/local/bin/docker-compose -f ./_docker/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f ./_docker/docker-compose.yml down
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
