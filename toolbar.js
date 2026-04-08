@@ -4,7 +4,6 @@ import {
     create_daisyui_expandable_card,
     create_button,
     create_input_file_button,
-    turnDaisyUICardIntoBodyWithTitle,
     createSmallBreak,
     create_subtitle,
     createToggleButton,
@@ -139,6 +138,12 @@ function createFadeToNewImageCard() {
 function intialize_toolbar(){
     var elements_dict = {}
     toolbar = document.getElementById('toolbar');
+
+    // Hide Toolbar Info
+    var hideToolbarInfo = create_subtitle('Hide/Show Toolbar with [F]')
+    hideToolbarInfo.getElementsByTagName('h2')[0].className = 'text-sm';
+    console.log('hideToolbarInfo', hideToolbarInfo)
+    toolbar.appendChild(hideToolbarInfo);
 
     // Main Settings UI
     var MainInputs = createArtworkSettingsCard();
