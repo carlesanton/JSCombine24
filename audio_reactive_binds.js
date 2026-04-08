@@ -58,7 +58,7 @@ function bind_audio_reactive_controls(){
         // We should take the same steps for scaling as in setOnLevelChangeCallback but since the min output is 0 its not needed
         var remapedRatio = map(energyRatio, 0, 0.3, 0, 5) * audioReactive.getLHEnergyRatioStrength();
         remapedRatio = parseInt(constrain(remapedRatio, 0, 5))
-        if (energyRatio<=0.1){ // To generate some CA movement without any audio
+        if (remapedRatio==0.0){ // To generate some CA movement without any audio
             remapedRatio = 1
         }
         cellularAutomata.setPassesPerFrameFromSlider(remapedRatio);
