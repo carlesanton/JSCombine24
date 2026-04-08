@@ -166,7 +166,7 @@ To run Chrome browser in kiosk mode
 google-chrome --kiosk http://127.0.0.1:8080/app/
 ```
 
-Two services have been created, one to run the container and another one to run Chrome in kiosk mode.
+Two services have been created, one to run the container and another one to run the browser in kiosk mode. There are 2 versions of the browser one, one with Chrome and one with Firefox, for Fundació Calandria expo at 02/2026 the working one was the Firefox one.
 
 The `Dockerfile`, `docker-compose.yml` and corresponding services can be found in the `_docker` folder. The `_` is used to avoid Github Pages to serve those files.
 
@@ -178,6 +178,7 @@ Link them
 ```sh
 ln -s $(pwd)/_docker/services/calandria/generative-landscapes-container.service ~/.config/systemd/user/generative-landscapes-container.service
 ln -s $(pwd)/_docker/services/calandria/generative-landscapes-chrome.service ~/.config/systemd/user/generative-landscapes-chrome.service
+ln -s $(pwd)/_docker/services/calandria/generative-landscapes-firefox.service ~/.config/systemd/user/generative-landscapes-firefox.service
 ```
 
 We then must restart the services daemon:
@@ -189,36 +190,42 @@ To start each service:
 ```sh
 systemctl --user start generative-landscapes-container.service
 systemctl --user start generative-landscapes-chrome.service
+systemctl --user start generative-landscapes-firefox.service
 ```
 
 To stop each service:
 ```sh
 systemctl --user stop generative-landscapes-container.service
 systemctl --user stop generative-landscapes-chrome.service
+systemctl --user stop generative-landscapes-firefox.service
 ```
 
 To enable each service:
 ```sh
 systemctl --user enable generative-landscapes-container.service
 systemctl --user enable generative-landscapes-chrome.service
+systemctl --user enable generative-landscapes-firefox.service
 ```
 
 To disable each service:
 ```sh
 systemctl --user disable generative-landscapes-container.service
 systemctl --user disable generative-landscapes-chrome.service
+systemctl --user disable generative-landscapes-firefox.service
 ```
 
 To see status of each service
 ```sh
 systemctl --user status generative-landscapes-container.service
 systemctl --user status generative-landscapes-chrome.service
+systemctl --user status generative-landscapes-firefox.service
 ```
 
 To see full logs each service:
 ```sh
 journalctl --user --user-unit=generative-landscapes-container.service
 journalctl --user --user-unit=generative-landscapes-chrome.service
+journalctl --user --user-unit=generative-landscapes-firefox.service
 ```
 
 ## Diagnosis
