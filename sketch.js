@@ -201,6 +201,9 @@ function draw() {
 
   drawInterface()
   if (auto_reload_images) {periodicaly_reload_image(seconds_between_reloads)}
+  if (frameCount%fps.getFPS() == 0 || frameCount == 1) { // Ensure canvas is fitted on screen
+    scaleCanvasToFit(canvas, artworkHeight, artworkWidth);
+  }
 }
 
 function draw_steps(){
