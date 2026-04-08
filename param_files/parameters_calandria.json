@@ -1,0 +1,233 @@
+{
+    "main_parameters": {
+        "width": 1920,
+        "height": 1080,
+        "autoReload": true,
+        "secondsBetweenReloads": 120,
+        "audioReactiveEnable": true,
+        "audioReactiveAudioScale": 3.0,
+        "audioReactiveBeatDetection": 0.4,
+        "audioReactivePsStrenght": 0.7,
+        "audioReactiveCaStrenght": 0.2,
+        "audioReactiveDecayRate": 0.1,
+        "psDirectionChangeRate": 45,
+        "caColorChangeRate": 15,
+        "hideToolbar": true,
+        "pixelSize": 4,
+        "maskMin": 0.0,
+        "maskMax": 0.3,
+        "caEnable": true,
+        "psEnable": true,
+        "psInitialSteps": 0,
+        "InitialSteps": 0,
+        "reloadPagePeriodicaly": false,
+        "reloadPageInterval": 60,
+        "audioReactiveShowViz": true
+    },
+    "images": {
+        "img/calandria/mobil-00001.jpeg": {},
+        "img/calandria/mobil-00003.jpeg": {
+            "maskMin": 0,
+            "maskMax": 0.25,
+            "caColorChangeRate": 60
+        },
+        "img/calandria/mobil-00005.jpeg": {
+            "maskMax": 0.26,
+            "audioReactivePsStrenght": 1,
+            "audioReactiveCaStrenght": 0.2,
+            "pixelSize": 7
+        },
+        "img/calandria/mobil-00006.jpeg": {
+            "maskMax": 0.35,
+            "maskMin": 0.75
+        },
+        "img/calandria/mobil-00008.jpeg": {
+            "maskMax": 0.6
+        },
+        "img/calandria/mobil-00009.jpeg": {
+            "maskMax": 0.6,
+            "maskMin": 1.0,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.2,
+            "audioReactiveAudioScale": 2,
+            "caEnable": false
+        },
+        "img/calandria/mobil-00009_.jpeg": {
+            "maskMax": 0.6,
+            "maskMin": 1.0,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.2,
+            "audioReactiveAudioScale": 2
+        },
+        "img/calandria/mobil-00010.jpeg": {
+            "maskMin": 0.65,
+            "maskMax": 0,
+            "pixelSize": 10
+        },
+        "img/calandria/mobil-00012_.jpeg": {
+            "maskMin": 0.5,
+            "maskMax": 0.7,
+            "pixelSize": 4,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.2,
+            "audioReactiveAudioScale": 2
+        },
+        "img/calandria/mobil-00012.jpeg": {
+            "maskMax": 0.5
+        },
+        "img/calandria/mobil-00015.jpeg": {
+            "pixelSize": 7,
+            "maskMax": 0.27
+        },
+        "img/calandria/mobil-00016.jpeg": {
+            "maskMin": 0.15,
+            "maskMax": 0.5,
+            "pixelSize": 6
+        },
+        "img/calandria/mobil-00017.jpeg": {
+            "maskMin": 0.25,
+            "maskMax": 0.15
+        },
+        "img/calandria/mobil-00018.jpeg": {
+            "maskMin": 0.25,
+            "maskMax": 0.15,
+            "pixelSize": 6
+        },
+        "img/calandria/mobil-00019.jpeg": {
+            "maskMax": 0.5,
+            "pixelSize": 4,
+            "caColorChangeRate": 450
+        },
+        "img/calandria/mobil-00020.jpeg": {
+            "maskMin": 0.85,
+            "maskMax": 1
+        },
+        "img/calandria/mobil-00021.jpeg": {
+            "maskMin": 0.35,
+            "maskMax": 0.85,
+            "pixelSize": 10,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.2,
+            "audioReactiveAudioScale": 2
+        },
+        "img/calandria/mobil-00022.jpeg": {
+            "caEnable": false,
+            "maskMin": 0.5,
+            "maskMax": 0.6
+        },
+        "img/calandria/mobil-00024_.jpeg": {
+            "maskMin": 0.5,
+            "maskMax": 0.7,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.2
+        },
+        "img/calandria/mobil-00024.jpeg": {
+            "maskMin": 0.8,
+            "maskMax": 1
+        },
+        "img/calandria/mobil-00025.jpeg": {
+            "maskMin": 0,
+            "maskMax": 0.4,
+            "caEnable": false
+        },
+        "img/calandria/mobil-00026.jpeg": {
+            "caEnable": false
+        },
+        "img/calandria/mobil-00026_.jpeg": {
+            "audioReactivePsStrenght": 1,
+            "audioReactiveCaStrenght": 0.1
+        },
+        "img/calandria/mobil-00027.jpeg": {
+            "caEnable": false
+        },
+        "img/calandria/mobil-00028.jpeg": {
+            "maskMin": 0.1,
+            "pixelSize": 7
+        },
+        "img/calandria/mobil-00029.jpeg": {
+            "pixelSize": 10
+        },
+        "img/calandria/mobil-00030.jpeg": {
+            "maskMin": 0.28,
+            "maskMax": 0.52,
+            "caEnable": false
+        },
+        "img/calandria/mobil-00033.jpeg": {
+            "maskMin": 0.74,
+            "maskMax": 0.66,
+            "pixelSize": 4,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.1,
+            "caColorChangeRate": 60
+        },
+        "img/calandria/mobil-00035.jpeg": {
+            "maskMin": 0.54,
+            "maskMax": 0.75,
+            "pixelSize": 6,
+            "caEnable": false
+        },
+        "img/calandria/mobil-00036.jpeg": {
+            "maskMin": 0.0,
+            "maskMax": 0.34,
+            "pixelSize": 1,
+            "caEnable": false
+        },
+        "img/calandria/257703.jpg": {
+            "maskMin": 0.53,
+            "maskMax": 0.35,
+            "pixelSize": 6,
+            "caEnable": false
+        },
+        "img/calandria/314808.jpg": {
+            "maskMax": 0.19,
+            "pixelSize": 6,
+            "audioReactivePsStrenght": 2,
+            "audioReactiveCaStrenght": 0.1,
+            "caColorChangeRate": 60
+        },
+        "img/calandria/332736.jpg": {
+            "maskMin": 0.27,
+            "maskMax": 0.46,
+            "caEnable": false
+        },
+        "img/calandria/1360200.jpg": {
+            "maskMin": 0.57,
+            "maskMax": 0.83,
+            "audioReactivePsStrenght": 1,
+            "audioReactiveCaStrenght": 0.1
+        },
+        "img/calandria/1653604.jpg": {
+            "maskMax": 0.18,
+            "audioReactivePsStrenght": 1,
+            "audioReactiveCaStrenght": 0.1
+        },
+        "img/calandria/3526787.jpg": {
+            "maskMax": 0.38,
+            "caColorChangeRate": 60,
+            "audioReactivePsStrenght": 1.3,
+            "audioReactiveCaStrenght": 0.1
+        },
+        "img/calandria/aiguamolls-artificials-1.jpg": {
+            "maskMax": 0.34,
+            "caEnable": false
+        },
+        "img/calandria/desembocadura-1.jpg": {
+            "maskMax": 0.55
+        },
+        "img/calandria/ecros-flix-1.jpg": {},
+        "img/calandria/eliminacion-contaminacion-flix-1.jpg": {
+            "maskMax": 0.64
+        },
+        "img/calandria/gloria-1.jpeg": {
+        },
+        "img/calandria/presa-mequinensa-1.jpg": {
+            "maskMin": 0.7,
+            "maskMax": 0.86,
+            "audioReactivePsStrenght": 1,
+            "audioReactiveCaStrenght": 0.05
+        },
+        "img/calandria/proyecto-castor-4.jpeg": {
+            "maskMax": 0.41
+        }
+    }
+}

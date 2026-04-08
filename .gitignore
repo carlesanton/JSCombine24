@@ -14,6 +14,7 @@ Combine24objects*.json
 # Ignore parameters files except main
 param_files/*
 !param_files/parameters.json
+!param_files/parameters_calandria.json
 
 # Ignore Videos
 *.avi
