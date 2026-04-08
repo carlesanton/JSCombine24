@@ -64,19 +64,8 @@ function createArtworkSettingsCard() {
     const emptyTitle1 = create_subtitle();
     const emptyTitle2 = create_subtitle();
     // Buttons
-    const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
-    const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
+    const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); }, '', 'sm');
     const loadImage = create_input_file_button(load_user_file, 'Load Image', 'No file chosen', 'Loaded Image: ');
-
-    // FPS, take only body
-    var FPSInputs = fps.createFPSSettingsCard();
-    var FPSInputsBody = turnDaisyUICardIntoBodyWithTitle(FPSInputs['main-toolbar'])
-    elements_dict['fpsInputs'] = FPSInputs;
-
-    // Color Pallete, take only body
-    var PaletteInputs = colorPalette.createColorPaletteControlsCard();
-    var PaletteInputsBody = turnDaisyUICardIntoBodyWithTitle(PaletteInputs['main-toolbar'])
-    elements_dict['paletteInputs'] = PaletteInputs;
 
     cardBody.appendChild(pixelSize);
 
@@ -90,38 +79,10 @@ function createArtworkSettingsCard() {
     cardBody.appendChild(emptyTitle1);
     cardBody.appendChild(seed);
     cardBody.appendChild(seedButton);
-    cardBody.appendChild(FPSInputsBody);
-    
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(PaletteInputsBody);
+
     
     cardBody.appendChild(emptyTitle2);
     cardBody.appendChild(applyChangesButton);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(saveFrameButton);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(loadImage);
-
-    elements_dict['main-toolbar'] = card;
-
-    return elements_dict;
-}
-
-function createArtworkControlsCard() {
-    var elements_dict = {};
-    // Create the main card
-    var card = create_daisyui_expandable_card('mainButtons', 'Main Actions')
-    const cardBody = card.getElementsByClassName('collapse-content')[0]
-
-    // Add Buttons
-    const applyChangesButton = create_button('Apply Changes', () => { applyUIChanges(); });
-    const saveFrameButton = create_button('Save Current Frame', () => { saveImage(); });
-    const loadImage = create_input_file_button(load_user_file, 'Load Image', 'No file chosen', 'Loaded Image: ');
-
-    cardBody.appendChild(applyChangesButton);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(saveFrameButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(loadImage);
 
     elements_dict['main-toolbar'] = card;
@@ -148,7 +109,9 @@ function createFadeToNewImageCard() {
     const applyTransitionButton = create_button(
         'Apply Transition',
         applyTransition,
-    )
+        '',
+        'sm'
+    );
     elements_dict['applyTransition'] = activateFade.getElementsByTagName('button')[0];
 
     // Fade Speed
@@ -166,10 +129,8 @@ function createFadeToNewImageCard() {
     cardBody.appendChild(newImageButton);
     cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(activateFade);
-    cardBody.appendChild(document.createElement('br'));
-    cardBody.appendChild(applyTransitionButton);
-    cardBody.appendChild(document.createElement('br'));
     cardBody.appendChild(fadeSpeed);
+    cardBody.appendChild(applyTransitionButton);
 
     elements_dict['main-toolbar'] = card;
     return elements_dict;
@@ -181,8 +142,8 @@ function intialize_toolbar(){
 
     // Main Settings UI
     var MainInputs = createArtworkSettingsCard();
+    MainInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(MainInputs['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     // // Initialize Defaults
     MainInputs['currentSeed'].textContent = `Current Seed: ${artwork_seed}`
 
@@ -190,39 +151,52 @@ function intialize_toolbar(){
   
     // Audio Reactive
     var AudioInput = audioReactive.createAudioReactiveControlsCard()
+    AudioInput['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(AudioInput['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['AudioInputs'] = AudioInput;
     
     // Mask
     var MaskInputs = mask.createMaskSettings()
+    MaskInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(MaskInputs['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['MaskInputs'] = MaskInputs;
 
     // Pixel Sorting UI
     var PSInputs = pixelSort.createPixelSortingSettings();
+    PSInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(PSInputs['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['psInputs'] = PSInputs;
     
     // Cellular Automata UI
     var CAInputs = cellularAutomata.createSettingsCard();
+    CAInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(CAInputs['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['caInputs'] = CAInputs;
 
     // New Image UI
     var NewImageInput = createFadeToNewImageCard();
+    NewImageInput['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(NewImageInput['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['newImageInputs'] = NewImageInput;
 
     // Recorder UI
     var recorderInputs = recorder.createSettingsCard();
+    recorderInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
     toolbar.appendChild(recorderInputs['main-toolbar']);
-    toolbar.appendChild(document.createElement('br'));
     elements_dict['recorderInputs'] = recorderInputs;
+
+    // Color Pallete, take only body
+    var PaletteInputs = colorPalette.createColorPaletteControlsCard();
+    PaletteInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
+    toolbar.appendChild(PaletteInputs['main-toolbar']);
+    elements_dict['paletteInputs'] = PaletteInputs;
+
+
+    // FPS
+    var FPSInputs = fps.createFPSSettingsCard();
+    FPSInputs['main-toolbar'].querySelector('input[type="checkbox"]').checked = false
+    toolbar.appendChild(FPSInputs['main-toolbar']);
+    elements_dict['fpsInputs'] = FPSInputs;
     
     elements_dict['toolbar'] = toolbar;
     // toolbar.style.display = "none" // to hide toolbar
