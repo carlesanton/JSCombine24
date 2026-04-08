@@ -145,6 +145,7 @@ function setup() {
   MainInputs = inputs.mainInputs;
 
   recorder.setSketchFPSMethod(() => {return fps.getFPS()})
+  recorder.setCaptureSingleFrameMethod(() => {saveImage()})
 
   updateArtworkSettings()
 
