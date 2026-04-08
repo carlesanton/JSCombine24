@@ -6,6 +6,7 @@
 *.webp
 *.tiff
 !/img/*.jpg
+!favicon.png
 
 # Ignore Combine24objects.json
 Combine24objects*.json
